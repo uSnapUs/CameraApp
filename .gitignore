@@ -159,3 +159,5 @@ Icon
 .Trashes
 *ncrunch*
 packages/*
+
+*.userprefs

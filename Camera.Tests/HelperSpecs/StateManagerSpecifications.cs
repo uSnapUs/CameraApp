@@ -102,5 +102,11 @@ namespace Camera.Tests.HelperSpecs
             static string _guid = Guid.NewGuid().ToString("N");
             static string _facebookId = "fbid";
         }
+        public class when_initiating_facebook_login:StateManagerSpecification
+        {
+            Establish context = () => FacebookSession.Current=An<IFacebookSession>();
+            Because of = () => _sut.InitiateFacebookLogin();
+            It should_initiate_facebook_login = () => FacebookSession.Current.WasToldTo(fb=>fb.InitiateLogin());
+        }
     }
 }

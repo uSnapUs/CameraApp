@@ -13,46 +13,63 @@
     <AssemblyName>Camera</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <MtouchLink>None</MtouchLink>
-    <MtouchDebug>true</MtouchDebug>
+    <ConsolePause>False</ConsolePause>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchDebug>True</MtouchDebug>
+    <MtouchArch>Default, ARMv7</MtouchArch>
+    <MtouchSdkVersion>6.1</MtouchSdkVersion>
+    <MtouchExtraArgs />
+    <MtouchProfiling>False</MtouchProfiling>
+    <MtouchUseLlvm>False</MtouchUseLlvm>
+    <MtouchUseThumb>False</MtouchUseThumb>
+    <MtouchUseSGen>False</MtouchUseSGen>
+    <MtouchUseRefCounting>False</MtouchUseRefCounting>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
     <MtouchLink>None</MtouchLink>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>bin\iPhone\Debug</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <MtouchDebug>true</MtouchDebug>
+    <ConsolePause>False</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchDebug>True</MtouchDebug>
+    <MtouchSdkVersion>6.1</MtouchSdkVersion>
+    <IpaPackageName />
+    <MtouchI18n />
+    <MtouchArch>ARMv7</MtouchArch>
+    <MtouchLink>Full</MtouchLink>
+    <BuildIpa>True</BuildIpa>
+    <CrashReportingApiKey>076e472d795137f4df4b5d12ec7cea788958e843</CrashReportingApiKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>bin\iPhone\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
+    <CrashReportingApiKey>076e472d795137f4df4b5d12ec7cea788958e843</CrashReportingApiKey>
+    <CrashReportingEnabled>True</CrashReportingEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
@@ -63,6 +80,9 @@
     <ConsolePause>False</ConsolePause>
     <CodesignKey>iPhone Distribution</CodesignKey>
     <BuildIpa>True</BuildIpa>
+    <CrashReportingApiKey>076e472d795137f4df4b5d12ec7cea788958e843</CrashReportingApiKey>
+    <CrashReportingEnabled>True</CrashReportingEnabled>
+    <CodesignProvision>3151A48D-FC30-4AEC-8E01-0FF987AD2725</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
     <DebugType>none</DebugType>
@@ -72,9 +92,13 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <CodesignKey>iPhone Distribution</CodesignKey>
+    <CrashReportingApiKey>076e472d795137f4df4b5d12ec7cea788958e843</CrashReportingApiKey>
+    <CrashReportingEnabled>True</CrashReportingEnabled>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Exceptions\ApiException.cs" />
+    <Compile Include="Helpers\FacebookSession.cs" />
+    <Compile Include="Helpers\IFacebookSession.cs" />
     <Compile Include="Helpers\ILogger.cs" />
     <Compile Include="Helpers\IRestClientFactory.cs" />
     <Compile Include="Helpers\IServer.cs" />
@@ -86,11 +110,44 @@
     <Compile Include="Helpers\TinyMessenger.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="Model\User.cs" />
+    <Compile Include="Supervisors\BaseViewControllerSupervisor.cs" />
+    <Compile Include="Supervisors\EventDashboardViewControllerSupervisor.cs" />
+    <Compile Include="Supervisors\FindNearbyViewControllerSupervisor.cs" />
+    <Compile Include="Supervisors\LandingPageViewControllerSupervisor.cs" />
+    <Compile Include="Supervisors\LoginViewControllerSupervisor.cs" />
+    <Compile Include="ViewControllers\BaseViewController.cs" />
+    <Compile Include="ViewControllers\EventDashboardViewController.cs" />
+    <Compile Include="ViewControllers\FindNearbyViewController.cs" />
+    <Compile Include="ViewControllers\ImagePickerViewController.cs" />
     <Compile Include="ViewControllers\Interfaces\IBaseViewController.cs" />
+    <Compile Include="ViewControllers\Interfaces\IEventDashboardViewController.cs" />
+    <Compile Include="ViewControllers\Interfaces\IFindNearbyViewController.cs" />
     <Compile Include="ViewControllers\Interfaces\ILandingPageViewController.cs" />
+    <Compile Include="ViewControllers\Interfaces\ILoginViewController.cs" />
     <Compile Include="ViewControllers\LandingPageViewController.cs" />
+    <Compile Include="ViewControllers\LoginViewController.cs" />
+    <Compile Include="Views\BlurOverlayView.cs" />
+    <Compile Include="Views\EventDashboardView.cs" />
+    <Compile Include="Views\FindNearbyMapView.cs" />
+    <Compile Include="Views\FindNearbyView.cs" />
+    <Compile Include="Views\ImagePickerView.cs" />
+    <Compile Include="Views\Interfaces\IFindNearbyMapView.cs" />
     <Compile Include="Views\Interfaces\ILandingPageView.cs" />
     <Compile Include="Views\LandingPageView.cs" />
+    <Compile Include="Views\LoginView.cs" />
+    <Compile Include="Views\RoundedRectView.cs" />
+    <Content Include="Fonts\Gelato Script.otf" />
+    <Content Include="Fonts\ProximaNova-Black.otf" />
+    <Content Include="Fonts\ProximaNova-Bold.otf" />
+    <Content Include="Fonts\ProximaNova-BoldIt.otf" />
+    <Content Include="Fonts\ProximaNova-Extrabold.otf" />
+    <Content Include="Fonts\ProximaNova-Light.otf" />
+    <Content Include="Fonts\ProximaNova-LightItalic.otf" />
+    <Content Include="Fonts\ProximaNova-RegItalic.otf" />
+    <Content Include="Fonts\ProximaNova-Regular.otf" />
+    <Content Include="Fonts\ProximaNova-Semibold.otf" />
+    <Content Include="Fonts\ProximaNova-SemiboldItalic.otf" />
     <None Include="Info.plist" />
     <Compile Include="Model\DeviceRegistration.cs" />
     <Compile Include="Model\SQLLite.cs" />
@@ -101,9 +158,9 @@
   <ItemGroup>
     <BundleResource Include="Resources\logo%402x.png" />
     <BundleResource Include="Resources\tagline%402x.png" />
-    <BundleResource Include="Resources\background%402x.png" />
+    <BundleResource Include="Resources\background1%402x.png" />
     <BundleResource Include="Resources\Button_Find%402x.png" />
-    <BundleResource Include="Resources\background.png" />
+    <BundleResource Include="Resources\background1.png" />
     <BundleResource Include="Resources\Button_Find.png" />
     <BundleResource Include="Resources\logo.png" />
     <BundleResource Include="Resources\tagline.png" />
@@ -206,8 +263,30 @@
     <BundleResource Include="Resources\9%402x.jpg" />
     <BundleResource Include="Resources\10.jpg" />
     <BundleResource Include="Resources\10%402x.jpg" />
+    <BundleResource Include="FacebookSDKResources.bundle\Contents\Resources\en.lproj\Localizable.strings" />
+    <BundleResource Include="FacebookSDKResources.bundle\Contents\Resources\he.lproj\Localizable.strings" />
+    <BundleResource Include="FacebookSDKResources.bundle\FBDialog\images\close.png" />
+    <BundleResource Include="FacebookSDKResources.bundle\FBDialog\images\close%402x.png" />
+    <BundleResource Include="FacebookSDKResources.bundle\FBDialog\images\fbicon.png" />
+    <BundleResource Include="FacebookSDKResources.bundle\FBFriendPickerView\images\default.png" />
+    <BundleResource Include="FacebookSDKResources.bundle\FBLoginView\images\bluetint.png" />
+    <BundleResource Include="FacebookSDKResources.bundle\FBLoginView\images\f_logo.png" />
+    <BundleResource Include="FacebookSDKResources.bundle\FBLoginView\images\facebook.png" />
+    <BundleResource Include="FacebookSDKResources.bundle\FBLoginView\images\login-button-small-pressed.png" />
+    <BundleResource Include="FacebookSDKResources.bundle\FBLoginView\images\login-button-small-pressed%402x.png" />
+    <BundleResource Include="FacebookSDKResources.bundle\FBLoginView\images\login-button-small.png" />
+    <BundleResource Include="FacebookSDKResources.bundle\FBLoginView\images\login-button-small%402x.png" />
+    <BundleResource Include="FacebookSDKResources.bundle\FBPlacePickerView\images\fb_generic_place.png" />
+    <BundleResource Include="FacebookSDKResources.bundle\FBProfilePictureView\images\fb_blank_profile_portrait.png" />
+    <BundleResource Include="FacebookSDKResources.bundle\FBProfilePictureView\images\fb_blank_profile_square.png" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Facebook">
+      <HintPath>..\libs\Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="GPUImage">
+      <HintPath>..\libs\GPUImage.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\libs\RestSharp.dll</HintPath>
     </Reference>

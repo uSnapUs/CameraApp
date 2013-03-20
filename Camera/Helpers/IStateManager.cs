@@ -8,6 +8,8 @@ namespace Camera.Helpers
         IServer Server { get; }
         DeviceRegistration CurrentDeviceRegistration { get; }
         string DeviceName { set; }
+        User CurrentUser { get; set; }
         void UpdateDeviceRegistration(string name, string email, string facebookId);
+        void InitiateFacebookLogin();
     }
 }

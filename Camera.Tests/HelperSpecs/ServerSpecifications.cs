@@ -1,4 +1,5 @@
-﻿using System;
+﻿// ReSharper disable InconsistentNaming
+using System;
 using System.Collections.Generic;
 using System.Net;
 using Camera.Exceptions;
@@ -17,7 +18,9 @@ namespace Camera.Tests.HelperSpecs
         [Subject(typeof(Server))]
         public abstract class ServerSpecification : WithFakes<MoqFakeEngine>
         {
+
             protected static Server _sut;
+
 
             Establish context = () =>
             {

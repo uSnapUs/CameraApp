@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using Camera.Model;
+using MonoTouch.FacebookConnect;
+using MonoTouch.Foundation;
 using TinyMessenger;
 
 namespace Camera.Helpers
@@ -75,7 +77,7 @@ namespace Camera.Helpers
         public static IStateManager Current
         {
             get { return _stateManager ?? (_stateManager = new StateManager()); }
-            internal set { _stateManager = value; }
+            set { _stateManager = value; }
         }
 
         IServer _server;
@@ -112,7 +114,7 @@ namespace Camera.Helpers
             }
         }
 
-
+        public User CurrentUser { get; set; }
 
 
         public void UpdateDeviceRegistration(string name, string email, string facebookId)
@@ -145,7 +147,12 @@ namespace Camera.Helpers
             Logger.Trace("exit");
         }
 
+        public void InitiateFacebookLogin()
+        {
+            FacebookSession.Current.InitiateLogin();
+        }
 
+      
 
 
         public void Dispose()
@@ -162,4 +169,6 @@ namespace Camera.Helpers
             Logger.Trace("exit");
         }
     }
+
+    
 }

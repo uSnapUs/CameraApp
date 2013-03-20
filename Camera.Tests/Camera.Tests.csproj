@@ -70,8 +70,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ControllerSpecifications\EventDashboardViewControllerSupervisorSpecifications.cs" />
+    <Compile Include="ControllerSpecifications\FindNearbyMapViewControllerSupervisorSpecifications.cs" />
+    <Compile Include="ControllerSpecifications\LoginPageViewControllerSupervisorSpecifications.cs" />
+    <Compile Include="ControllerSpecifications\LandingPageViewControllerSupervisorSpecifications.cs" />
     <Compile Include="HelperSpecs\ServerSpecifications.cs" />
     <Compile Include="HelperSpecs\StateManagerSpecifications.cs" />
+    <Compile Include="Helpers\EventHelpers.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
