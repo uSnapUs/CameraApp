@@ -68,14 +68,42 @@ namespace Camera.ViewControllers
         public void PresentImagePickerView()
         {
             var imagePickerViewController = new ImagePickerViewController();
+            imagePickerViewController.ImageCaptured += ImagePickerViewControllerOnImageCaptured;
+            imagePickerViewController.Cancel += ImagePickerViewControllerOnCancel;
             PresentViewController(imagePickerViewController,true,null);
+        }
+
+        void ImagePickerViewControllerOnCancel(object sender, EventArgs eventArgs)
+        {
+            DismissViewController(true,null);
+            var imagePickerViewController = sender as ImagePickerViewController;
+            if (imagePickerViewController != null)
+            {
+                imagePickerViewController.ImageCaptured -= ImagePickerViewControllerOnImageCaptured;
+                imagePickerViewController.Cancel -= ImagePickerViewControllerOnCancel;
+                imagePickerViewController.Dispose();
+            }
+        }
+
+        void ImagePickerViewControllerOnImageCaptured(object sender, ImageCaptureEvent imageCaptureEvent)
+        {
+            DismissViewController(true, null);
+            var imagePickerViewController = sender as ImagePickerViewController;
+            if (imagePickerViewController != null)
+            {
+                imagePickerViewController.ImageCaptured -= ImagePickerViewControllerOnImageCaptured;
+                imagePickerViewController.Cancel -= ImagePickerViewControllerOnCancel;
+                imagePickerViewController.Dispose();
+            }
         }
 
 
         protected override void Dispose(bool disposing)
         {
             _eventDashboardView.BackButtonPressed -= EventDashboardBackButtonPressed;
+            _eventDashboardView.CameraButtonPressed -= EventDashboardViewOnCameraButtonPressed;
             _eventDashboardView = null;
+            _supervisor = null;
             base.Dispose(disposing);
             
         }

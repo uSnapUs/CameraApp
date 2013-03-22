@@ -14,6 +14,23 @@ namespace Camera.ViewControllers
     public sealed class ImagePickerViewController:BaseViewController
     {
 
+        public event EventHandler<ImageCaptureEvent> ImageCaptured;
+
+        void OnImageCaptured(ImageCaptureEvent e)
+        {
+            EventHandler<ImageCaptureEvent> handler = ImageCaptured;
+            if (handler != null) handler(this, e);
+        }
+
+        public event EventHandler<EventArgs> Cancel;
+
+        void OnCancel()
+        {
+            EventHandler<EventArgs> handler = Cancel;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
+
         ImagePickerView _imagePickerView;
         bool _hasBlur;
 
@@ -35,7 +52,7 @@ namespace Camera.ViewControllers
             _imagePickerView =new ImagePickerView();
             SetupEvents ();
             View = _imagePickerView;
-           // ViewDidLoad ();
+            ViewDidLoad ();
         }
         protected override void Dispose (bool disposing)
         {
@@ -89,7 +106,7 @@ namespace Camera.ViewControllers
 
         void CloseView (object sender, EventArgs e)
         {
-            DismissViewController (true, Dispose);
+            OnCancel();
         }
 
         protected override void EnsureSupervised()
@@ -103,7 +120,7 @@ namespace Camera.ViewControllers
             _staticPictureOriginalOrientation = UIImageOrientation.Up;
             _hasBlur = false;
             LoadFilters ();
-            _cropFilter = new GPUImageCropFilter(new RectangleF(0f,0f,1f,0.75f));
+            _cropFilter = new GPUImageCropFilter(new RectangleF(0f,0f,1f,1f));
             _filter = new GPUImageFilter ();
 
             SetupCamera();
@@ -229,6 +246,7 @@ namespace Camera.ViewControllers
         {
             if (UIImagePickerController.IsSourceTypeAvailable (UIImagePickerControllerSourceType.Camera)) {
                 DispatchQueue.MainQueue.DispatchAsync (() => {
+                    Console.WriteLine("Setting up camera");
                     _stillCamera = new GPUImageStillCamera (AVCaptureSession.PresetPhoto, AVCaptureDevicePosition.Back) {
                         OutputImageOrientation = UIInterfaceOrientation.Portrait
                     };
@@ -337,8 +355,8 @@ namespace Camera.ViewControllers
                 && _stillCamera.InputCamera.TorchAvailable) {
                 _imagePickerView.FlashButton.Enabled = true;
             }
-            _imagePickerView.ShutterButton.SetImage (UIImage.FromFile ("camera-icon.png"), UIControlState.Normal);
-            _imagePickerView.ShutterButton.SetTitle (null, UIControlState.Normal);
+           // _imagePickerView.ShutterButton.SetImage (UIImage.FromFile ("camera-icon.png"), UIControlState.Normal);
+           // _imagePickerView.ShutterButton.SetTitle (null, UIControlState.Normal);
             if (_imagePickerView.FiltersButton.Selected) {
                 HideFilters();
             }
@@ -377,8 +395,8 @@ namespace Camera.ViewControllers
                 _imagePickerView.FlipButton.Enabled = false;
                 _imagePickerView.FlashButton.Enabled = false;
                 PrepareStaticFilter();
-                _imagePickerView.ShutterButton.SetTitle ("Done",UIControlState.Normal);
-                _imagePickerView.ShutterButton.SetImage (null,UIControlState.Normal);
+               // _imagePickerView.ShutterButton.SetTitle ("Done",UIControlState.Normal);
+                //_imagePickerView.ShutterButton.SetImage (null,UIControlState.Normal);
                 _imagePickerView.ShutterButton.Enabled = true;
                 if(!_imagePickerView.FiltersButton.Selected){
                     ShowFilters();
@@ -420,7 +438,9 @@ namespace Camera.ViewControllers
                 }
                 _staticPicture.ProcessImage();
                 UIImage currentFilteredVideoFrame = processUpTo.ImageFromCurrentlyProcessedOutputWithOrientation(_staticPictureOriginalOrientation);
-                var data = new NSDictionary(currentFilteredVideoFrame.AsJPEG(),"data");
+                OnImageCaptured(new ImageCaptureEvent(){Image=currentFilteredVideoFrame});
+                
+                
             }
         }
 
@@ -446,8 +466,8 @@ namespace Camera.ViewControllers
             _staticPictureOriginalOrientation = img.Orientation;
             PrepareFilter ();
             _imagePickerView.RetakeButton.Hidden = false;
-            _imagePickerView.ShutterButton.SetTitle("Done",UIControlState.Normal);
-            _imagePickerView.ShutterButton.SetImage (null, UIControlState.Normal);
+           // _imagePickerView.ShutterButton.SetTitle("Done",UIControlState.Normal);
+          //  _imagePickerView.ShutterButton.SetImage (null, UIControlState.Normal);
             _imagePickerView.ShutterButton.Enabled = true;
             if (!_imagePickerView.FiltersButton.Selected) {
                 ShowFilters();
@@ -557,5 +577,10 @@ namespace Camera.ViewControllers
         {
 
         }
+    }
+
+    public class ImageCaptureEvent : EventArgs
+    {
+        public UIImage Image { get; set; }
     }
 }

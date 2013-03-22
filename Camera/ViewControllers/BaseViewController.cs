@@ -17,12 +17,13 @@ namespace Camera.ViewControllers
         }
         public override void ViewDidAppear(bool animated)
         {
+            EnsureSupervised();
             base.ViewDidAppear(animated);
             OnAppear();
         }
         public override void ViewDidDisappear(bool animated)
         {
-            OnUnload();
+           // OnUnload();
             base.ViewDidDisappear(animated);
         }
         public event EventHandler<EventArgs> Load;
@@ -56,6 +57,10 @@ namespace Camera.ViewControllers
             EventHandler<EventArgs> handler = BeforeAppear;
             if (handler != null) handler(this, EventArgs.Empty);
         }
-         
+        protected override void Dispose(bool disposing)
+        {
+            OnUnload();
+            base.Dispose(disposing);
+        }
     }
 }

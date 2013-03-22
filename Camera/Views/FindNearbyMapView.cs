@@ -35,10 +35,7 @@ namespace Camera.Views
 
         void InitViews()
         {
-            _topBarView = new UIView {
-                BackgroundColor = UIColor.FromRGB(17, 186, 188)
-
-            };
+           
             _logoImageView = new UIImageView {
                 Image = UIImage.FromFile(@"logo_small.png")
             };
@@ -46,6 +43,11 @@ namespace Camera.Views
 
             };
             _backButton.SetBackgroundImage(UIImage.FromFile(@"Button_Topbar_Back.png"), UIControlState.Normal);
+            _topBarView = new UIView
+            {
+                BackgroundColor = UIColor.FromRGB(17, 186, 188)
+
+            };
             _topBarView.Layer.ShadowOffset = new System.Drawing.SizeF(0, 2);
             _topBarView.Layer.ShadowRadius = 5;
             _topBarView.Layer.ShadowOpacity = 0.5f;

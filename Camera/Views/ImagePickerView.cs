@@ -42,7 +42,7 @@ namespace Camera.Views
 
         UIView _photoBar;
 
-        UIView _topBar;
+        UIView _topToolBar;
 
         UIButton _shutterButton;
 
@@ -71,6 +71,8 @@ namespace Camera.Views
         UIImageView _filterScrollBackgroundView;
 
         BlurOverlayView _blurOverlayView;
+        UIImageView _logoImageView;
+        UIView _topBarView;
 
         public event EventHandler<UIPinchEventArgs> ImagePinched;
         public event EventHandler<UITapEventArgs> ImageTapped;
@@ -90,11 +92,32 @@ namespace Camera.Views
 
         void InitView()
         {
-            BackgroundColor = UIColor.Gray;
-            BackgroundColor = UIColor.FromPatternImage(UIImage.FromFile("micro_carbon.png"));
-            _photoBar = new UIView {BackgroundColor = UIColor.FromPatternImage(UIImage.FromFile("photo_bar.png"))};
-            _imageView = new GPUImageView();
-            _topBar = new UIView {BackgroundColor = UIColor.FromPatternImage(UIImage.FromFile("photo_bar.png"))};
+            BackgroundColor = UIColor.White;
+            _photoBar = new UIView {
+                BackgroundColor = UIColor.FromRGBA(17,186,188,90)
+            };
+            _logoImageView = new UIImageView
+            {
+                Image = UIImage.FromFile(@"logo_small.png")
+            };
+            
+            _closeButton = new UIButton();
+            _closeButton.SetImage(UIImage.FromFile("close.png"), UIControlState.Normal);
+            _topBarView = new UIView
+            {
+                BackgroundColor = UIColor.FromRGB(17, 186, 188)
+
+            };
+            _topBarView.Layer.ShadowOffset = new System.Drawing.SizeF(0, 2);
+            _topBarView.Layer.ShadowRadius = 5;
+            _topBarView.Layer.ShadowOpacity = 0.5f;
+            //_topBarView.Layer.CornerRadius = 5;
+        
+
+            _topBarView.AddSubview(_logoImageView);
+            _topBarView.AddSubview(_closeButton);
+            _imageView = new GPUImageView(){BackgroundColor = UIColor.Black};
+            _topToolBar = new UIView {BackgroundColor = UIColor.FromRGBA(239,237,236,0.9f)};
             SetupPhotoBar();
             SetupTopBar();
             _focusView = new UIImageView(UIImage.FromFile("focus-crosshair.png")) {Alpha = 0};
@@ -125,13 +148,15 @@ namespace Camera.Views
             };
 
 
-            AddSubview(_filterScrollBackgroundView);
-            AddSubview(_filterScrollView);
+           
+            AddSubview(_imageView);
+           // AddSubview(_filterScrollBackgroundView);
+           // AddSubview(_filterScrollView);
 
             AddSubview(_photoBar);
-            AddSubview(_imageView);
             AddSubview(_focusView);
-            AddSubview(_topBar);
+            AddSubview(_topToolBar);
+            AddSubview(_topBarView);
 
             _pinchGestureRecogniser = new UIPinchGestureRecognizer(OnPinch);
             _tapGestureRecogniser = new UITapGestureRecognizer(OnTap);
@@ -170,7 +195,7 @@ namespace Camera.Views
             _tapGestureRecogniser.Dispose();
             _pinchGestureRecogniser = null;
             _tapGestureRecogniser = null;
-            _topBar = null;
+            _topToolBar = null;
             _imageView = null;
             _libraryButton = null;
             _blurButton = null;
@@ -182,7 +207,7 @@ namespace Camera.Views
             _focusView = null;
             _photoBar = null;
             _shutterButton = null;
-            _topBar = null;
+            _topToolBar = null;
             base.Dispose(disposing);
         }
 
@@ -192,40 +217,49 @@ namespace Camera.Views
             _flashButton = new UIButton();
             _flashButton.SetImage(UIImage.FromFile("flash-off.png"), UIControlState.Normal);
             _flashButton.SetImage(UIImage.FromFile("flash.png"), UIControlState.Selected);
-            _topBar.AddSubview(_flashButton);
-            _flipButton = new UIButton();
-            _flipButton.SetImage(UIImage.FromFile("front-camera.png"), UIControlState.Normal);
-
-            _topBar.AddSubview(_flipButton);
+            _flashButton.Layer.BorderWidth=1;
+            _flashButton.Layer.BorderColor = UIColor.FromRGBA(0, 0, 0, 80).CGColor;
+            _flashButton.BackgroundColor = UIColor.Clear;
+            
+            _topToolBar.AddSubview(_flashButton);
+            
             _blurButton = new UIButton();
             _blurButton.SetImage(UIImage.FromFile("blur.png"), UIControlState.Normal);
             _blurButton.SetImage(UIImage.FromFile("blur-on.png"), UIControlState.Selected);
+            _blurButton.Layer.BorderWidth = 1;
+            _blurButton.Layer.BorderColor = UIColor.FromRGBA(0, 0, 0, 80).CGColor;
             _blurButton.Selected = false;
-            _topBar.AddSubview(_blurButton);
-            _closeButton = new UIButton();
-            _closeButton.SetImage(UIImage.FromFile("close.png"), UIControlState.Normal);
-            _topBar.AddSubview(_closeButton);
+            _topToolBar.AddSubview(_blurButton);
+            
+            _filterButton = new UIButton();
+            _filterButton.SetImage(UIImage.FromFile("filter-open.png"), UIControlState.Normal);
+            _filterButton.SetImage(UIImage.FromFile("filter-close.png"), UIControlState.Selected);
+            _filterButton.Layer.BorderWidth = 1;
+            _filterButton.Layer.BorderColor = UIColor.FromRGBA(0, 0, 0, 80).CGColor;
+            _filterButton.Selected = false;
+            _topToolBar.AddSubview(_filterButton);
         }
 
         void SetupPhotoBar()
         {
             _shutterButton = new UIButton();
-            _shutterButton.SetImage(UIImage.FromFile("camera-icon.png"), UIControlState.Normal);
-            _shutterButton.SetBackgroundImage(UIImage.FromFile("camera-button.png"), UIControlState.Normal);
-            _filterButton = new UIButton();
-            _filterButton.SetImage(UIImage.FromFile("filter-open.png"), UIControlState.Normal);
-            _filterButton.SetImage(UIImage.FromFile("filter-close.png"), UIControlState.Selected);
-            _filterButton.Selected = false;
+            _shutterButton.SetImage(UIImage.FromFile("camera-button.png"), UIControlState.Normal);
+           // _shutterButton.SetBackgroundImage(UIImage.FromFile("camera-button.png"), UIControlState.Normal);
+          
             _libraryButton = new UIButton();
             _libraryButton.SetImage(UIImage.FromFile("library.png"), UIControlState.Normal);
             _retakeButton = new UIButton();
             _retakeButton.SetTitle("Retake", UIControlState.Normal);
             _retakeButton.Hidden = true;
             _retakeButton.SetBackgroundImage(UIImage.FromFile("camera-button.png"), UIControlState.Normal);
+            
+            _flipButton = new UIButton();
+            _flipButton.SetImage(UIImage.FromFile("front-camera.png"), UIControlState.Normal);
+
+            _photoBar.AddSubview(_flipButton);
             _photoBar.AddSubview(_shutterButton);
-            _photoBar.AddSubview(_filterButton);
             _photoBar.AddSubview(_libraryButton);
-            _photoBar.AddSubview(_retakeButton);
+           // _photoBar.AddSubview(_retakeButton);
         }
 
 
@@ -234,16 +268,30 @@ namespace Camera.Views
             base.LayoutSubviews();
             var width = Bounds.Width;
             var height = Bounds.Height;
-            _topBar.Frame = new System.Drawing.RectangleF(0, 0, width, 44);
-            _flashButton.Frame = new System.Drawing.RectangleF(57, 0, 44, 44);
-            _flipButton.Frame = new System.Drawing.RectangleF(136, 3, 50, 41);
-            _blurButton.Frame = new System.Drawing.RectangleF(213, 0, 44, 44);
+            _topBarView.Frame = new System.Drawing.RectangleF(0, 0, width, 51);
+            _logoImageView.Frame = new System.Drawing.RectangleF((width / 2) - (94 / 2), 3, 94, 44);
+            _closeButton.Frame = new System.Drawing.RectangleF(width-15-(25/2), 15, 25, 22);
+            _topToolBar.Frame = new System.Drawing.RectangleF(0, 51, width, (141/2));
+            var toolBarButtonWidth = width/3;
+            _flashButton.Frame = new System.Drawing.RectangleF(toolBarButtonWidth * 2, 0, toolBarButtonWidth, (141 / 2));
+            _blurButton.Frame = new System.Drawing.RectangleF(toolBarButtonWidth, 0, toolBarButtonWidth, 141 / 2);
+            _filterButton.Frame = new System.Drawing.RectangleF(0, 0, toolBarButtonWidth, 141/2);
+
+
+
             _closeButton.Frame = new System.Drawing.RectangleF(277, 3, 40, 37);
-            _imageView.Frame = new System.Drawing.RectangleF(0, 78, 320, 320);
-            _photoBar.Frame = new System.Drawing.RectangleF(0, height - 44, width, 44);
-            _shutterButton.Frame = new System.Drawing.RectangleF(115, 3, 90, 37);
-            _libraryButton.Frame = new System.Drawing.RectangleF(-8, 3, 65, 37);
-            _filterButton.Frame = new System.Drawing.RectangleF(263, 3, 65, 37);
+            _imageView.Frame = new System.Drawing.RectangleF(0, 51,width, height-51);
+            _photoBar.Frame = new System.Drawing.RectangleF(0, height - 110, width, 110);
+
+            var midpoint = width/2;
+            _shutterButton.Frame = new System.Drawing.RectangleF(midpoint-(77/2),(110/2)-(78/2), 77, 78);
+
+            
+
+            _flipButton.Frame = new System.Drawing.RectangleF((midpoint+((midpoint/2)-(50/2)))+15, (110 / 2) - (50 / 2), 50, 50);
+
+            _libraryButton.Frame = new System.Drawing.RectangleF(((midpoint / 2) - (50 / 2)) - 15, (110 / 2) - (50 / 2), 50, 50);
+
             _retakeButton.Frame = new System.Drawing.RectangleF(11, 7, 71, 29);
             _filterScrollView.Frame = new System.Drawing.RectangleF(0, 437, 320, 75);
             _filterScrollBackgroundView.Frame = new System.Drawing.RectangleF(-12, 435, 344, 75);
