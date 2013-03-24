@@ -11,5 +11,7 @@ namespace Camera.Helpers
         User CurrentUser { get; set; }
         void UpdateDeviceRegistration(string name, string email, string facebookId);
         void InitiateFacebookLogin();
+
+		void LoginAsUser (User user);
     }
 }

@@ -153,7 +153,10 @@ namespace Camera.Helpers
         }
 
       
-
+		public void LoginAsUser (User user)
+		{
+			Console.WriteLine(user);
+		}
 
         public void Dispose()
         {
