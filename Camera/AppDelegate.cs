@@ -4,6 +4,7 @@ using System.Linq;
 using Camera.Helpers;
 using Camera.ViewControllers;
 using MonoTouch.CoreFoundation;
+using MonoTouch.FacebookConnect;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 
@@ -21,6 +22,8 @@ namespace Camera
             get;
             set;
         }
+
+        
 
         //
         // This method is invoked when the application has loaded and is ready to run. In this 
@@ -42,11 +45,20 @@ namespace Camera
                 {
                     StateManager.Current.DeviceName =
                         UIDevice.CurrentDevice.Name;
+                   
                 });
             return true;
         }
 
-     
 
+        public void SaveAuthorization()
+        {
+            
+        }
+
+        public void ClearAuthorization()
+        {
+            
+        }
     }
 }

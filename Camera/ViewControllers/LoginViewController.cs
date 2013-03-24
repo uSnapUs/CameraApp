@@ -13,11 +13,13 @@ namespace Camera.ViewControllers
         LoginViewControllerSupervisor _supervisor;
         LoginView _loginView;
 
-        public LoginViewController(UIView rootView)
+        public LoginViewController(UIView rootView,string viewText)
         {
-            _loginView = new LoginView();
+
+            _loginView = new LoginView(viewText);
 
             View = _loginView;
+            _loginView.FacebookLoginPressed += OnFacebookLoginPress;
             _supervisor = new LoginViewControllerSupervisor(this);
             rootView.AddSubview(View);
             _loginView.TransitionIn();
@@ -35,8 +37,6 @@ namespace Camera.ViewControllers
 
         public override void ViewDidLoad()
         {
-            _loginView = new LoginView();
-            View = _loginView;
             EnsureSupervised();
             base.ViewDidLoad();
 
@@ -45,10 +45,16 @@ namespace Camera.ViewControllers
 
         public event EventHandler<EventArgs> FacebookLoginPress;
 
+        void OnFacebookLoginPress(object sender, EventArgs eventArgs)
+        {
+            EventHandler<EventArgs> handler = FacebookLoginPress;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
         protected override void Dispose(bool disposing)
         {
-            
 
+            _loginView.FacebookLoginPressed -= OnFacebookLoginPress;
             _loginView = null;
             _supervisor = null;
             base.Dispose(disposing);

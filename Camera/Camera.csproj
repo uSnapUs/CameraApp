@@ -128,6 +128,7 @@
     <Compile Include="ViewControllers\LandingPageViewController.cs" />
     <Compile Include="ViewControllers\LoginViewController.cs" />
     <Compile Include="Views\BlurOverlayView.cs" />
+    <Compile Include="Views\DropShadowLabel.cs" />
     <Compile Include="Views\EventDashboardView.cs" />
     <Compile Include="Views\FindNearbyMapView.cs" />
     <Compile Include="Views\FindNearbyView.cs" />
@@ -148,6 +149,8 @@
     <Content Include="Fonts\ProximaNova-Regular.otf" />
     <Content Include="Fonts\ProximaNova-Semibold.otf" />
     <Content Include="Fonts\ProximaNova-SemiboldItalic.otf" />
+    <BundleResource Include="Resources\Button_Facebook%402x.png" />
+    <BundleResource Include="Resources\Button_Facebook.png" />
     <None Include="Info.plist" />
     <Compile Include="Model\DeviceRegistration.cs" />
     <Compile Include="Model\SQLLite.cs" />

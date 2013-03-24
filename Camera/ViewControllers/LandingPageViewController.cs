@@ -176,7 +176,7 @@ namespace Camera.ViewControllers
 
         public void PresentLoginView(string loginReason)
         {
-            _loginViewController = new LoginViewController(View);
+            _loginViewController = new LoginViewController(View,loginReason);
         }
 
         public void ShowValidationMessage(string validationMessage)
