@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
 using Camera.Model;
-using MonoTouch.FacebookConnect;
-using MonoTouch.Foundation;
 using TinyMessenger;
 
 namespace Camera.Helpers
@@ -10,7 +8,7 @@ namespace Camera.Helpers
     public class StateManager : IStateManager
     {
 
-
+        
         public StateManager()
         {
             var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "usnapus.sqlite");
@@ -51,7 +49,7 @@ namespace Camera.Helpers
 
         void RegisterDevice(string deviceName)
         {
-            var deviceRegistrationDetails = StateManager.Db.Find<DeviceRegistration > (reg => true);
+            var deviceRegistrationDetails = Db.Find<DeviceRegistration > (reg => true);
             if (deviceRegistrationDetails == null)
             {
 
@@ -92,6 +90,14 @@ namespace Camera.Helpers
             set { _messageHub = value; }
         }
 
+        public event EventHandler<EventArgs> Authenticated;
+
+        protected virtual void OnAuthenticated()
+        {
+            EventHandler<EventArgs> handler = Authenticated;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
         public IServer Server
         {
             get { return _server ?? (_server = new Server(MessageHub, Logger)); }
@@ -114,7 +120,7 @@ namespace Camera.Helpers
             }
         }
 
-        public User CurrentUser { get; set; }
+        public bool IsAuthenticated { get { return !String.IsNullOrEmpty(CurrentDeviceRegistration.FacebookId); } }
 
 
         public void UpdateDeviceRegistration(string name, string email, string facebookId)
@@ -130,8 +136,9 @@ namespace Camera.Helpers
                     var savedDevice = Server.RegisterDevice(_currentDeviceRegistration);
                     if (savedDevice != null)
                     {
-                        _currentDeviceRegistration = savedDevice;
-                        Db.Insert(_currentDeviceRegistration);
+                        savedDevice.Id = _currentDeviceRegistration.Id;
+                        CurrentDeviceRegistration = savedDevice;
+                        //Db.Insert(_currentDeviceRegistration);
                     }
                 }
             }
@@ -144,6 +151,10 @@ namespace Camera.Helpers
                     Guid = Guid.NewGuid().ToString("N")
                 });
             }
+            if (!string.IsNullOrEmpty(CurrentDeviceRegistration.FacebookId))
+            {
+                OnAuthenticated();
+            }
             Logger.Trace("exit");
         }
 
@@ -153,10 +164,7 @@ namespace Camera.Helpers
         }
 
       
-		public void LoginAsUser (User user)
-		{
-			Console.WriteLine(user);
-		}
+        
 
         public void Dispose()
         {

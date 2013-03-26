@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Camera.Helpers;
 using Camera.ViewControllers;
 using MonoTouch.CoreFoundation;
@@ -15,10 +13,10 @@ namespace Camera
     // User Interface of the application, as well as listening (and optionally responding) to 
     // application events from iOS.
     [Register("AppDelegate")]
-    public partial class AppDelegate : UIApplicationDelegate
+    public class AppDelegate : UIApplicationDelegate
     {
 
-		public static string SCSessionStateChangedNotification = new NSString("us.usnap.camera.Login:FBSessionStateChangedNotification");
+        public static string SCSessionStateChangedNotification = new NSString("us.usnap.camera.Login:FBSessionStateChangedNotification");
 
         // class-level declarations
         public override UIWindow Window
@@ -40,11 +38,11 @@ namespace Camera
         {
             // create a new window instance based on the screen size
             app.SetStatusBarHidden(true, false);
-            this.Window = new UIWindow(UIScreen.MainScreen.Bounds);
+            Window = new UIWindow(UIScreen.MainScreen.Bounds);
             var defaultViewController = new LandingPageViewController();
-            this.Window.RootViewController = defaultViewController;
-            this.Window.MakeKeyAndVisible();
-            this.Window.AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
+            Window.RootViewController = defaultViewController;
+            Window.MakeKeyAndVisible();
+            Window.AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
             DispatchQueue.MainQueue.DispatchAsync(() =>
                 {
                     StateManager.Current.DeviceName =
@@ -55,74 +53,72 @@ namespace Camera
         }
 
 
-		
-		public bool OpenSession (bool allowLoginUI)
-		{
-			string [] permissions = new string[] { "email","user_likes" };
-			
-			return 	FBSession.OpenActiveSession(permissions, allowLoginUI, (session, status, error) => 
-			                                    {
-				this.OnSessionStateChanged(session, status, error);
-			});
-		}
-		public void OnSessionStateChanged(FBSession session, FBSessionState state, NSError error)
-		{
-			// FBSample logic
-			// Any time the session is closed, we want to display the login controller (the user
-			// cannot use the application unless they are logged in to Facebook). When the session
-			// is opened successfully, hide the login controller and show the main UI.
-			switch (state) 
-			{
-				
-			case FBSessionState.Open:
-				Console.WriteLine("open");
-				FBRequestConnection.StartForMeWithCompletionHandler(LoggedInAs);
-				break;
-				
-			case FBSessionState.Closed:
-				Console.WriteLine("closed");
-				FBSession.ActiveSession.CloseAndClearTokenInformation();
-				break;
-				
-			case FBSessionState.ClosedLoginFailed:
-				Console.WriteLine("Closed login failed");
-				break;
-				
-			default:
-				break;
-			}
-			
-			NSNotificationCenter.DefaultCenter.PostNotificationName(SCSessionStateChangedNotification, session);
-			
-			if (error != null) 
-			{
-				UIAlertView alertView = new UIAlertView("Error: " + ((FBErrorCode)error.Code).ToString(), error.LocalizedDescription, null, "Ok", null);
-				alertView.Show();
-			}
-		}
-		public override bool OpenUrl (UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
-		{
-			// FBSample logic
-			// We need to handle URLs by passing them to FBSession in order for SSO authentication
-			// to work.
-			return FBSession.ActiveSession.HandleOpenURL(url);
-		}
-		
-		public override void OnActivated (UIApplication application)
-		{
-			// FBSample logic
-			// We need to properly handle activation of the application with regards to SSO
-			//  (e.g., returning from iOS 6.0 authorization dialog or from fast app switching).
-			FBSession.ActiveSession.HandleDidBecomeActive();
-		}
+        
+        public bool OpenSession (bool allowLoginUI)
+        {
+            var permissions = new[] { "email","user_likes" };
+            
+            return 	FBSession.OpenActiveSession(permissions, allowLoginUI, OnSessionStateChanged);
+        }
+        public void OnSessionStateChanged(FBSession session, FBSessionState state, NSError error)
+        {
+            // FBSample logic
+            // Any time the session is closed, we want to display the login controller (the user
+            // cannot use the application unless they are logged in to Facebook). When the session
+            // is opened successfully, hide the login controller and show the main UI.
+            switch (state) 
+            {
+                
+            case FBSessionState.Open:
+                Console.WriteLine("open");
+                FBRequestConnection.StartForMeWithCompletionHandler(LoggedInAs);
+                break;
+                
+            case FBSessionState.Closed:
+                Console.WriteLine("closed");
+                FBSession.ActiveSession.CloseAndClearTokenInformation();
+                break;
+                
+            case FBSessionState.ClosedLoginFailed:
+                Console.WriteLine("Closed login failed");
+                break;
+            }
+            
+            NSNotificationCenter.DefaultCenter.PostNotificationName(SCSessionStateChangedNotification, session);
+            
+            if (error != null) 
+            {
+                var alertView = new UIAlertView("Error: " + ((FBErrorCode)error.Code).ToString(), error.LocalizedDescription, null, "Ok", null);
+                alertView.Show();
+            }
+        }
+        public override bool OpenUrl (UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
+        {
+            // FBSample logic
+            // We need to handle URLs by passing them to FBSession in order for SSO authentication
+            // to work.
+            return FBSession.ActiveSession.HandleOpenURL(url);
+        }
+        
+        public override void OnActivated (UIApplication application)
+        {
+            // FBSample logic
+            // We need to properly handle activation of the application with regards to SSO
+            //  (e.g., returning from iOS 6.0 authorization dialog or from fast app switching).
+            FBSession.ActiveSession.HandleDidBecomeActive();
+        }
 
-		void LoggedInAs (FBRequestConnection connection, NSObject result, NSError error)
-		{
-			FBGraphUser user = new FBGraphUser(result);
-			if(error==null&&user!=null){
-				StateManager.Current.LoginAsUser(new User{Name=user.Name,FacebookId=user.Id,Email=user.ObjectForKey(new NSString("email")).ToString()});
+        void LoggedInAs (FBRequestConnection connection, NSObject result, NSError error)
+        {
 
-				}
-		}
+
+
+            if (error == null)
+            {
+                var user = new FBGraphUser(result);
+                StateManager.Current.UpdateDeviceRegistration(user.Name, user.ObjectForKey(new NSString("email")).ToString(),user.Id);
+                
+            }
+        }
     }
 }

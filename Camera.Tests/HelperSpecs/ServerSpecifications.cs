@@ -117,6 +117,32 @@ namespace Camera.Tests.HelperSpecs
 
             static DeviceRegistration _result;
         }
+
+        public class integration_when_updating_device_registration : IntegrationServerSpecification
+        {
+            Establish context = () => _deviceRegistration.ServerId=_sut.RegisterDevice(_initialDevice).ServerId;
+            Because of = () => _result = _sut.RegisterDevice(_deviceRegistration);
+
+            It should_return_correct_device = () => _result.Guid.ShouldEqual(_deviceRegistration.Guid);
+            It should_return_correct_facebook_id = () =>_result.FacebookId.ShouldEqual(_deviceRegistration.FacebookId);
+            It should_return_correct_server_id = () =>_result.ServerId.ShouldEqual(_deviceRegistration.ServerId) ;
+            static DeviceRegistration _deviceRegistration = new DeviceRegistration
+            {
+
+                Guid = "0F0F187A-9AD5-461A-BB56-810BFEF41553",
+                Name = "test device",
+                FacebookId = "facebook_id"
+            };
+
+
+
+            static DeviceRegistration _result;
+            static DeviceRegistration _initialDevice = new DeviceRegistration() {
+                Guid = "0F0F187A-9AD5-461A-BB56-810BFEF41553",
+                Name = "initial device"
+            };
+        }
+
         public class integration_when_registering_an_invalid_device : IntegrationServerSpecification
         {
             Because of = () => _exception = Catch.Exception(() => _sut.RegisterDevice(_deviceRegistration));

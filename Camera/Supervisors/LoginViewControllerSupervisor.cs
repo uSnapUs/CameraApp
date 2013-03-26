@@ -1,4 +1,5 @@
-﻿using Camera.Helpers;
+﻿using System;
+using Camera.Helpers;
 using Camera.ViewControllers.Interfaces;
 
 namespace Camera.Supervisors
@@ -11,6 +12,13 @@ namespace Camera.Supervisors
         {
             _loginViewController = loginViewController;
             _loginViewController.FacebookLoginPress += LoginViewControllerFacebookLoginPress;
+
+            StateManager.Current.Authenticated += StateManagerOnAuthenticated;
+        }
+
+        void StateManagerOnAuthenticated(object sender, EventArgs eventArgs)
+        {
+            _loginViewController.Dismiss();
         }
 
         void LoginViewControllerFacebookLoginPress(object sender, System.EventArgs e)
@@ -21,6 +29,7 @@ namespace Camera.Supervisors
         {
             base.UnwireEvents();
             _loginViewController.FacebookLoginPress -= LoginViewControllerFacebookLoginPress;
+            StateManager.Current.Authenticated -= StateManagerOnAuthenticated;
             
         }
         public override void Dispose()

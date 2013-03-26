@@ -5,13 +5,13 @@ namespace Camera.Helpers
 {
     public interface IStateManager : IDisposable
     {
+        event EventHandler<EventArgs> Authenticated;
         IServer Server { get; }
         DeviceRegistration CurrentDeviceRegistration { get; }
         string DeviceName { set; }
-        User CurrentUser { get; set; }
+        bool IsAuthenticated { get; }
         void UpdateDeviceRegistration(string name, string email, string facebookId);
         void InitiateFacebookLogin();
 
-		void LoginAsUser (User user);
     }
 }

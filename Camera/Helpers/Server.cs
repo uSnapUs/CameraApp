@@ -57,7 +57,7 @@ namespace Camera.Helpers
             }
         }
 
-
+       
     }
 
     

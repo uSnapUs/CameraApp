@@ -110,7 +110,6 @@
     <Compile Include="Helpers\TinyMessenger.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="Model\User.cs" />
     <Compile Include="Supervisors\BaseViewControllerSupervisor.cs" />
     <Compile Include="Supervisors\EventDashboardViewControllerSupervisor.cs" />
     <Compile Include="Supervisors\FindNearbyViewControllerSupervisor.cs" />

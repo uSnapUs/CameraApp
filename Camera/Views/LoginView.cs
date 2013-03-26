@@ -75,6 +75,7 @@ namespace Camera.Views
         {
             base.Dispose(disposing);
             UnwireEvents();
+            
         }
         
         void UnwireEvents()
@@ -90,10 +91,20 @@ namespace Camera.Views
                     Center =new PointF(UIScreen.MainScreen.Bounds.Width/2, _yOffset);
                 });
         }
+
+        public void Dismiss()
+        {
+            Animate(0.5, () =>
+            {
+                _yOffset = (UIScreen.MainScreen.Bounds.Height /2)+(UIScreen.MainScreen.Bounds.Height);
+                Center = new PointF(UIScreen.MainScreen.Bounds.Width / 2, _yOffset);
+            });
+            Dispose(true);
+        }
     }
 
     public class LoginEventArgs : EventArgs
     {
-        public User User { get; set; }
+        
     }
 }

@@ -3,7 +3,6 @@
 using System;
 using System.Linq;
 using Camera.Helpers;
-using Camera.Model;
 using Camera.Supervisors;
 using Camera.Tests.Helpers;
 using Camera.ViewControllers.Interfaces;
@@ -32,10 +31,9 @@ namespace Camera.Tests.ControllerSpecifications
         }
         public class when_logged_in_on_my_events_press:LandingPageViewControllerSupervisorSpecification
         {
-            Establish context = () => StateManager.Current.WhenToldTo(sm=>sm.CurrentUser).Return(_user);
+            Establish context = () => StateManager.Current.WhenToldTo(sm=>sm.IsAuthenticated).Return(true);
             Because of = () => _viewController.Raise(viewController=>viewController.MyEventsButtonPressed+=null,(EventArgs)null);
             It should_present_my_events_view = () => _viewController.Object.WasToldTo(vc=>vc.PresentMyEventsView()) ;
-            static User _user = new User();
         }
         public class when_not_logged_in_on_my_events_press : LandingPageViewControllerSupervisorSpecification
         {
@@ -50,10 +48,9 @@ namespace Camera.Tests.ControllerSpecifications
         }
         public class when_logged_in_on_create_event_press : LandingPageViewControllerSupervisorSpecification
         {
-            Establish context = () => StateManager.Current.WhenToldTo(sm => sm.CurrentUser).Return(_user);
+            Establish context = () => StateManager.Current.WhenToldTo(sm => sm.IsAuthenticated).Return(true);
             Because of = () => _viewController.Raise(viewController => viewController.CreateButtonPressed += null, (EventArgs)null);
             It should_present_create_event_view = () => _viewController.Object.WasToldTo(vc => vc.PresentCreateView());
-            static User _user = new User();
         }
         public class when_not_logged_in_on_create_event_press : LandingPageViewControllerSupervisorSpecification
         {

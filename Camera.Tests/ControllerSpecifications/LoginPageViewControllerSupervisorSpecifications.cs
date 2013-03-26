@@ -62,6 +62,10 @@ namespace Camera.Tests.ControllerSpecifications.LoginPageViewControllerSuperviso
         public event EventHandler<EventArgs> Appear;
         public event EventHandler<EventArgs> BeforeAppear;
         public event EventHandler<EventArgs> FacebookLoginPress;
+        public void Dismiss()
+        {
+            
+        }
     }
 }
 

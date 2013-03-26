@@ -44,7 +44,7 @@ namespace Camera.Supervisors
 
         void ViewController_MyEventsButtonPressed(object sender, EventArgs e)
         {
-            if (StateManager.Current.CurrentUser == null)
+            if (!StateManager.Current.IsAuthenticated)
             {
                 _viewController.PresentLoginView("looking up your events");
             }
@@ -56,7 +56,7 @@ namespace Camera.Supervisors
 
         void ViewController_CreateButtonPressed(object sender, EventArgs e)
         {
-            if (StateManager.Current.CurrentUser == null)
+            if (!StateManager.Current.IsAuthenticated)
             {
                 _viewController.PresentLoginView("creating an event");
             }

@@ -43,7 +43,7 @@ namespace Camera.Tests.HelperSpecs
                                  "usnapus.sqlite"));
             };
 
-            static IServer _server;
+            protected static IServer _server;
         }
 
         public class when_calling_current : StateManagerSpecification
@@ -78,6 +78,7 @@ namespace Camera.Tests.HelperSpecs
             It should_update_current_facebook_id =
                 () => _sut.CurrentDeviceRegistration.FacebookId.ShouldEqual(_facebookId);
             It should_send_the_registration_to_the_server = () => _sut.Server.WasToldTo(s => s.RegisterDevice(_sut.CurrentDeviceRegistration));
+            It should_mark_user_as_authenticated = () => _sut.IsAuthenticated.ShouldBeTrue();
             static string _name = "name";
             static string _email = "email@email.com";
             static string _guid = Guid.NewGuid().ToString("N");
@@ -97,6 +98,7 @@ namespace Camera.Tests.HelperSpecs
                 () => _sut.CurrentDeviceRegistration.FacebookId.ShouldEqual(_facebookId);
             It should_not_register_a_guid = () => _sut.CurrentDeviceRegistration.Guid.ShouldNotBeEmpty();
             It should_send_the_registration_to_the_server = () => _sut.Server.WasToldTo(s => s.RegisterDevice(_sut.CurrentDeviceRegistration));
+            It should_mark_user_as_authenticated = () =>_sut.IsAuthenticated.ShouldBeTrue() ;
             static string _name = "name";
             static string _email = "email@email.com";
             static string _guid = Guid.NewGuid().ToString("N");
@@ -108,5 +110,24 @@ namespace Camera.Tests.HelperSpecs
             Because of = () => _sut.InitiateFacebookLogin();
             It should_initiate_facebook_login = () => FacebookSession.Current.WasToldTo(fb=>fb.InitiateLogin());
         }
+        public class when_registrating_device_without_facebook_id:StateManagerSpecification
+        {
+            Establish context = () =>
+            {
+                _sut.CurrentDeviceRegistration = null;
+            };
+            Because of = () => _sut.DeviceName = _name;
+            It should_update_current_registration_name = () => _sut.CurrentDeviceRegistration.Name.ShouldEqual(_name);
+            It should_update_current_registration_email = () => _sut.CurrentDeviceRegistration.Email.ShouldBeNull();
+
+            It should_update_current_facebook_id =
+                () => _sut.CurrentDeviceRegistration.FacebookId.ShouldBeNull();
+            It should_not_register_a_guid = () => _sut.CurrentDeviceRegistration.Guid.ShouldNotBeEmpty();
+            It should_send_the_registration_to_the_server = () => _sut.Server.WasToldTo(s => s.RegisterDevice(_sut.CurrentDeviceRegistration));
+            It should_mark_user_as_not_authenticated = () => _sut.IsAuthenticated.ShouldBeFalse();
+            static string _name = "name";
+            
+        }
+       
     }
 }

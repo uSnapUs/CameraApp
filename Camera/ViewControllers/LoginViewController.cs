@@ -1,4 +1,5 @@
 using System;
+using Camera.Helpers;
 using Camera.Supervisors;
 using Camera.ViewControllers.Interfaces;
 using Camera.Views;
@@ -26,7 +27,8 @@ namespace Camera.ViewControllers
         }
 
       
-    
+
+
         protected override void EnsureSupervised()
         {
             if (_supervisor == null)
@@ -44,6 +46,11 @@ namespace Camera.ViewControllers
         }
 
         public event EventHandler<EventArgs> FacebookLoginPress;
+        public void Dismiss()
+        {
+            _loginView.Dismiss();
+            Dispose();
+        }
 
         void OnFacebookLoginPress(object sender, EventArgs eventArgs)
         {
@@ -53,7 +60,6 @@ namespace Camera.ViewControllers
 
         protected override void Dispose(bool disposing)
         {
-
             _loginView.FacebookLoginPressed -= OnFacebookLoginPress;
             _loginView = null;
             _supervisor = null;
