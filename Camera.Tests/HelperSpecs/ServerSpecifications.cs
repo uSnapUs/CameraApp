@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Web;
 using Camera.Exceptions;
 using Camera.Helpers;
 using Camera.Model;
@@ -30,7 +31,7 @@ namespace Camera.Tests.HelperSpecs
                 _restRequest = An<IRestRequest>();
                 _restResponse = An<IRestResponse<DeviceRegistrationDto>>();
                 _restResponse.StatusCode = HttpStatusCode.OK;
-                _restClientFactory.WhenToldTo(factory => factory.CreateRestRequest("device", Method.POST)).Return(_restRequest);
+                _restClientFactory.WhenToldTo(factory => factory.CreateRestRequest("devices", Method.POST)).Return(_restRequest);
                 _restClientFactory.WhenToldTo(factory => factory.CreateClient(_baseUrl)).Return(_restClient);
                 _restRequest.WhenToldTo(request => request.Parameters).Return(_params);
                 _restClient.WhenToldTo(client => client.Execute<DeviceRegistrationDto>(_restRequest)).Return(_restResponse);
@@ -59,7 +60,6 @@ namespace Camera.Tests.HelperSpecs
             Establish context = () =>
             {
                 _baseUrl = "http://api.stage.isnap.us";
-
                 
                 _sut = new Server(An<ITinyMessengerHub>(), new NullLogger())
                 {
@@ -67,6 +67,16 @@ namespace Camera.Tests.HelperSpecs
                     BaseUrl = _baseUrl
                 };
             };
+
+            Cleanup cleanup = () => ResetDevices(_baseUrl);
+            static void ResetDevices(string baseUrl)
+            {
+                var uri = new Uri(baseUrl);
+
+                var request = WebRequest.Create(new Uri(uri, "/devices"));
+                request.Method = "DELETE";
+                request.GetResponse();
+            }
 
             protected static IRestClientFactory _restClientFactory;
             protected static IRestClient _restClient;
@@ -93,7 +103,9 @@ namespace Camera.Tests.HelperSpecs
             static DeviceRegistration _serverDeviceRegistration = new DeviceRegistration
             {
                 Guid = "0F0F187A-9AD5-461A-BB56-810BFEF41553",
-                ServerId = "TESTID"
+                ServerId = "TESTID",
+                Token = "TOKEN"
+
             };
 
             static DeviceRegistration _result;
@@ -104,7 +116,7 @@ namespace Camera.Tests.HelperSpecs
             Because of = () => _result = _sut.RegisterDevice(_deviceRegistration);
 
             It should_return_correct_device = () => _result.Guid.ShouldEqual(_deviceRegistration.Guid);
-
+            It should_return_a_token = () => _result.Token.ShouldNotBeNull(); 
             static DeviceRegistration _deviceRegistration = new DeviceRegistration
             {
 
@@ -120,7 +132,12 @@ namespace Camera.Tests.HelperSpecs
 
         public class integration_when_updating_device_registration : IntegrationServerSpecification
         {
-            Establish context = () => _deviceRegistration.ServerId=_sut.RegisterDevice(_initialDevice).ServerId;
+            Establish context = () =>
+                {
+                    _initialDevice = _sut.RegisterDevice(_initialDevice);
+                    _deviceRegistration.ServerId = _initialDevice.ServerId;
+                    _sut.SetDeviceCredentials(_initialDevice.Guid, _initialDevice.Token);
+                };
             Because of = () => _result = _sut.RegisterDevice(_deviceRegistration);
 
             It should_return_correct_device = () => _result.Guid.ShouldEqual(_deviceRegistration.Guid);

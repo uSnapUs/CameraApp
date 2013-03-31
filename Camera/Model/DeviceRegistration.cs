@@ -3,6 +3,8 @@ namespace Camera.Model
 {
     public class DeviceRegistration
     {
+      
+
         protected bool Equals(DeviceRegistration other)
         {
             return Id == other.Id && string.Equals(Name, other.Name) && string.Equals(Email, other.Email) && string.Equals(Guid, other.Guid) && string.Equals(ServerId, other.ServerId) && string.Equals(FacebookId, other.FacebookId);
@@ -37,6 +39,7 @@ namespace Camera.Model
         public string Guid { get; set; }
         public string ServerId { get; set; }
         public string FacebookId { get; set; }
+        public string Token { get; set; }
 
         public DeviceRegistrationDto ToDto()
         {
@@ -45,10 +48,16 @@ namespace Camera.Model
                 id = ServerId,
                 name = Name,
                 facebook_id = FacebookId,
-                guid = Guid
+                guid = Guid,
+                token = Token
             };
         }
+
+       
     }
+
+   
+
     // ReSharper disable InconsistentNaming
     public class DeviceRegistrationDto
     {
@@ -85,6 +94,8 @@ namespace Camera.Model
         public string guid { get; set; }
         public string facebook_id { get; set; }
 
+        public string token { get; set; }
+
         internal DeviceRegistration ToModel()
         {
             return new DeviceRegistration() {
@@ -92,7 +103,8 @@ namespace Camera.Model
                 FacebookId = facebook_id,
                 Guid = guid,
                 ServerId = id,
-                Name = name
+                Name = name,
+                Token = token
             };
         }
     }

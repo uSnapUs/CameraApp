@@ -11,6 +11,7 @@ namespace Camera.Helpers
     {
         readonly ITinyMessengerHub _messengerHub;
         readonly ILogger _logger;
+        Credientials _currentCredentials;
 
         public Server(ITinyMessengerHub messengerHub, ILogger logger)
         {
@@ -18,12 +19,17 @@ namespace Camera.Helpers
             _logger = logger;
         }
 
-        public string BaseUrl = "http://api.stage.isnap.us/";
+        public string BaseUrl = "http://api.isnap.us/";
 
         public DeviceRegistration RegisterDevice(DeviceRegistration deviceRegistration)
         {
+            
             var client = GetClient();
-            var request = RestClientFactory.CreateRestRequest("device", Method.POST);
+            if (_currentCredentials != null && _currentCredentials.Guid == deviceRegistration.Guid)
+            {
+                client.Authenticator = new HttpBasicAuthenticator(_currentCredentials.Guid,_currentCredentials.Token);
+            }
+            var request = RestClientFactory.CreateRestRequest("devices", Method.POST);
             
             request.RequestFormat = DataFormat.Json;
             
@@ -57,8 +63,17 @@ namespace Camera.Helpers
             }
         }
 
-       
-    }
 
+        public void SetDeviceCredentials(string guid, string token)
+        {
+            _currentCredentials = new Credientials { Guid = guid, Token = token };
+        }
+    }
+    public class Credientials
+    {
+        public string Guid { get; set; }
+
+        public string Token { get; set; }
+    }
     
 }
