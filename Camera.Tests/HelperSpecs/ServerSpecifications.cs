@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Web;
 using Camera.Exceptions;
 using Camera.Helpers;
 using Camera.Model;
@@ -10,7 +9,6 @@ using Machine.Fakes;
 using Machine.Fakes.Adapters.Moq;
 using Machine.Specifications;
 using RestSharp;
-using TinyMessenger;
 
 namespace Camera.Tests.HelperSpecs
 {
@@ -29,14 +27,14 @@ namespace Camera.Tests.HelperSpecs
                 _restClientFactory = An<IRestClientFactory>();
                 _restClient = An<IRestClient>();
                 _restRequest = An<IRestRequest>();
-                _restResponse = An<IRestResponse<DeviceRegistrationDto>>();
+                _restResponse = An<IRestResponse<DeviceRegistration>>();
                 _restResponse.StatusCode = HttpStatusCode.OK;
                 _restClientFactory.WhenToldTo(factory => factory.CreateRestRequest("devices", Method.POST)).Return(_restRequest);
                 _restClientFactory.WhenToldTo(factory => factory.CreateClient(_baseUrl)).Return(_restClient);
                 _restRequest.WhenToldTo(request => request.Parameters).Return(_params);
-                _restClient.WhenToldTo(client => client.Execute<DeviceRegistrationDto>(_restRequest)).Return(_restResponse);
+                _restClient.WhenToldTo(client => client.Execute<DeviceRegistration>(_restRequest)).Return(_restResponse);
 
-                _sut = new Server(An<ITinyMessengerHub>(), new NullLogger())
+                _sut = new Server(new NullLogger())
                 {
 
                     RestClientFactory = _restClientFactory,
@@ -47,7 +45,7 @@ namespace Camera.Tests.HelperSpecs
             protected static IRestClientFactory _restClientFactory;
             protected static IRestClient _restClient;
             protected static IRestRequest _restRequest;
-            protected static IRestResponse<DeviceRegistrationDto> _restResponse;
+            protected static IRestResponse<DeviceRegistration> _restResponse;
             static string _baseUrl;
             protected static List<Parameter> _params = new List<Parameter>();
         }
@@ -61,7 +59,7 @@ namespace Camera.Tests.HelperSpecs
             {
                 _baseUrl = "http://api.stage.isnap.us";
                 
-                _sut = new Server(An<ITinyMessengerHub>(), new NullLogger())
+                _sut = new Server(new NullLogger())
                 {
                     RestClientFactory = new RestClientFactory(),
                     BaseUrl = _baseUrl
@@ -87,12 +85,12 @@ namespace Camera.Tests.HelperSpecs
         }
         public class when_registering_initial_device : ServerSpecification
         {
-            Establish context = () => _restResponse.WhenToldTo(response => response.Data).Return(_serverDeviceRegistration.ToDto());
+            Establish context = () => _restResponse.WhenToldTo(response => response.Data).Return(_serverDeviceRegistration);
             Because of = () => _result = _sut.RegisterDevice(_deviceRegistration);
 
             It should_return_correct_device = () => _result.ShouldEqual(_serverDeviceRegistration);
 
-            It should_send_a_device_to_the_server = () => _restRequest.WasToldTo(request => request.AddBody(_deviceRegistration.ToDto()));
+            It should_send_a_device_to_the_server = () => _restRequest.WasToldTo(request => request.AddBody(_deviceRegistration));
             
             static DeviceRegistration _deviceRegistration = new DeviceRegistration
             {
@@ -154,7 +152,7 @@ namespace Camera.Tests.HelperSpecs
 
 
             static DeviceRegistration _result;
-            static DeviceRegistration _initialDevice = new DeviceRegistration() {
+            static DeviceRegistration _initialDevice = new DeviceRegistration {
                 Guid = "0F0F187A-9AD5-461A-BB56-810BFEF41553",
                 Name = "initial device"
             };

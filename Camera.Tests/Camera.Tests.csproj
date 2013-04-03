@@ -71,6 +71,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ControllerSpecifications\CreateEventViewControllerSupervisorSpecifications.cs" />
     <Compile Include="ControllerSpecifications\EventDashboardViewControllerSupervisorSpecifications.cs" />
     <Compile Include="ControllerSpecifications\FindNearbyMapViewControllerSupervisorSpecifications.cs" />
     <Compile Include="ControllerSpecifications\LoginPageViewControllerSupervisorSpecifications.cs" />

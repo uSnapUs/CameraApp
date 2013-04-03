@@ -1,4 +1,6 @@
 ﻿
+using Newtonsoft.Json;
+
 namespace Camera.Model
 {
     public class DeviceRegistration
@@ -33,80 +35,27 @@ namespace Camera.Model
         }
 
         [PrimaryKey, AutoIncrement]
+        [JsonIgnore]
         public int Id { get; set; }
+        [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
+        [JsonProperty(PropertyName = "email")]
         public string Email { get; set; }
+        [JsonProperty(PropertyName = "guid")]
         public string Guid { get; set; }
+        [JsonProperty(PropertyName = "id")]
         public string ServerId { get; set; }
+        [JsonProperty(PropertyName = "facebook_id")]
         public string FacebookId { get; set; }
+        [JsonProperty(PropertyName = "token")]
         public string Token { get; set; }
 
-        public DeviceRegistrationDto ToDto()
-        {
-            return new DeviceRegistrationDto {
-                email = Email,
-                id = ServerId,
-                name = Name,
-                facebook_id = FacebookId,
-                guid = Guid,
-                token = Token
-            };
-        }
+        
 
        
     }
 
    
 
-    // ReSharper disable InconsistentNaming
-    public class DeviceRegistrationDto
-    {
-        protected bool Equals(DeviceRegistrationDto other)
-        {
-            return string.Equals(id, other.id) && string.Equals(name, other.name) && string.Equals(email, other.email) && string.Equals(guid, other.guid) && string.Equals(facebook_id, other.facebook_id);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((DeviceRegistrationDto) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hashCode = (id != null ? id.GetHashCode() : 0);
-                hashCode = (hashCode*397) ^ (name != null ? name.GetHashCode() : 0);
-                hashCode = (hashCode*397) ^ (email != null ? email.GetHashCode() : 0);
-                hashCode = (hashCode*397) ^ (guid != null ? guid.GetHashCode() : 0);
-                hashCode = (hashCode*397) ^ (facebook_id != null ? facebook_id.GetHashCode() : 0);
-                return hashCode;
-            }
-        }
-
-        public string id { get; set; }
-
-        public string name { get; set; }
-        public string email { get; set; }
-        public string guid { get; set; }
-        public string facebook_id { get; set; }
-
-        public string token { get; set; }
-
-        internal DeviceRegistration ToModel()
-        {
-            return new DeviceRegistration() {
-                Email = email,
-                FacebookId = facebook_id,
-                Guid = guid,
-                ServerId = id,
-                Name = name,
-                Token = token
-            };
-        }
-    }
-    // ReSharper restore InconsistentNaming
+   
 }

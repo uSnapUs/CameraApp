@@ -161,7 +161,8 @@ namespace Camera.ViewControllers
 
         public void PresentCreateView()
         {
-            
+            var createViewController = new CreateEventViewController();
+            PresentViewController(createViewController,true,Dispose);
         }
 
         public void HideFindEventsView()

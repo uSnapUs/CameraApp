@@ -10,6 +10,9 @@ namespace Camera.Helpers
         DeviceRegistration CurrentDeviceRegistration { get; }
         string DeviceName { set; }
         bool IsAuthenticated { get; }
+        ILocationCoder LocationCoder { get; set; }
+        Coordinate? CurrentLocation { get; set; }
+        ILocationManager LocationManager { get; set; }
         void UpdateDeviceRegistration(string name, string email, string facebookId);
         void InitiateFacebookLogin();
 

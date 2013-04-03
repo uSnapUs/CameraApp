@@ -5,7 +5,6 @@ using MonoTouch.CoreFoundation;
 using MonoTouch.FacebookConnect;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
-using Camera.Model;
 
 namespace Camera
 {
@@ -15,7 +14,7 @@ namespace Camera
     [Register("AppDelegate")]
     public class AppDelegate : UIApplicationDelegate
     {
-
+        
         public static string SCSessionStateChangedNotification = new NSString("us.usnap.camera.Login:FBSessionStateChangedNotification");
 
         // class-level declarations
@@ -49,6 +48,7 @@ namespace Camera
                         UIDevice.CurrentDevice.Name;
                    
                 });
+
             return true;
         }
 
@@ -105,7 +105,14 @@ namespace Camera
             // FBSample logic
             // We need to properly handle activation of the application with regards to SSO
             //  (e.g., returning from iOS 6.0 authorization dialog or from fast app switching).
-            FBSession.ActiveSession.HandleDidBecomeActive();
+            try
+            {
+                FBSession.ActiveSession.HandleDidBecomeActive();
+            }
+            catch (Exception e)
+            {
+                //Console.WriteLine(e.Message);
+            }
         }
 
         void LoggedInAs (FBRequestConnection connection, NSObject result, NSError error)

@@ -31,7 +31,6 @@ namespace Camera.Helpers
             {
                 lock (_dbLock)
                 {
-
                     if (_currentDeviceRegistration != null)
                     {
                         Db.Delete(_currentDeviceRegistration);
@@ -39,9 +38,9 @@ namespace Camera.Helpers
                     if (value != null)
                     {
                         Db.Insert(value);
+                        Server.SetDeviceCredentials(value.Guid, value.Token);
                     }
                     _currentDeviceRegistration = value;
-
                 }
             }
             get { return _currentDeviceRegistration; }
@@ -52,7 +51,6 @@ namespace Camera.Helpers
             var deviceRegistrationDetails = Db.Find<DeviceRegistration > (reg => true);
             if (deviceRegistrationDetails == null)
             {
-
                 CurrentDeviceRegistration = Server.RegisterDevice(new DeviceRegistration {
                     Guid = Guid.NewGuid().ToString("N"),
                     Name = deviceName
@@ -83,6 +81,8 @@ namespace Camera.Helpers
         internal static SQLiteConnection Db;
         static ITinyMessengerHub _messageHub;
         ILogger _logger;
+        ILocationCoder _locationCoder;
+        ILocationManager _locationManager;
 
         public ITinyMessengerHub MessageHub
         {
@@ -100,7 +100,7 @@ namespace Camera.Helpers
 
         public IServer Server
         {
-            get { return _server ?? (_server = new Server(MessageHub, Logger)); }
+            get { return _server ?? (_server = new Server(Logger)); }
             set { _server = value; }
         }
 
@@ -121,6 +121,7 @@ namespace Camera.Helpers
         }
 
         public bool IsAuthenticated { get { return !String.IsNullOrEmpty(CurrentDeviceRegistration.FacebookId); } }
+        public ILocationCoder LocationCoder { get { return _locationCoder ?? (_locationCoder = new LocationCoder()); } set { _locationCoder = value; } }
 
 
         public void UpdateDeviceRegistration(string name, string email, string facebookId)
@@ -163,8 +164,12 @@ namespace Camera.Helpers
             FacebookSession.Current.InitiateLogin();
         }
 
-      
-        
+        public Coordinate? CurrentLocation { get; set; }
+        public ILocationManager LocationManager
+        {
+            get { return _locationManager ??(_locationManager= new LocationDelegate()); }
+            set { _locationManager = value; }
+        }
 
         public void Dispose()
         {

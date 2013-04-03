@@ -1,5 +1,7 @@
 ﻿using System.Net;
+using Newtonsoft.Json;
 using RestSharp;
+using RestSharp.Deserializers;
 
 namespace Camera.Helpers
 {
@@ -9,6 +11,7 @@ namespace Camera.Helpers
         public IRestClient CreateClient(string baseUrl)
         {
             var rc = new RestClient(baseUrl) { };
+            rc.AddHandler("application/json",new JsonDotNetDeserializer());
             if (Proxy != null)
                 rc.Proxy = Proxy;
             return rc;
@@ -20,5 +23,17 @@ namespace Camera.Helpers
         {
             return new RestRequest(path, method);
         }
+    }
+
+    public class JsonDotNetDeserializer : IDeserializer
+    {
+        public T Deserialize<T>(IRestResponse response)
+        {
+            return JsonConvert.DeserializeObject<T>(response.Content);
+        }
+
+        public string RootElement { get; set; }
+        public string Namespace { get; set; }
+        public string DateFormat { get; set; }
     }
 }
