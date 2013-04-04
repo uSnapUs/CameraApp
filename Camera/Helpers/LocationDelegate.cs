@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MonoTouch.CoreLocation;
 using MonoTouch.Foundation;
 
@@ -68,6 +70,8 @@ namespace Camera.Helpers
             }
         }
         EventHandler<LocationEventArgs> _onLocationUpdate;
+        CLGeocoder _geoCoder;
+
         public event EventHandler<LocationEventArgs> LocationUpdate
         {
             add
@@ -108,6 +112,44 @@ namespace Camera.Helpers
         public void UnsubscribeFromLocationUpdates(EventHandler<LocationEventArgs> onLocationUpdated)
         {
             LocationUpdate -= onLocationUpdated;
+        }
+
+        public void LookupAddress(string searchText, Action<IEnumerable<AddressDetails>> onAddressLookup)
+        {
+            if (_geoCoder == null)
+            {
+                _geoCoder = new CLGeocoder();
+            }
+            _geoCoder.GeocodeAddress(searchText,delegate(CLPlacemark[] placemarks, NSError error)
+                {
+                    if (error == null)
+                    {
+                        onAddressLookup.Invoke(
+                                placemarks.Select(
+                                placemark=>placemark.ToAddressDetails()
+                                )
+                            );
+                    }
+                    else
+                    {
+                        Console.WriteLine(error.DebugDescription);
+                    }
+
+                });
+        }
+    }
+    public static class LocationHelpers
+    {
+        public static AddressDetails ToAddressDetails(this CLPlacemark pmark)
+        {
+            return new AddressDetails
+            {
+                Coordinate = new Coordinate {
+                    Longitude = pmark.Location.Coordinate.Longitude,
+                    Latitude = pmark.Location.Coordinate.Latitude,
+                },
+                Description = pmark.AddressDictionary["Street"].ToString()
+            };
         }
     }
 }

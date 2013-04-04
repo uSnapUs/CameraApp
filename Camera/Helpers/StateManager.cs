@@ -164,6 +164,11 @@ namespace Camera.Helpers
             FacebookSession.Current.InitiateLogin();
         }
 
+        public Event CreateEvent(Event eventToCreate)
+        {
+            throw new NotImplementedException();
+        }
+
         public Coordinate? CurrentLocation { get; set; }
         public ILocationManager LocationManager
         {
