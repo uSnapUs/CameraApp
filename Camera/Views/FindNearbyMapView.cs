@@ -105,7 +105,7 @@ namespace Camera.Views
             {
                 if (!_updatedLocation)
                 {
-                    mapView.SetCenterCoordinate(userLocation.Coordinate, 14, true);
+                    mapView.SetCenterCoordinate(userLocation.Coordinate, 12, true);
                     mapView.ScrollEnabled = false;
                     _updatedLocation = true;
                 }
