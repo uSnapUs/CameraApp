@@ -82,10 +82,11 @@ namespace Camera.Tests.ControllerSpecifications
                     _stateManager.WhenToldTo(sm=>sm.CreateEvent(Moq.It.IsAny<Event>())).Return(_serverEvent);
                 };
             Because of = () => _mockViewController.Raise(vc=>vc.Create+=null,(EventArgs)null);
-            It should_send_correct_event_to_server = () => _stateManager.WasToldTo(server=>server.CreateEvent(new Event {
+            It should_send_correct_event_to_server = () => _stateManager.WasToldTo(server => server.CreateEvent(new Event
+            {
                 Name = _name,
                 Address = _location.Description,
-                Location = _location.Coordinate,
+                Location = new Point { Longitude = _location.Coordinate.Longitude, Latitude = _location.Coordinate.Latitude},
                 IsPublic = _public,
                 StartDate = _date.Date,
                 EndDate = _date.Date.AddDays(1),

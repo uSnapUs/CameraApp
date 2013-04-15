@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Camera.Helpers;
 using Camera.Model;
 using Camera.ViewControllers.Interfaces;
-using MonoTouch.UIKit;
 
 namespace Camera.Supervisors
 {
@@ -29,10 +28,11 @@ namespace Camera.Supervisors
             var date = _createEventViewController.Date;
             if (string.IsNullOrEmpty(name)||location.Equals(default(AddressDetails))||date==default(DateTime))
                 return;
-            var createdEvent = StateManager.Current.CreateEvent(new Event {
+            var createdEvent = StateManager.Current.CreateEvent(new Event
+            {
                 Address = location.Description,
-                Location = location.Coordinate,
-                StartDate =date.Date,
+                Location = new Point { Longitude = location.Coordinate.Longitude, Latitude = location.Coordinate.Latitude },
+                StartDate = date.Date,
                 EndDate = date.Date.AddDays(1),
                 IsPublic = _createEventViewController.Public,
                 Name = name

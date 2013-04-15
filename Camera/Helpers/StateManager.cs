@@ -57,7 +57,10 @@ namespace Camera.Helpers
                 });
             }
             else
+            {
                 _currentDeviceRegistration = deviceRegistrationDetails;
+                Server.SetDeviceCredentials(_currentDeviceRegistration.Guid, _currentDeviceRegistration.Token);
+            }
         }
 
         void DoMigrations(SQLiteConnection db)
@@ -138,6 +141,7 @@ namespace Camera.Helpers
                     if (savedDevice != null)
                     {
                         savedDevice.Id = _currentDeviceRegistration.Id;
+                        savedDevice.Token = _currentDeviceRegistration.Token;
                         CurrentDeviceRegistration = savedDevice;
                         //Db.Insert(_currentDeviceRegistration);
                     }
@@ -166,7 +170,7 @@ namespace Camera.Helpers
 
         public Event CreateEvent(Event eventToCreate)
         {
-            throw new NotImplementedException();
+            return Server.CreateEvent(eventToCreate);
         }
 
         public Coordinate? CurrentLocation { get; set; }

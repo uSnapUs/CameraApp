@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using Camera.Helpers;
+using Camera.Model;
 using Camera.Supervisors;
 using Camera.Tests.Helpers;
 using Camera.ViewControllers.Interfaces;
@@ -24,10 +25,13 @@ namespace Camera.Tests.ControllerSpecifications
             Establish context = () =>
                 {
                     StateManager.Current = An<IStateManager>();
+                    StateManager.Current.WhenToldTo(sm=>sm.Server).Return((_server = An<IServer>()));
                     _sut =
                         new LandingPageViewControllerSupervisor(
                             (_viewController = new Mock<ILandingPageViewController>()).Object);
                 };
+
+            protected static IServer _server;
         }
         public class when_logged_in_on_my_events_press:LandingPageViewControllerSupervisorSpecification
         {
@@ -75,9 +79,14 @@ namespace Camera.Tests.ControllerSpecifications
         }
         public class on_join_button_press_with_a_code : LandingPageViewControllerSupervisorSpecification
         {
-            Establish context = () => _viewController.Object.WhenToldTo(vc=>vc.EventCode).Return("Code");
+            Establish context = () =>
+                {
+                    _server.WhenToldTo(s=>s.FindEvent("Code")).Return(_event);
+                    _viewController.Object.WhenToldTo(vc => vc.EventCode).Return("Code");
+                };
             Because of = () => _viewController.Raise(viewController => viewController.JoinButtonPressed += null, (EventArgs)null);
-            It should_navigate_to_event_dashboard = () => _viewController.Object.WasToldTo(vc => vc.PresentEventDashboard());
+            It should_navigate_to_event_dashboard = () => _viewController.Object.WasToldTo(vc => vc.PresentEventDashboard(_event));
+            static Event _event = new Event();
         }
         public class on_view_controller_unload:LandingPageViewControllerSupervisorSpecification
         {
@@ -146,7 +155,7 @@ namespace Camera.Tests.ControllerSpecifications.LandingPageViewControllerSupervi
             
         }
 
-        public void PresentEventDashboard()
+        public void PresentEventDashboard(Event eventFound)
         {
             
         }

@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using Camera.Exceptions;
 using Camera.Model;
 using Newtonsoft.Json;
@@ -23,9 +24,9 @@ namespace Camera.Helpers
         {
             
             var client = GetClient();
-            if (_currentCredentials != null && _currentCredentials.Guid == deviceRegistration.Guid)
+            if (_currentCredentials != null&& _currentCredentials.Guid != deviceRegistration.Guid)
             {
-                client.Authenticator = new HttpBasicAuthenticator(_currentCredentials.Guid,_currentCredentials.Token);
+                client.Authenticator = null;
             }
             var request = RestClientFactory.CreateRestRequest("devices", Method.POST);
             request.JsonSerializer = new JsonDotNetSerializer();
@@ -45,7 +46,12 @@ namespace Camera.Helpers
         IRestClient GetClient()
         {
 
-            return RestClientFactory.CreateClient(BaseUrl);
+            var client = RestClientFactory.CreateClient(BaseUrl);
+            if (_currentCredentials != null)
+            {
+                client.Authenticator = new HttpBasicAuthenticator(_currentCredentials.Guid, _currentCredentials.Token);
+            }
+            return client;
         }
         IRestClientFactory _restClientFactory;
         public IRestClientFactory RestClientFactory
@@ -59,6 +65,62 @@ namespace Camera.Helpers
         public void SetDeviceCredentials(string guid, string token)
         {
             _currentCredentials = new Credientials { Guid = guid, Token = token };
+        }
+
+        public Event CreateEvent(Event eventToCreate)
+        {
+            var client = GetClient();
+           
+            var request = RestClientFactory.CreateRestRequest("events", Method.POST);
+            request.JsonSerializer = new JsonDotNetSerializer();
+            request.RequestFormat = DataFormat.Json;
+
+            request.AddBody(eventToCreate);
+            var response = client.Post<Event>(request);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return response.Data;
+            }
+            var exception = new ApiException(response.Content);
+            _logger.Exception(exception);
+            throw exception;
+        }
+
+        public Event FindEvent(string code)
+        {
+            var client = GetClient();
+            var request = RestClientFactory.CreateRestRequest("event/" + code, Method.GET);
+            request.JsonSerializer = new JsonDotNetSerializer();
+            request.RequestFormat = DataFormat.Json;
+            var response = client.Get<Event>(request);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return response.Data;
+            }
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            var exception = new ApiException(response.Content);
+            _logger.Exception(exception);
+            throw exception;
+        }
+
+        public Event[] FindEventsCloseTo(Coordinate coordinate)
+        {
+            var client = GetClient();
+            var request = RestClientFactory.CreateRestRequest("events/by_location?longitude="+coordinate.Longitude+"&latitude="+coordinate.Latitude, Method.GET);
+            
+            request.JsonSerializer = new JsonDotNetSerializer();
+            request.RequestFormat = DataFormat.Json;
+            var response = client.Get<List<Event>>(request);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return response.Data.ToArray();
+            }
+            var exception = new ApiException(response.Content);
+            _logger.Exception(exception);
+            throw exception;
         }
     }
 

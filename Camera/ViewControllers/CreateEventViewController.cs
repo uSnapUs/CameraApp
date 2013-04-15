@@ -90,7 +90,8 @@ namespace Camera.ViewControllers
 
         public void GoToEventDashboard(Event serverEvent)
         {
-            
+            var eventDashboardController = new EventDashboardViewController(serverEvent);
+            PresentViewController(eventDashboardController,true,Dispose);
         }
 
         void OnLocationSearch(object sender, EventArgs eventArgs)

@@ -1,4 +1,5 @@
 using System;
+using Camera.Model;
 using Camera.Supervisors;
 using Camera.ViewControllers.Interfaces;
 using Camera.Views;
@@ -185,10 +186,17 @@ namespace Camera.ViewControllers
             _landingPageView.JoinButton.Enabled = true;
         }
 
-        public void PresentEventDashboard()
+        public void PresentEventDashboard(Event eventFound)
         {
-            var eventDashboardViewController = new EventDashboardViewController();
+            var eventDashboardViewController = new EventDashboardViewController(eventFound);
             PresentViewController(eventDashboardViewController,true,Dispose);
+        }
+
+        public void ShowAlert(string message)
+        {
+            var view = new UIAlertView("No Event Found",message,null,"OK");
+            view.Show();
+            _landingPageView.JoinButton.Enabled = true;
         }
 
         void GoToMapView()

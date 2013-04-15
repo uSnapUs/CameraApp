@@ -1,4 +1,5 @@
 ﻿using System;
+using Camera.Model;
 using Camera.Supervisors;
 using Camera.ViewControllers.Interfaces;
 using Camera.Views;
@@ -13,13 +14,17 @@ namespace Camera.ViewControllers
         EventDashboardView _eventDashboardView;
         EventDashboardViewControllerSupervisor _supervisor;
 
-        public EventDashboardViewController()
+        public EventDashboardViewController(Event serverEvent)
         {
             UIApplication.SharedApplication.SetStatusBarHidden(false,true);
             _eventDashboardView = new EventDashboardView();
             _eventDashboardView.BackButtonPressed += EventDashboardBackButtonPressed;
             _eventDashboardView.CameraButtonPressed += EventDashboardViewOnCameraButtonPressed;
             _supervisor = new EventDashboardViewControllerSupervisor(this);
+            if (serverEvent != null)
+            {
+                _eventDashboardView.Title = serverEvent.Name;
+            }
             View = _eventDashboardView;
 
         }

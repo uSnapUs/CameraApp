@@ -1,4 +1,5 @@
 ﻿using System;
+using Camera.Model;
 
 namespace Camera.ViewControllers.Interfaces
 {
@@ -18,6 +19,7 @@ namespace Camera.ViewControllers.Interfaces
         void PresentFindNearbyView();
         void PresentLoginView(string loginReason);
         void ShowValidationMessage(string validationMessage);
-        void PresentEventDashboard();
+        void PresentEventDashboard(Event eventFound);
+        void ShowAlert(string message);
     }
 }

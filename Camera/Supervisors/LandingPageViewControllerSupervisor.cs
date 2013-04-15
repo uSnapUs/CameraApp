@@ -28,7 +28,15 @@ namespace Camera.Supervisors
             }
             else
             {
-                _viewController.PresentEventDashboard();
+                var eventFound = StateManager.Current.Server.FindEvent(_viewController.EventCode);
+                if (eventFound != null)
+                {
+                    _viewController.PresentEventDashboard(eventFound);
+                }
+                else
+                {
+                    _viewController.ShowAlert("no event found");
+                }
             }
         }
 

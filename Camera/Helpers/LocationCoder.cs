@@ -4,6 +4,7 @@ using System.Linq;
 using MonoTouch.AddressBookUI;
 using MonoTouch.CoreLocation;
 using MonoTouch.Foundation;
+using Newtonsoft.Json;
 
 namespace Camera.Helpers
 {
@@ -72,7 +73,7 @@ namespace Camera.Helpers
         public double Latitude { get; set; }
 
         public double Longitude { get; set; }
-
+        
         public double Accuracy { get; set; }
     }
 }

@@ -129,6 +129,12 @@ namespace Camera.Views
             }
         }
 
+        public string Title
+        {
+            get { return _tableTitleLable.Text; }
+            set { _tableTitleLable.Text = value; }
+        }
+
         void WireEvents()
         {
 

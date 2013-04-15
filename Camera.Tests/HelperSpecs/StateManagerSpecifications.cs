@@ -128,6 +128,16 @@ namespace Camera.Tests.HelperSpecs
             static string _name = "name";
             
         }
+        public class when_creating_event:StateManagerSpecification
+        {
+            Establish context = () => _server.WhenToldTo(s=>s.CreateEvent(_event)).Return(_returnedEvent);
+            Because of = () => _result = _sut.CreateEvent(_event);
+            It should_send_event_to_Server = () => _server.WasToldTo(s=>s.CreateEvent(_event));
+            It should_return_returned_event = () => _result.ShouldEqual(_returnedEvent);
+            static Event _event = new Event{Name = "Event"};
+            static Event _returnedEvent = new Event {Name = "Returned Event"};
+            static Event _result;
+        }
        
     }
 }
