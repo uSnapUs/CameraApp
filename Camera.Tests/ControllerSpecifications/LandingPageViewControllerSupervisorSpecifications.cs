@@ -159,6 +159,11 @@ namespace Camera.Tests.ControllerSpecifications.LandingPageViewControllerSupervi
         {
             
         }
+
+        public void ShowAlert(string message)
+        {
+            
+        }
     }
 }
 

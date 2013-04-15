@@ -157,6 +157,9 @@ namespace Camera.ViewControllers
 
         public void PresentFindEventsView()
         {
+            _landingPageView.MapView.ShowsUserLocation = true;
+            
+
             _landingPageView.ShowFindNearby();
         }
 

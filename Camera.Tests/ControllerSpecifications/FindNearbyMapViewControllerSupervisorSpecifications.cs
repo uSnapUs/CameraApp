@@ -1,6 +1,8 @@
 ﻿// ReSharper disable InconsistentNaming
 using System;
 using System.Linq;
+using Camera.Helpers;
+using Camera.Model;
 using Camera.Supervisors;
 using Camera.Tests.Helpers;
 using Camera.ViewControllers.Interfaces;
@@ -60,6 +62,16 @@ namespace Camera.Tests.ControllerSpecifications.FindNearbyViewControllerSupervis
         public event EventHandler<EventArgs> BeforeAppear;
         public event EventHandler<EventArgs> BackButtonPressed;
         public void GoToLandingView()
+        {
+            
+        }
+
+        public Coordinate GetMapLocation()
+        {
+            return default(Coordinate);
+        }
+
+        public void ShowEventAnnotations(Event[] eventsNearby)
         {
             
         }

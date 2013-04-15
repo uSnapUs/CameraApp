@@ -275,7 +275,7 @@ namespace Camera.Tests.HelperSpecs
                 _existing_event1 = _sut.CreateEvent(_event1);
                 _existing_event2 = _sut.CreateEvent(_event2);
             };
-            Because of = () => _result = _sut.FindEventsCloseTo(new Coordinate(){Latitude = 0.1,Longitude = 0.1});
+            Because of = () => _result = _sut.FindEventsByLocation(new Coordinate(){Latitude = 0.1,Longitude = 0.1});
 
             It should_return_correct_events = () => _result.Select(ev=>ev.Name).ShouldContain(_event1.Name,_event2.Name);
             It should_return_correct_codes = () => _result.Select(ev => ev.Code).ShouldContain(_existing_event1.Code, _existing_event2.Code);

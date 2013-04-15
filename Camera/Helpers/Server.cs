@@ -106,7 +106,7 @@ namespace Camera.Helpers
             throw exception;
         }
 
-        public Event[] FindEventsCloseTo(Coordinate coordinate)
+        public Event[] FindEventsByLocation(Coordinate coordinate)
         {
             var client = GetClient();
             var request = RestClientFactory.CreateRestRequest("events/by_location?longitude="+coordinate.Longitude+"&latitude="+coordinate.Latitude, Method.GET);

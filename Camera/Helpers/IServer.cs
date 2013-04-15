@@ -9,5 +9,6 @@ namespace Camera.Helpers
         void SetDeviceCredentials(string guid, string token);
         Event CreateEvent(Event eventToCreate);
         Event FindEvent(string eventCode);
+        Event[] FindEventsByLocation(Coordinate coordinate);
     }
 }

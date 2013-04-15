@@ -76,6 +76,7 @@ namespace Camera.Supervisors
 
         void ViewController_FindButtonPressed(object sender, EventArgs e)
         {
+            
            _viewController.PresentFindEventsView();
         }
 
