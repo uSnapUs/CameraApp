@@ -205,6 +205,7 @@ namespace Camera.Tests.HelperSpecs
                         Guid = "0F0F187A-9AD5-461A-BB56-810BFEF41553",
                         Name = "test device",
                         FacebookId = "facebook_id"
+                        //Email = "owen@iouk.com"
                     });
                     _sut.SetDeviceCredentials(_deviceRegistration.Guid, _deviceRegistration.Token);
                 };

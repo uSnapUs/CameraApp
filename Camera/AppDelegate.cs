@@ -35,6 +35,7 @@ namespace Camera
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+            MonoTouch.TestFlight.TestFlight.TakeOff("36e40e5d-ae3d-47da-bb3a-9d445c52c367");
             // create a new window instance based on the screen size
             app.SetStatusBarHidden(true, false);
             Window = new UIWindow(UIScreen.MainScreen.Bounds);
@@ -56,7 +57,7 @@ namespace Camera
         
         public bool OpenSession (bool allowLoginUI)
         {
-            var permissions = new[] { "email","user_likes" };
+            var permissions = new[] { "email" };
             
             return 	FBSession.OpenActiveSession(permissions, allowLoginUI, OnSessionStateChanged);
         }
@@ -111,7 +112,7 @@ namespace Camera
             }
             catch (Exception e)
             {
-                //Console.WriteLine(e.Message);
+                MonoTouch.TestFlight.TestFlight.Log("Error on activated {0}",e.Message);
             }
         }
 
@@ -123,6 +124,8 @@ namespace Camera
             if (error == null)
             {
                 var user = new FBGraphUser(result);
+                Console.WriteLine(user);
+                Console.WriteLine(user.ObjectForKey((new NSString("email"))));
                 StateManager.Current.UpdateDeviceRegistration(user.Name, user.ObjectForKey(new NSString("email")).ToString(),user.Id);
                 
             }
