@@ -35,7 +35,9 @@ namespace Camera
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+#if !DEBUG
             MonoTouch.TestFlight.TestFlight.TakeOff("36e40e5d-ae3d-47da-bb3a-9d445c52c367");
+#endif
             // create a new window instance based on the screen size
             app.SetStatusBarHidden(true, false);
             Window = new UIWindow(UIScreen.MainScreen.Bounds);
@@ -112,7 +114,9 @@ namespace Camera
             }
             catch (Exception e)
             {
+#if !DEBUG
                 MonoTouch.TestFlight.TestFlight.Log("Error on activated {0}",e.Message);
+#endif
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using Camera.Model;
 using Camera.Views.Interfaces;
 using MonoTouch.CoreLocation;
@@ -6,6 +7,8 @@ using MonoTouch.Foundation;
 using MonoTouch.MapKit;
 using MonoTouch.UIKit;
 using Camera.Helpers;
+using Point = Camera.Model.Point;
+
 namespace Camera.Views
 {
     public class FindNearbyMapView : MKMapView, IFindNearbyMapView
@@ -160,17 +163,20 @@ namespace Camera.Views
     public sealed class EventPinAnnotationView : MKAnnotationView
     {
         EventAnnotation _annotation;
+        UILabel _label;
 
         public EventPinAnnotationView(EventAnnotation annotation, string reuseIdentifier)
             : base(annotation, reuseIdentifier)
         {
             _annotation = annotation;
             CanShowCallout = false;
+            var labelText = new NSString(_annotation.Event.Name);
+            var labelSize = labelText.StringSize(UIFont.FromName("Proxima Nova", 34));
+            _label = new UILabel(new RectangleF(new PointF(0-(labelSize.Width/2),0-labelSize.Height),labelSize )) { Text = _annotation.Event.Name, Font = UIFont.FromName("Proxima Nova", 34) };
+            AddSubview(_label);
         }
-        public override void LayoutSubviews()
-        {
-            base.LayoutSubviews();
-        }
+        
+        
 
         public void SetEventAnnotation(EventAnnotation mapAnnotation)
         {
