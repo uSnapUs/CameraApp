@@ -120,7 +120,7 @@ namespace Camera.Views
                 if (mapAnnotation == null)
                     return null;
                 var locationLookupView = mapView as FindNearbyMapView;
-                var pinView = (MKPinAnnotationView)mapView.DequeueReusableAnnotation(MapViewAnnotationIdentifier);
+                var pinView = mapView.DequeueReusableAnnotation(MapViewAnnotationIdentifier) as EventPinAnnotationView;
                 if (pinView == null)
                 {
                     var accessoryButton = new UIButton(UIButtonType.DetailDisclosure);
@@ -128,12 +128,8 @@ namespace Camera.Views
                     {
                         accessoryButton.TouchUpInside += (s, e) => locationLookupView.GoToEvent(mapAnnotation);
                     }
-                    pinView = new MKPinAnnotationView(annotation, MapViewAnnotationIdentifier)
+                    pinView = new EventPinAnnotationView(mapAnnotation, MapViewAnnotationIdentifier)
                     {
-                        PinColor = MKPinAnnotationColor.Green,
-                        AnimatesDrop = true,
-                        CanShowCallout = true,
-                        LeftCalloutAccessoryView = accessoryButton,
 
 
                     };
@@ -142,7 +138,7 @@ namespace Camera.Views
                 }
                 else
                 {
-                    pinView.Annotation = annotation;
+                    pinView.SetEventAnnotation(mapAnnotation);
 
                 }
                 
@@ -160,6 +156,30 @@ namespace Camera.Views
             OnEventSelected(new SelectedEventArgs {Event = ev.Event});
         }
     }
+
+    public sealed class EventPinAnnotationView : MKAnnotationView
+    {
+        EventAnnotation _annotation;
+
+        public EventPinAnnotationView(EventAnnotation annotation, string reuseIdentifier)
+            : base(annotation, reuseIdentifier)
+        {
+            _annotation = annotation;
+            CanShowCallout = false;
+        }
+        public override void LayoutSubviews()
+        {
+            base.LayoutSubviews();
+        }
+
+        public void SetEventAnnotation(EventAnnotation mapAnnotation)
+        {
+            _annotation = mapAnnotation;
+            Annotation = mapAnnotation;
+        }
+    }
+
+    
 
     public class SelectedEventArgs : EventArgs
     {
