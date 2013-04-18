@@ -66,6 +66,7 @@ namespace Camera.Helpers
         void DoMigrations(SQLiteConnection db)
         {
             db.CreateTable<DeviceRegistration>();
+            db.DeleteAll<DeviceRegistration>();
             //db.CreateTable<CurrentEvent>();
             //db.DeleteAll<CurrentEvent>();
             //db.CreateTable<Photo>();
@@ -103,7 +104,7 @@ namespace Camera.Helpers
 
         public IServer Server
         {
-            get { return _server ?? (_server = new Server(Logger)); }
+            get { return _server ?? (_server = new Server(Logger,MessageHub)); }
             set { _server = value; }
         }
 

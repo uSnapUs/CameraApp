@@ -5,6 +5,7 @@ using Camera.Views.Interfaces;
 using MonoTouch.CoreLocation;
 using MonoTouch.Foundation;
 using MonoTouch.MapKit;
+using MonoTouch.ObjCRuntime;
 using MonoTouch.UIKit;
 using Camera.Helpers;
 using Point = Camera.Model.Point;
@@ -44,9 +45,9 @@ namespace Camera.Views
             base.LayoutSubviews();
             //var height = this.Bounds.Height;
             var width = Bounds.Width;
-            _topBarView.Frame = new System.Drawing.RectangleF(0, 0, width, 51);
-            _logoImageView.Frame = new System.Drawing.RectangleF((width/2) - (94/2), 3, 94, 44);
-            _backButton.Frame = new System.Drawing.RectangleF(15, 15, 25, 22);
+            _topBarView.Frame = new RectangleF(0, 0, width, 51);
+            _logoImageView.Frame = new RectangleF((width/2) - (94/2), 3, 94, 44);
+            _backButton.Frame = new RectangleF(15, 15, 25, 22);
         }
 
         void InitViews()
@@ -62,7 +63,7 @@ namespace Camera.Views
                 BackgroundColor = UIColor.FromRGB(17, 186, 188)
 
             };
-            _topBarView.Layer.ShadowOffset = new System.Drawing.SizeF(0, 2);
+            _topBarView.Layer.ShadowOffset = new SizeF(0, 2);
             _topBarView.Layer.ShadowRadius = 5;
             _topBarView.Layer.ShadowOpacity = 0.5f;
             //_topBarView.Layer.CornerRadius = 5;
@@ -109,7 +110,7 @@ namespace Camera.Views
                 if (!_updatedLocation)
                 {
                     mapView.SetCenterCoordinate(userLocation.Coordinate, 12, true);
-                    mapView.ScrollEnabled = false;
+                    //mapView.ScrollEnabled = false;
                     _updatedLocation = true;
                 }
 
@@ -131,13 +132,7 @@ namespace Camera.Views
                     {
                         accessoryButton.TouchUpInside += (s, e) => locationLookupView.GoToEvent(mapAnnotation);
                     }
-                    pinView = new EventPinAnnotationView(mapAnnotation, MapViewAnnotationIdentifier)
-                    {
-
-
-                    };
-
-
+                    pinView = new EventPinAnnotationView(mapAnnotation, MapViewAnnotationIdentifier);
                 }
                 else
                 {
@@ -155,7 +150,6 @@ namespace Camera.Views
 
         void GoToEvent(EventAnnotation ev)
         {
-            Console.Write("Got to touch event");
             OnEventSelected(new SelectedEventArgs {Event = ev.Event});
         }
     }
@@ -163,24 +157,40 @@ namespace Camera.Views
     public sealed class EventPinAnnotationView : MKAnnotationView
     {
         EventAnnotation _annotation;
-        UILabel _label;
+        readonly CalloutView _calloutView;
+
 
         public EventPinAnnotationView(EventAnnotation annotation, string reuseIdentifier)
             : base(annotation, reuseIdentifier)
         {
+            UserInteractionEnabled = true;
+
             _annotation = annotation;
             CanShowCallout = false;
-            var labelText = new NSString(_annotation.Event.Name);
-            var labelSize = labelText.StringSize(UIFont.FromName("Proxima Nova", 34));
-            _label = new UILabel(new RectangleF(new PointF(0-(labelSize.Width/2),0-labelSize.Height),labelSize )) { Text = _annotation.Event.Name, Font = UIFont.FromName("Proxima Nova", 34) };
-            AddSubview(_label);
+            _calloutView = CalloutView.AddCalloutView(this,annotation.Event.Name,new PointF(0,0),this,new Selector("handleCalloutClick:"));
+           // AddSubview(_calloutView);
         }
-        
+        [Export("handleCalloutClick:")]
+        void CalloutViewOnCalloutButtonTap(UIControl control)
+        {
+            Console.WriteLine(_annotation.Event.Name);
+        }
+
+        public override void LayoutSubviews()
+        {
+            
+            base.LayoutSubviews();
+            var f = Frame;
+            f.Width = _calloutView.Frame.Width;
+            f.Height = _calloutView.Frame.Height;
+            Frame = f;
+        }
         
 
         public void SetEventAnnotation(EventAnnotation mapAnnotation)
         {
             _annotation = mapAnnotation;
+            _calloutView.Text = mapAnnotation.Event.Name;
             Annotation = mapAnnotation;
         }
     }

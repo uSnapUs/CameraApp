@@ -140,6 +140,7 @@
     <Compile Include="ViewControllers\LoginViewController.cs" />
     <Compile Include="Views\BlurOverlayView.cs" />
     <Compile Include="Views\CalendarMonthView.cs" />
+    <Compile Include="Views\CalloutView.cs" />
     <Compile Include="Views\CreateEventView.cs" />
     <Compile Include="Views\DropShadowLabel.cs" />
     <Compile Include="Views\EventDashboardView.cs" />
@@ -174,6 +175,14 @@
     <BundleResource Include="images\calendar\today.png" />
     <BundleResource Include="images\calendar\todayselected.png" />
     <BundleResource Include="images\calendar\topbar.png" />
+    <BundleResource Include="Resources\Callout\callout-centre%402x.png" />
+    <BundleResource Include="Resources\Callout\callout-centre.png" />
+    <BundleResource Include="Resources\Callout\callout-left%402x.png" />
+    <BundleResource Include="Resources\Callout\callout-left.png" />
+    <BundleResource Include="Resources\Callout\callout-right%402x.png" />
+    <BundleResource Include="Resources\Callout\callout-right.png" />
+    <BundleResource Include="Resources\Callout\callout-button%402x.png" />
+    <BundleResource Include="Resources\Callout\callout-button.png" />
     <None Include="Info.plist" />
     <Compile Include="Model\DeviceRegistration.cs" />
     <Compile Include="Model\SQLLite.cs" />

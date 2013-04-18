@@ -1,23 +1,36 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using Camera.Exceptions;
 using Camera.Model;
 using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Serializers;
+using TinyMessenger;
 
 namespace Camera.Helpers
 {
     public class Server : IServer
     {
         readonly ILogger _logger;
+        readonly ITinyMessengerHub _tinyMessenger;
         Credientials _currentCredentials;
 
-        public Server(ILogger logger)
+        public Server(ILogger logger, ITinyMessengerHub tinyMessenger)
         {
             _logger = logger;
+            _tinyMessenger = tinyMessenger;
+            _tinyMessenger.Subscribe<UploaderDoneMessage>(message =>
+                {
+                    var photoUploader = message.PhotoUploader;
+                    if (_photoUploaders.Contains(photoUploader))
+                    {
+                        _photoUploaders.Remove(photoUploader);
+                    }
+                });
         }
 
+        readonly List<PhotoUploader> _photoUploaders = new List<PhotoUploader>();
         public string BaseUrl = "http://api.isnap.us/";
 
         public DeviceRegistration RegisterDevice(DeviceRegistration deviceRegistration)
@@ -105,6 +118,12 @@ namespace Camera.Helpers
             _logger.Exception(exception);
             throw exception;
         }
+        public void PostPhoto(string code, string path,Guid photoIdentifier)
+        {
+            _photoUploaders.Add(new PhotoUploader(code, path, photoIdentifier, this));
+        }
+
+        
 
         public Event[] FindEventsByLocation(Coordinate coordinate)
         {
@@ -122,7 +141,46 @@ namespace Camera.Helpers
             _logger.Exception(exception);
             throw exception;
         }
+        internal class PhotoUploader
+        {
+            WebClient _webClient;
+            readonly ITinyMessengerHub _tinyMessenger;
+
+            public PhotoUploader(string code, string path, Guid photoIdentifier, Server server)
+            {
+                this._tinyMessenger = server._tinyMessenger;
+                _webClient = new WebClient
+                {
+                    BaseAddress = server.BaseUrl,
+                    Credentials = new NetworkCredential(server._currentCredentials.Guid, server._currentCredentials.Token),
+                };
+                _webClient.UploadProgressChanged += WebClientOnUploadProgressChanged;
+                _webClient.UploadFileCompleted += WebClientOnUploadFileCompleted;
+                _webClient.UploadFileAsync(new Uri(server.BaseUrl + "/event/" + code + "/photos", UriKind.Absolute), "POST", path);
+            }
+
+            void WebClientOnUploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
+            {
+                
+            }
+
+            void WebClientOnUploadFileCompleted(object sender, UploadFileCompletedEventArgs e)
+            {
+                _webClient.UploadProgressChanged -= WebClientOnUploadProgressChanged;
+                _webClient.UploadFileCompleted -= WebClientOnUploadFileCompleted;
+                _webClient.Dispose();
+                _webClient = null;
+                _tinyMessenger.PublishAsync(new UploaderDoneMessage{Sender = this,PhotoUploader = this});
+            }
+        }
     }
+
+    internal class UploaderDoneMessage : ITinyMessage
+    {
+        public Server.PhotoUploader PhotoUploader { get; set; }
+        public object Sender { get; set; }
+    }
+
 
     public class JsonDotNetSerializer : ISerializer
     {
