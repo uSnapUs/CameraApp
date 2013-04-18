@@ -178,13 +178,15 @@ namespace Camera.Views
 
         void RemoveEvents()
         {
-            _libraryButton.TouchUpInside -= OnLibraryPress;
-            _flipButton.TouchUpInside -= OnFlipPress;
-            _shutterButton.TouchUpInside -= OnShutterPress;
-            _closeButton.TouchUpInside -= OnClosePress;
-            _retakeButton.TouchUpInside -= OnRetakePress;
-            _filterButton.TouchUpInside -= OnFilterButtonPress;
-            _flashButton.TouchUpInside -= OnFlashButtonPress;
+			InvokeOnMainThread(()=>{
+	            _libraryButton.TouchUpInside -= OnLibraryPress;
+	            _flipButton.TouchUpInside -= OnFlipPress;
+	            _shutterButton.TouchUpInside -= OnShutterPress;
+	            _closeButton.TouchUpInside -= OnClosePress;
+	            _retakeButton.TouchUpInside -= OnRetakePress;
+	            _filterButton.TouchUpInside -= OnFilterButtonPress;
+	            _flashButton.TouchUpInside -= OnFlashButtonPress;
+			});
         }
 
         protected override void Dispose(bool disposing)
