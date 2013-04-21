@@ -1,5 +1,6 @@
 ﻿using System;
 using Camera.Model;
+using TinyMessenger;
 
 namespace Camera.Helpers
 {
@@ -13,9 +14,14 @@ namespace Camera.Helpers
         ILocationCoder LocationCoder { get; set; }
         Coordinate? CurrentLocation { get; set; }
         ILocationManager LocationManager { get; set; }
+        ITinyMessengerHub MessageHub { get; }
         void UpdateDeviceRegistration(string name, string email, string facebookId);
         void InitiateFacebookLogin();
 
         Event CreateEvent(Event eventToCreate);
+        void UploadPhoto(Event currentEvent,string photoPath);
+        Photo[] GetEventPhotos(Event ev);
+        void StartUpdatingPhotosForEvent(Event ev);
+        void StopUpdatingPhotosForEvent();
     }
 }

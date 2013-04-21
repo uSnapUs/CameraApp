@@ -1,4 +1,5 @@
-﻿using Camera.Model;
+﻿using System;
+using Camera.Model;
 
 namespace Camera.Helpers
 {
@@ -10,5 +11,7 @@ namespace Camera.Helpers
         Event CreateEvent(Event eventToCreate);
         Event FindEvent(string eventCode);
         Event[] FindEventsByLocation(Coordinate coordinate);
+        void PostPhoto(string code, string path,Guid photoIdentifier);
+        Photo[] GetPhotos(Event forEvent, DateTime? postedSince);
     }
 }

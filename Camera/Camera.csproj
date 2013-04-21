@@ -110,9 +110,16 @@
     <Compile Include="Helpers\Server.cs" />
     <Compile Include="Helpers\StateManager.cs" />
     <Compile Include="Helpers\TinyMessenger.cs" />
+    <Compile Include="Messages\EventPhotoListUpdatedMessage.cs" />
+    <Compile Include="Messages\UploaderCancelledMessage.cs" />
+    <Compile Include="Messages\UploaderErrorMessage.cs" />
+    <Compile Include="Messages\UploadProgressMessage.cs" />
+    <Compile Include="Messages\UploaderDoneMessage.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="Model\Event.cs" />
+    <Compile Include="Model\Photo.cs" />
+    <Compile Include="Model\PhotoUpload.cs" />
     <Compile Include="Supervisors\BaseViewControllerSupervisor.cs" />
     <Compile Include="Supervisors\CreateEventViewControllerSupervisor.cs" />
     <Compile Include="Supervisors\EventDashboardViewControllerSupervisor.cs" />
@@ -310,6 +317,9 @@
     <BundleResource Include="FacebookSDKResources.bundle\FBProfilePictureView\images\fb_blank_profile_square.png" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="BTProgressHUD">
+      <HintPath>..\libs\BTProgressHUD.dll</HintPath>
+    </Reference>
     <Reference Include="Facebook">
       <HintPath>..\libs\Facebook.dll</HintPath>
     </Reference>
@@ -321,6 +331,9 @@
     </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\libs\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="SDWebImage">
+      <HintPath>..\libs\SDWebImage.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />

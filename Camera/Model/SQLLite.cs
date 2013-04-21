@@ -86,7 +86,7 @@ namespace Camera.Model
 
         public IntPtr Handle { get; private set; }
 #if USE_CSHARP_SQLITE
-		internal static readonly Sqlite3DatabaseHandle NullHandle = null;
+        internal static readonly Sqlite3DatabaseHandle NullHandle = null;
 #else
         internal static readonly IntPtr NullHandle = IntPtr.Zero;
 #endif
@@ -146,7 +146,7 @@ namespace Camera.Model
             IntPtr handle;
 
 #if SILVERLIGHT
-			var r = SQLite3.Open (databasePath, out handle, (int)openFlags, IntPtr.Zero);
+            var r = SQLite3.Open (databasePath, out handle, (int)openFlags, IntPtr.Zero);
 #else
             // open using the byte[]
             // in the case where the path may include Unicode
@@ -918,7 +918,7 @@ namespace Camera.Model
 #if NETFX_CORE
                         Volatile.Write (ref _trasactionDepth, depth);
 #elif SILVERLIGHT
-						_trasactionDepth = depth;
+                        _trasactionDepth = depth;
 #else
                         Thread.VolatileWrite(ref _trasactionDepth, depth);
 #endif
@@ -1238,7 +1238,7 @@ namespace Camera.Model
         public bool StoreDateTimeAsTicks { get; private set; }
 
 #if NETFX_CORE
-		static readonly string MetroStyleDataPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+        static readonly string MetroStyleDataPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
 #endif
 
         public SQLiteConnectionString(string databasePath, bool storeDateTimeAsTicks)
@@ -1247,7 +1247,7 @@ namespace Camera.Model
             StoreDateTimeAsTicks = storeDateTimeAsTicks;
 
 #if NETFX_CORE
-			DatabasePath = System.IO.Path.Combine (MetroStyleDataPath, databasePath);
+            DatabasePath = System.IO.Path.Combine (MetroStyleDataPath, databasePath);
 #else
             DatabasePath = databasePath;
 #endif
@@ -1361,7 +1361,7 @@ namespace Camera.Model
             MappedType = type;
 
 #if NETFX_CORE
-			var tableAttr = (TableAttribute)System.Reflection.CustomAttributeExtensions
+            var tableAttr = (TableAttribute)System.Reflection.CustomAttributeExtensions
                 .GetCustomAttribute(type.GetTypeInfo(), typeof(TableAttribute), true);
 #else
             var tableAttr = (TableAttribute)type.GetCustomAttributes(typeof(TableAttribute), true).FirstOrDefault();
@@ -1372,9 +1372,9 @@ namespace Camera.Model
 #if !NETFX_CORE
             var props = MappedType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty);
 #else
-			var props = from p in MappedType.GetRuntimeProperties()
-						where ((p.GetMethod != null && p.GetMethod.IsPublic) || (p.SetMethod != null && p.SetMethod.IsPublic) || (p.GetMethod != null && p.GetMethod.IsStatic) || (p.SetMethod != null && p.SetMethod.IsStatic))
-						select p;
+            var props = from p in MappedType.GetRuntimeProperties()
+                        where ((p.GetMethod != null && p.GetMethod.IsPublic) || (p.SetMethod != null && p.SetMethod.IsPublic) || (p.GetMethod != null && p.GetMethod.IsStatic) || (p.SetMethod != null && p.SetMethod.IsStatic))
+                        select p;
 #endif
             var cols = new List<Column>();
             foreach (var p in props)
@@ -1382,7 +1382,7 @@ namespace Camera.Model
 #if !NETFX_CORE
                 var ignore = p.GetCustomAttributes(typeof(IgnoreAttribute), true).Length > 0;
 #else
-				var ignore = p.GetCustomAttributes (typeof(IgnoreAttribute), true).Count() > 0;
+                var ignore = p.GetCustomAttributes (typeof(IgnoreAttribute), true).Count() > 0;
 #endif
                 if (p.CanWrite && !ignore)
                 {
@@ -1606,7 +1606,7 @@ namespace Camera.Model
             else if (clrType.IsEnum)
             {
 #else
-			} else if (clrType.GetTypeInfo().IsEnum) {
+            } else if (clrType.GetTypeInfo().IsEnum) {
 #endif
                 return "integer";
             }
@@ -1630,7 +1630,7 @@ namespace Camera.Model
 #if !NETFX_CORE
             return attrs.Length > 0;
 #else
-			return attrs.Count() > 0;
+            return attrs.Count() > 0;
 #endif
         }
 
@@ -1642,7 +1642,7 @@ namespace Camera.Model
             {
                 return ((CollationAttribute)attrs[0]).Value;
 #else
-			if (attrs.Count() > 0) {
+            if (attrs.Count() > 0) {
                 return ((CollationAttribute)attrs.First()).Value;
 #endif
             }
@@ -1658,7 +1658,7 @@ namespace Camera.Model
 #if !NETFX_CORE
             return attrs.Length > 0;
 #else
-			return attrs.Count() > 0;
+            return attrs.Count() > 0;
 #endif
         }
 
@@ -1676,8 +1676,8 @@ namespace Camera.Model
             {
                 return ((MaxLengthAttribute)attrs[0]).Value;
 #else
-			if (attrs.Count() > 0) {
-				return ((MaxLengthAttribute)attrs.First()).Value;
+            if (attrs.Count() > 0) {
+                return ((MaxLengthAttribute)attrs.First()).Value;
 #endif
             }
             else
@@ -1925,7 +1925,7 @@ namespace Camera.Model
                 else if (value.GetType().IsEnum)
                 {
 #else
-				} else if (value.GetType().GetTypeInfo().IsEnum) {
+                } else if (value.GetType().GetTypeInfo().IsEnum) {
 #endif
                     SQLite3.BindInt(stmt, index, Convert.ToInt32(value));
                 }
@@ -1997,7 +1997,7 @@ namespace Camera.Model
                 else if (clrType.IsEnum)
                 {
 #else
-				} else if (clrType.GetTypeInfo().IsEnum) {
+                } else if (clrType.GetTypeInfo().IsEnum) {
 #endif
                     return SQLite3.ColumnInt(stmt, index);
                 }
@@ -2033,7 +2033,7 @@ namespace Camera.Model
                 {
                     return SQLite3.ColumnByteArray(stmt, index);
 #if SQLITE_SUPPORT_GUID
-				} else if (clrType == typeof(Guid)) {
+                } else if (clrType == typeof(Guid)) {
                   var text = SQLite3.ColumnString(stmt, index);
                   return new Guid(text);
 #endif
@@ -2059,7 +2059,7 @@ namespace Camera.Model
 
         protected IntPtr Statement { get; set; }
 #if USE_CSHARP_SQLITE
-		internal static readonly Sqlite3Statement NullStatement = null;
+        internal static readonly Sqlite3Statement NullStatement = null;
 #else
         internal static readonly IntPtr NullStatement = IntPtr.Zero;
 #endif
@@ -2501,7 +2501,7 @@ namespace Camera.Model
                     if (mem.Member.MemberType == MemberTypes.Property)
                     {
 #else
-					if (mem.Member is PropertyInfo) {
+                    if (mem.Member is PropertyInfo) {
 #endif
                         var m = (PropertyInfo)mem.Member;
                         val = m.GetValue(obj, null);
@@ -2510,10 +2510,10 @@ namespace Camera.Model
                     else if (mem.Member.MemberType == MemberTypes.Field)
                     {
 #else
-					} else if (mem.Member is FieldInfo) {
+                    } else if (mem.Member is FieldInfo) {
 #endif
 #if SILVERLIGHT
-						val = Expression.Lambda (expr).Compile ().DynamicInvoke ();
+                        val = Expression.Lambda (expr).Compile ().DynamicInvoke ();
 #else
                         var m = (FieldInfo)mem.Member;
                         val = m.GetValue(obj);
@@ -2524,7 +2524,7 @@ namespace Camera.Model
 #if !NETFX_CORE
                         throw new NotSupportedException("MemberExpr: " + mem.Member.MemberType.ToString());
 #else
-						throw new NotSupportedException ("MemberExpr: " + mem.Member.DeclaringType.ToString ());
+                        throw new NotSupportedException ("MemberExpr: " + mem.Member.DeclaringType.ToString ());
 #endif
                     }
 
@@ -2835,161 +2835,161 @@ namespace Camera.Model
             return (Result) Sqlite3.sqlite3_open(filename, out db);
         }
 
-		public static Result Open(string filename, out Sqlite3.sqlite3 db, int flags, IntPtr zVfs)
-		{
-			return (Result)Sqlite3.sqlite3_open_v2(filename, out db, flags, null);
-		}
+        public static Result Open(string filename, out Sqlite3.sqlite3 db, int flags, IntPtr zVfs)
+        {
+            return (Result)Sqlite3.sqlite3_open_v2(filename, out db, flags, null);
+        }
 
-		public static Result Close(Sqlite3.sqlite3 db)
-		{
-			return (Result)Sqlite3.sqlite3_close(db);
-		}
+        public static Result Close(Sqlite3.sqlite3 db)
+        {
+            return (Result)Sqlite3.sqlite3_close(db);
+        }
 
-		public static Result BusyTimeout(Sqlite3.sqlite3 db, int milliseconds)
-		{
-			return (Result)Sqlite3.sqlite3_busy_timeout(db, milliseconds);
-		}
+        public static Result BusyTimeout(Sqlite3.sqlite3 db, int milliseconds)
+        {
+            return (Result)Sqlite3.sqlite3_busy_timeout(db, milliseconds);
+        }
 
-		public static int Changes(Sqlite3.sqlite3 db)
-		{
-			return Sqlite3.sqlite3_changes(db);
-		}
+        public static int Changes(Sqlite3.sqlite3 db)
+        {
+            return Sqlite3.sqlite3_changes(db);
+        }
 
-		public static Sqlite3.Vdbe Prepare2(Sqlite3.sqlite3 db, string query)
-		{
-			Sqlite3.Vdbe stmt = new Sqlite3.Vdbe();
-			var r = Sqlite3.sqlite3_prepare_v2(db, query, query.Length, ref stmt, 0);
-			if (r != 0)
-			{
-				throw SQLiteException.New((Result)r, GetErrmsg(db));
-			}
-			return stmt;
-		}
+        public static Sqlite3.Vdbe Prepare2(Sqlite3.sqlite3 db, string query)
+        {
+            Sqlite3.Vdbe stmt = new Sqlite3.Vdbe();
+            var r = Sqlite3.sqlite3_prepare_v2(db, query, query.Length, ref stmt, 0);
+            if (r != 0)
+            {
+                throw SQLiteException.New((Result)r, GetErrmsg(db));
+            }
+            return stmt;
+        }
 
-		public static Result Step(Sqlite3.Vdbe stmt)
-		{
-			return (Result)Sqlite3.sqlite3_step(stmt);
-		}
+        public static Result Step(Sqlite3.Vdbe stmt)
+        {
+            return (Result)Sqlite3.sqlite3_step(stmt);
+        }
 
-		public static Result Reset(Sqlite3.Vdbe stmt)
-		{
-			return (Result)Sqlite3.sqlite3_reset(stmt);
-		}
+        public static Result Reset(Sqlite3.Vdbe stmt)
+        {
+            return (Result)Sqlite3.sqlite3_reset(stmt);
+        }
 
-		public static Result Finalize(Sqlite3.Vdbe stmt)
-		{
-			return (Result)Sqlite3.sqlite3_finalize(stmt);
-		}
+        public static Result Finalize(Sqlite3.Vdbe stmt)
+        {
+            return (Result)Sqlite3.sqlite3_finalize(stmt);
+        }
 
-		public static long LastInsertRowid(Sqlite3.sqlite3 db)
-		{
-			return Sqlite3.sqlite3_last_insert_rowid(db);
-		}
+        public static long LastInsertRowid(Sqlite3.sqlite3 db)
+        {
+            return Sqlite3.sqlite3_last_insert_rowid(db);
+        }
 
-		public static string GetErrmsg(Sqlite3.sqlite3 db)
-		{
-			return Sqlite3.sqlite3_errmsg(db);
-		}
+        public static string GetErrmsg(Sqlite3.sqlite3 db)
+        {
+            return Sqlite3.sqlite3_errmsg(db);
+        }
 
-		public static int BindParameterIndex(Sqlite3.Vdbe stmt, string name)
-		{
-			return Sqlite3.sqlite3_bind_parameter_index(stmt, name);
-		}
+        public static int BindParameterIndex(Sqlite3.Vdbe stmt, string name)
+        {
+            return Sqlite3.sqlite3_bind_parameter_index(stmt, name);
+        }
 
-		public static int BindNull(Sqlite3.Vdbe stmt, int index)
-		{
-			return Sqlite3.sqlite3_bind_null(stmt, index);
-		}
+        public static int BindNull(Sqlite3.Vdbe stmt, int index)
+        {
+            return Sqlite3.sqlite3_bind_null(stmt, index);
+        }
 
-		public static int BindInt(Sqlite3.Vdbe stmt, int index, int val)
-		{
-			return Sqlite3.sqlite3_bind_int(stmt, index, val);
-		}
+        public static int BindInt(Sqlite3.Vdbe stmt, int index, int val)
+        {
+            return Sqlite3.sqlite3_bind_int(stmt, index, val);
+        }
 
-		public static int BindInt64(Sqlite3.Vdbe stmt, int index, long val)
-		{
-			return Sqlite3.sqlite3_bind_int64(stmt, index, val);
-		}
+        public static int BindInt64(Sqlite3.Vdbe stmt, int index, long val)
+        {
+            return Sqlite3.sqlite3_bind_int64(stmt, index, val);
+        }
 
-		public static int BindDouble(Sqlite3.Vdbe stmt, int index, double val)
-		{
-			return Sqlite3.sqlite3_bind_double(stmt, index, val);
-		}
+        public static int BindDouble(Sqlite3.Vdbe stmt, int index, double val)
+        {
+            return Sqlite3.sqlite3_bind_double(stmt, index, val);
+        }
 
-		public static int BindText(Sqlite3.Vdbe stmt, int index, string val, int n, IntPtr free)
-		{
-			return Sqlite3.sqlite3_bind_text(stmt, index, val, n, null);
-		}
+        public static int BindText(Sqlite3.Vdbe stmt, int index, string val, int n, IntPtr free)
+        {
+            return Sqlite3.sqlite3_bind_text(stmt, index, val, n, null);
+        }
 
-		public static int BindBlob(Sqlite3.Vdbe stmt, int index, byte[] val, int n, IntPtr free)
-		{
-			return Sqlite3.sqlite3_bind_blob(stmt, index, val, n, null);
-		}
+        public static int BindBlob(Sqlite3.Vdbe stmt, int index, byte[] val, int n, IntPtr free)
+        {
+            return Sqlite3.sqlite3_bind_blob(stmt, index, val, n, null);
+        }
 
-		public static int ColumnCount(Sqlite3.Vdbe stmt)
-		{
-			return Sqlite3.sqlite3_column_count(stmt);
-		}
+        public static int ColumnCount(Sqlite3.Vdbe stmt)
+        {
+            return Sqlite3.sqlite3_column_count(stmt);
+        }
 
-		public static string ColumnName(Sqlite3.Vdbe stmt, int index)
-		{
-			return Sqlite3.sqlite3_column_name(stmt, index);
-		}
+        public static string ColumnName(Sqlite3.Vdbe stmt, int index)
+        {
+            return Sqlite3.sqlite3_column_name(stmt, index);
+        }
 
-		public static string ColumnName16(Sqlite3.Vdbe stmt, int index)
-		{
-			return Sqlite3.sqlite3_column_name(stmt, index);
-		}
+        public static string ColumnName16(Sqlite3.Vdbe stmt, int index)
+        {
+            return Sqlite3.sqlite3_column_name(stmt, index);
+        }
 
-		public static ColType ColumnType(Sqlite3.Vdbe stmt, int index)
-		{
-			return (ColType)Sqlite3.sqlite3_column_type(stmt, index);
-		}
+        public static ColType ColumnType(Sqlite3.Vdbe stmt, int index)
+        {
+            return (ColType)Sqlite3.sqlite3_column_type(stmt, index);
+        }
 
-		public static int ColumnInt(Sqlite3.Vdbe stmt, int index)
-		{
-			return Sqlite3.sqlite3_column_int(stmt, index);
-		}
+        public static int ColumnInt(Sqlite3.Vdbe stmt, int index)
+        {
+            return Sqlite3.sqlite3_column_int(stmt, index);
+        }
 
-		public static long ColumnInt64(Sqlite3.Vdbe stmt, int index)
-		{
-			return Sqlite3.sqlite3_column_int64(stmt, index);
-		}
+        public static long ColumnInt64(Sqlite3.Vdbe stmt, int index)
+        {
+            return Sqlite3.sqlite3_column_int64(stmt, index);
+        }
 
-		public static double ColumnDouble(Sqlite3.Vdbe stmt, int index)
-		{
-			return Sqlite3.sqlite3_column_double(stmt, index);
-		}
+        public static double ColumnDouble(Sqlite3.Vdbe stmt, int index)
+        {
+            return Sqlite3.sqlite3_column_double(stmt, index);
+        }
 
-		public static string ColumnText(Sqlite3.Vdbe stmt, int index)
-		{
-			return Sqlite3.sqlite3_column_text(stmt, index);
-		}
+        public static string ColumnText(Sqlite3.Vdbe stmt, int index)
+        {
+            return Sqlite3.sqlite3_column_text(stmt, index);
+        }
 
-		public static string ColumnText16(Sqlite3.Vdbe stmt, int index)
-		{
-			return Sqlite3.sqlite3_column_text(stmt, index);
-		}
+        public static string ColumnText16(Sqlite3.Vdbe stmt, int index)
+        {
+            return Sqlite3.sqlite3_column_text(stmt, index);
+        }
 
-		public static byte[] ColumnBlob(Sqlite3.Vdbe stmt, int index)
-		{
-			return Sqlite3.sqlite3_column_blob(stmt, index);
-		}
+        public static byte[] ColumnBlob(Sqlite3.Vdbe stmt, int index)
+        {
+            return Sqlite3.sqlite3_column_blob(stmt, index);
+        }
 
-		public static int ColumnBytes(Sqlite3.Vdbe stmt, int index)
-		{
-			return Sqlite3.sqlite3_column_bytes(stmt, index);
-		}
+        public static int ColumnBytes(Sqlite3.Vdbe stmt, int index)
+        {
+            return Sqlite3.sqlite3_column_bytes(stmt, index);
+        }
 
-		public static string ColumnString(Sqlite3.Vdbe stmt, int index)
-		{
-			return Sqlite3.sqlite3_column_text(stmt, index);
-		}
+        public static string ColumnString(Sqlite3.Vdbe stmt, int index)
+        {
+            return Sqlite3.sqlite3_column_text(stmt, index);
+        }
 
-		public static byte[] ColumnByteArray(Sqlite3.Vdbe stmt, int index)
-		{
-			return ColumnBlob(stmt, index);
-		}
+        public static byte[] ColumnByteArray(Sqlite3.Vdbe stmt, int index)
+        {
+            return ColumnBlob(stmt, index);
+        }
 #endif
 
         public enum ColType : int

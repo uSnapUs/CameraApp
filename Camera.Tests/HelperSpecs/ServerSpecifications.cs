@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading;
 using Camera.Exceptions;
 using Camera.Helpers;
+using Camera.Messages;
 using Camera.Model;
 using Machine.Fakes;
 using Machine.Fakes.Adapters.Moq;
@@ -103,7 +104,7 @@ namespace Camera.Tests.HelperSpecs
             protected static IRestResponse<DeviceRegistration> _restResponse;
             static string _baseUrl;
             protected static List<Parameter> _params = new List<Parameter>();
-            static ITinyMessengerHub _messenger;
+            protected static ITinyMessengerHub _messenger;
         }
 
         public class when_registering_initial_device : ServerSpecification
@@ -139,7 +140,7 @@ namespace Camera.Tests.HelperSpecs
             Because of = () => _result = _sut.CreateEvent(_event);
             It should_retrn_correct_event = () => _result.ShouldEqual(_serverEvent);
             static Event _serverEvent = new Event {Name = "server name"};
-            static Event _event = new Event() {Name = "original name"};
+            static Event _event = new Event {Name = "original name"};
             static Event _result;
         }
 
@@ -294,7 +295,7 @@ namespace Camera.Tests.HelperSpecs
                     _existing_event2 = _sut.CreateEvent(_event2);
                 };
 
-            Because of = () => _result = _sut.FindEventsByLocation(new Coordinate() {Latitude = 0.1, Longitude = 0.1});
+            Because of = () => _result = _sut.FindEventsByLocation(new Coordinate {Latitude = 0.1, Longitude = 0.1});
 
             It should_return_correct_events =
                 () => _result.Select(ev => ev.Name).ShouldContain(_event1.Name, _event2.Name);
@@ -352,21 +353,33 @@ namespace Camera.Tests.HelperSpecs
                             (
                                 _event1
                             );
-                    var assemblyPath = new System.IO.FileInfo(typeof(integration_when_posting_a_photo).Assembly.Location).Directory;
+                    var assemblyPath = new FileInfo(typeof(integration_when_posting_a_photo).Assembly.Location).Directory;
                     _photoFilePath = assemblyPath + "/TestData/house.jpg";
-
-
-
-
-
                 };
             
             Because of = () =>
                 {
+                    var initialUpdateTime = DateTime.UtcNow;
                     _sut.PostPhoto(_existing_event1.Code, _photoFilePath,_photoId);
-                    Thread.Sleep(1000);
+                    bool done = false;
+                    _messenger.WhenToldTo(m => m.PublishAsync(Moq.It.IsAny<UploaderDoneMessage>())).Callback((UploaderDoneMessage m) => done = true);
+                    while (!done)
+                    {
+                        Thread.Sleep(100);
+                        if (Math.Abs((DateTime.UtcNow - initialUpdateTime).TotalSeconds) > 15)
+                        {
+                            done = true;
+                        }
+                    }
                 };
             It should_do_an_upload = () => _photoFilePath.ShouldNotBeNull();
+
+            It should_raise_upload_done_message =
+                () => _messenger.WasToldTo(
+                    m => m.PublishAsync(Moq.It.Is<UploaderDoneMessage>(done => done.PhotoId == _photoId)));
+            It should_raise_upload_progress_messages = () => _messenger.WasToldTo(
+                    m=>m.PublishAsync(Moq.It.Is<UploadProgressMessage>(message=>message.PhotoId==_photoId))
+                );
             static Event _event1 = new Event
             {
                 Name = "Name",
@@ -383,6 +396,70 @@ namespace Camera.Tests.HelperSpecs
             static DeviceRegistration _deviceRegistration;
             static string _photoFilePath;
             static Guid _photoId= Guid.NewGuid();
+        }
+        public class integraiton_when_getting_photos_since:IntegrationServerSpecification
+        {
+            Establish context = () =>
+                {
+                    _initialUpdateTime = DateTime.UtcNow;
+                    _deviceRegistration = _sut.RegisterDevice(new DeviceRegistration
+                    {
+
+                        Guid = "0F0F187A-9AD5-461A-BB56-810BFEF41553",
+                        Name = "test device",
+                        FacebookId = "facebook_id"
+                    });
+
+                    _sut.SetDeviceCredentials
+                        (
+                            _deviceRegistration.Guid
+                            ,
+                            _deviceRegistration.Token
+                        );
+                    _existing_event1 =
+                        _sut.CreateEvent
+                            (
+                                _event1
+                            );
+                    var assemblyPath = new FileInfo(typeof(integration_when_posting_a_photo).Assembly.Location).Directory;
+                    var _photoFilePath = assemblyPath + "/TestData/house.jpg";
+                    _sut.PostPhoto(_existing_event1.Code, _photoFilePath, Guid.NewGuid());
+                    bool done =false;
+                    _messenger.WhenToldTo(m=>m.PublishAsync(Moq.It.IsAny<UploaderDoneMessage>())).Callback((UploaderDoneMessage m)=>done = true);
+                    while (!done)
+                    {
+                        Thread.Sleep(100);
+                        if (Math.Abs((DateTime.UtcNow - _initialUpdateTime).TotalSeconds) > 15)
+                        {
+                            done = true;
+                        }
+                    }
+
+                };
+            Because of = () => _photos =  _sut.GetPhotos(_existing_event1,_initialUpdateTime.AddSeconds(-1));
+            It should_return_one_photo = () => _photos.Count().ShouldEqual(1);
+
+            It should_have_thumbnail_path = () => _photos[0].ThumbnailPath.ShouldNotBeNull();
+            It should_have_full_path = () => _photos[0].FullPath.ShouldNotBeNull();
+            It should_have_root_url = () => _photos[0].RootUrl.ShouldNotBeNull();
+            It should_get_creation_time = () => _photos[0].CreationTime.ToUniversalTime().ShouldBeCloseTo(_initialUpdateTime,TimeSpan.FromSeconds(20));
+            It should_have_a_server_id = () => _photos[0].ServerId.ShouldNotBeNull();
+            static Event _event1 = new Event
+            {
+                Name = "Name",
+                Address = "An Address",
+                Location = new Point { Latitude = 0.11, Longitude = 0.1 },
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today,
+                IsPublic = true,
+                Code = null
+
+            };
+
+            static Event _existing_event1;
+            static DeviceRegistration _deviceRegistration;
+            static DateTime _initialUpdateTime;
+            static Photo[] _photos;
         }
     }
 }

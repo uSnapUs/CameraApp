@@ -37,7 +37,9 @@ namespace Camera.Model
                 return hashCode;
             }
         }
-
+        [JsonIgnore]
+        [AutoIncrement, PrimaryKey]
+        public int Id { get; set; }
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
         [JsonProperty(PropertyName = "address")]
@@ -51,7 +53,51 @@ namespace Camera.Model
         [JsonProperty(PropertyName="code")]
         public string Code { get; set; }
         [JsonProperty(PropertyName = "location")]
+        [Ignore]
         public Point Location { get; set; }
+        [JsonIgnore]
+        public double Latitude
+        {
+            get
+            {
+                if (Location == null)
+                {
+                    Location = new Point();
+                }
+                return Location.Latitude;
+            }
+            set
+            {
+                if (Location == null)
+                {
+                    Location = new Point();
+                }
+                Location.Latitude = value;
+            }
+        }
+        [JsonIgnore]
+        public double Longitude
+        {
+            get
+            {
+                if (Location == null)
+                {
+                    Location = new Point();
+                }
+                return Location.Longitude;
+            }
+            set
+            {
+                if (Location == null)
+                {
+                    Location = new Point();
+                }
+                Location.Longitude = value;
+            }
+        }
+    
+        [JsonProperty(PropertyName = "id")]
+        public string ServerId { get; set; }
         
     }
     public class Point

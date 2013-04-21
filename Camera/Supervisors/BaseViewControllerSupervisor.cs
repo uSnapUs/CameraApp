@@ -31,7 +31,7 @@ namespace Camera.Supervisors
             
         }
 
-        protected void ViewControllerAppear(object sender, EventArgs e)
+        protected virtual void ViewControllerAppear(object sender, EventArgs e)
         {
                 
         }

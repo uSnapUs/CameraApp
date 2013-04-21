@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Camera.Messages;
 using Camera.Model;
+using MonoTouch.Foundation;
 using TinyMessenger;
 
 namespace Camera.Helpers
@@ -67,9 +71,12 @@ namespace Camera.Helpers
         {
             db.CreateTable<DeviceRegistration>();
             db.DeleteAll<DeviceRegistration>();
+            db.DropTable<Event>();
+            db.CreateTable<Event>();
             //db.CreateTable<CurrentEvent>();
             //db.DeleteAll<CurrentEvent>();
-            //db.CreateTable<Photo>();
+            db.DropTable<Photo>();
+            db.CreateTable<Photo>();
         }
 
         static IStateManager _stateManager;
@@ -82,11 +89,15 @@ namespace Camera.Helpers
 
         IServer _server;
         readonly object _dbLock = new object();
-        internal static SQLiteConnection Db;
+        public static SQLiteConnection Db;
         static ITinyMessengerHub _messageHub;
         ILogger _logger;
         ILocationCoder _locationCoder;
         ILocationManager _locationManager;
+        readonly List<PhotoUpload> _photoUploads = new List<PhotoUpload>();
+        TinyMessageSubscriptionToken _uploadDoneSubscriptionToken;
+        TinyMessageSubscriptionToken _uploadProgressToken;
+        NSTimer _eventUpdateTimer;
 
         public ITinyMessengerHub MessageHub
         {
@@ -172,6 +183,81 @@ namespace Camera.Helpers
         public Event CreateEvent(Event eventToCreate)
         {
             return Server.CreateEvent(eventToCreate);
+        }
+
+        public void UploadPhoto(Event currentEvent,string photoPath)
+        {
+            if (_uploadDoneSubscriptionToken == null)
+            {
+                _uploadDoneSubscriptionToken = MessageHub.Subscribe<UploaderDoneMessage>(OnUploadDone);
+            }
+            if (_uploadProgressToken == null)
+            {
+                _uploadProgressToken = MessageHub.Subscribe<UploadProgressMessage>(OnUploadProgress);
+            }
+            var photoUpload = new PhotoUpload {
+                Event = currentEvent,
+                Path = photoPath
+            };
+            _photoUploads.Add(photoUpload);
+            _server.PostPhoto(currentEvent.Code,photoPath,photoUpload.Id);
+        }
+
+        public Photo[] GetEventPhotos(Event ev)
+        {
+            return (from photo in Db.Table<Photo>() where photo.EventCode ==ev.Code select photo).ToArray();
+        }
+
+        public void StartUpdatingPhotosForEvent(Event ev)
+        {
+            _eventUpdateTimer = NSTimer.CreateRepeatingScheduledTimer(TimeSpan.FromSeconds(30), () => UpdatePhotosForEvent(ev));
+            _eventUpdateTimer.Fire();
+        }
+
+        public void StopUpdatingPhotosForEvent()
+        {
+            if (_eventUpdateTimer != null)
+            {
+                _eventUpdateTimer.Invalidate();
+                _eventUpdateTimer.Dispose();
+                _eventUpdateTimer = null;
+            }
+        }
+
+        public void UpdatePhotosForEvent(Event ev)
+        {
+            var lastUpdateDate = Db.Table<Photo>().Where(p => p.EventCode == ev.Code).OrderByDescending(p=>p.CreationTime).FirstOrDefault();
+            DateTime? updateDate = null;
+            if (lastUpdateDate != null)
+            {
+                updateDate = lastUpdateDate.CreationTime;
+            }
+            var photos = Server.GetPhotos(ev, updateDate);
+            if (photos.Length > 0)
+            {
+                photos = photos.Select(p =>
+                    {
+                        p.EventCode = ev.Code;
+                        return p;
+                    }).ToArray();
+                Console.WriteLine(photos[0].EventCode);
+                Db.InsertAll(photos);
+                _messageHub.PublishAsync(new EventPhotoListUpdatedMessage {Sender=this,EventCode = ev.Code});
+            }
+            
+        }
+
+        void OnUploadProgress(UploadProgressMessage obj)
+        {
+            
+        }
+
+        void OnUploadDone(UploaderDoneMessage uploaderDoneMessage)
+        {
+            if (_eventUpdateTimer != null)
+            {
+                _eventUpdateTimer.Fire();
+            }
         }
 
         public Coordinate? CurrentLocation { get; set; }

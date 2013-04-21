@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Text;
 using Camera.Exceptions;
+using Camera.Messages;
 using Camera.Model;
 using Newtonsoft.Json;
 using RestSharp;
@@ -22,10 +24,9 @@ namespace Camera.Helpers
             _tinyMessenger = tinyMessenger;
             _tinyMessenger.Subscribe<UploaderDoneMessage>(message =>
                 {
-                    var photoUploader = message.PhotoUploader;
-                    if (_photoUploaders.Contains(photoUploader))
+                    if (_photoUploaders.Contains(message.Sender as PhotoUploader))
                     {
-                        _photoUploaders.Remove(photoUploader);
+                        _photoUploaders.Remove(message.Sender as PhotoUploader);
                     }
                 });
         }
@@ -141,14 +142,17 @@ namespace Camera.Helpers
             _logger.Exception(exception);
             throw exception;
         }
-        internal class PhotoUploader
+
+        public class PhotoUploader
         {
+            readonly Guid _photoIdentifier;
             WebClient _webClient;
             readonly ITinyMessengerHub _tinyMessenger;
 
             public PhotoUploader(string code, string path, Guid photoIdentifier, Server server)
             {
-                this._tinyMessenger = server._tinyMessenger;
+                _photoIdentifier = photoIdentifier;
+                _tinyMessenger = server._tinyMessenger;
                 _webClient = new WebClient
                 {
                     BaseAddress = server.BaseUrl,
@@ -161,24 +165,62 @@ namespace Camera.Helpers
 
             void WebClientOnUploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
             {
-                
+
+                _tinyMessenger.PublishAsync(new UploadProgressMessage { Sender = this, TotalBytes = e.TotalBytesToSend,BytsSent = e.BytesSent,PhotoId=_photoIdentifier });
             }
 
             void WebClientOnUploadFileCompleted(object sender, UploadFileCompletedEventArgs e)
             {
+                
                 _webClient.UploadProgressChanged -= WebClientOnUploadProgressChanged;
                 _webClient.UploadFileCompleted -= WebClientOnUploadFileCompleted;
                 _webClient.Dispose();
                 _webClient = null;
-                _tinyMessenger.PublishAsync(new UploaderDoneMessage{Sender = this,PhotoUploader = this});
+                if (e.Cancelled)
+                {
+                    _tinyMessenger.PublishAsync(
+                        new UploaderCancelledMessage());
+                }
+                if (e.Error != null)
+                {
+                    _tinyMessenger.PublishAsync(
+                            new UploaderErrorMessage {
+                                Error = e.Error
+                            }
+                        );
+                }
+                else
+                {
+                    _tinyMessenger.PublishAsync(new UploaderDoneMessage {
+                        Sender = this,
+                        PhotoId = _photoIdentifier,
+                        Response =Encoding.UTF8.GetString(e.Result)
+                    });
+                }
             }
         }
-    }
 
-    internal class UploaderDoneMessage : ITinyMessage
-    {
-        public Server.PhotoUploader PhotoUploader { get; set; }
-        public object Sender { get; set; }
+        public Photo[] GetPhotos(Event forEvent, DateTime? postedSince)
+        {
+            var client = GetClient();
+            var request = RestClientFactory.CreateRestRequest("/event/" + forEvent.Code + "/photos",
+                Method.GET);
+            if (postedSince.HasValue)
+            {
+                request.AddParameter("since", postedSince.Value.ToUniversalTime().ToString("o"));
+            }
+
+            request.JsonSerializer = new JsonDotNetSerializer();
+            request.RequestFormat = DataFormat.Json;
+            var response = client.Get<List<Photo>>(request);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return response.Data.ToArray();
+            }
+            var exception = new ApiException(response.Content);
+            _logger.Exception(exception);
+            throw exception;
+        }
     }
 
 
@@ -200,7 +242,6 @@ namespace Camera.Helpers
     public class Credientials
     {
         public string Guid { get; set; }
-
         public string Token { get; set; }
     }
     

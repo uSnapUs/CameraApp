@@ -1,4 +1,5 @@
 ﻿using System;
+using BigTed;
 using Camera.Model;
 using Camera.Supervisors;
 using Camera.ViewControllers.Interfaces;
@@ -6,6 +7,7 @@ using Camera.Views;
 using MonoTouch.AssetsLibrary;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
+using SDWebImage;
 
 namespace Camera.ViewControllers
 {
@@ -14,6 +16,8 @@ namespace Camera.ViewControllers
     {
         EventDashboardView _eventDashboardView;
         EventDashboardViewControllerSupervisor _supervisor;
+        readonly Event _event;
+        EventTableViewDelegate _tableViewDataSource;
 
         public EventDashboardViewController(Event serverEvent)
         {
@@ -21,7 +25,10 @@ namespace Camera.ViewControllers
             _eventDashboardView = new EventDashboardView();
             _eventDashboardView.BackButtonPressed += EventDashboardBackButtonPressed;
             _eventDashboardView.CameraButtonPressed += EventDashboardViewOnCameraButtonPressed;
+            _tableViewDataSource = new EventTableViewDelegate();
+            _eventDashboardView.TableView.DataSource = _tableViewDataSource;
             _supervisor = new EventDashboardViewControllerSupervisor(this);
+            _event = serverEvent;
             if (serverEvent != null)
             {
                 _eventDashboardView.Title = serverEvent.Name;
@@ -51,6 +58,25 @@ namespace Camera.ViewControllers
 
         public event EventHandler<EventArgs> BackButtonPressed;
         public event EventHandler<EventArgs> CameraButtonPressed;
+        public event EventHandler<ImageEventArgs> ImageSelected;
+
+        void OnImageSelected(ImageEventArgs e)
+        {
+            EventHandler<ImageEventArgs> handler = ImageSelected;
+            if (handler != null) handler(this, e);
+        }
+
+        public Event Event { get { return _event; } }
+
+        public Photo[] Photos
+        {
+            get { return _tableViewDataSource.Photos; }
+            set
+            {
+                _tableViewDataSource.Photos = value;
+                _eventDashboardView.TableView.ReloadData();
+            }
+        }
 
         void OnCameraButtonPressed()
         {
@@ -79,6 +105,26 @@ namespace Camera.ViewControllers
             PresentViewController(imagePickerViewController,true,null);
         }
 
+        public void ProgressUploadMessage(float percentageDone)
+        {
+            BTProgressHUD.Show("Uploading",percentageDone,BTProgressHUD.MaskType.Gradient);
+        }
+
+        public void StartUploadMessage()
+        {
+            BTProgressHUD.Show("Uploading");
+        }
+
+        public void ClearUploadMessage(bool uploadOk)
+        {
+            BTProgressHUD.ShowSuccessWithStatus("Upload done");
+        }
+
+        public void ShowUpdatingMessage()
+        {
+            BTProgressHUD.ShowToast("Loading photos",false);
+        }
+
         void ImagePickerViewControllerOnCancel(object sender, EventArgs eventArgs)
         {
             DismissViewController(true,null);
@@ -93,16 +139,6 @@ namespace Camera.ViewControllers
 
         void ImagePickerViewControllerOnImageCaptured(object sender, ImageCaptureEvent imageCaptureEvent)
         {
-         
-            if (NSThread.IsMain) {
-             Console.WriteLine("On Main Thread");
-            }
-            else
-            {
-                Console.WriteLine("Not on Main Thread");
-            }
-        
-            Console.WriteLine();
             var imagePickerViewController = sender as ImagePickerViewController;
             if (imagePickerViewController != null)
             {
@@ -110,42 +146,60 @@ namespace Camera.ViewControllers
                 imagePickerViewController.Cancel -= ImagePickerViewControllerOnCancel;
                 DismissViewController(true,imagePickerViewController.Dispose);
             }
-            var library = new ALAssetsLibrary();
-            var alaOrentation = ALAssetOrientation.Down;
-            switch (imageCaptureEvent.Image.Orientation)
-            {
-                case UIImageOrientation.Down:
-                    alaOrentation = ALAssetOrientation.Down;
-                    break;
-                case UIImageOrientation.DownMirrored:
-                    alaOrentation = ALAssetOrientation.DownMirrored;
-                    break;
-                case UIImageOrientation.Left:
-                    alaOrentation = ALAssetOrientation.Left;
-                    break;
-                case UIImageOrientation.LeftMirrored:
-                    alaOrentation = ALAssetOrientation.LeftMirrored;
-                    break;
-                case UIImageOrientation.Right:
-                    alaOrentation = ALAssetOrientation.Right;
-                    break;
-                case UIImageOrientation.RightMirrored:
-                    alaOrentation = ALAssetOrientation.RightMirrored;
-                    break;
-                case UIImageOrientation.Up:
-                    alaOrentation = ALAssetOrientation.Up;
-                    break;
-                case UIImageOrientation.UpMirrored:
-                    alaOrentation = ALAssetOrientation.UpMirrored;
-                    break;
-            }
-            library.WriteImageToSavedPhotosAlbum(imageCaptureEvent.Image.CGImage, alaOrentation, (url, error) =>
+          
+            InvokeInBackground(() =>
                 {
-                    if (error != null)
-                        return;
-                    AddAssetToAlbum(url);
-                });
+                    var library = new ALAssetsLibrary();
+                    var alaOrentation = ALAssetOrientation.Down;
+                    switch (imageCaptureEvent.Image.Orientation)
+                    {
+                        case UIImageOrientation.Down:
+                            alaOrentation = ALAssetOrientation.Down;
+                            break;
+                        case UIImageOrientation.DownMirrored:
+                            alaOrentation = ALAssetOrientation.DownMirrored;
+                            break;
+                        case UIImageOrientation.Left:
+                            alaOrentation = ALAssetOrientation.Left;
+                            break;
+                        case UIImageOrientation.LeftMirrored:
+                            alaOrentation = ALAssetOrientation.LeftMirrored;
+                            break;
+                        case UIImageOrientation.Right:
+                            alaOrentation = ALAssetOrientation.Right;
+                            break;
+                        case UIImageOrientation.RightMirrored:
+                            alaOrentation = ALAssetOrientation.RightMirrored;
+                            break;
+                        case UIImageOrientation.Up:
+                            alaOrentation = ALAssetOrientation.Up;
+                            break;
+                        case UIImageOrientation.UpMirrored:
+                            alaOrentation = ALAssetOrientation.UpMirrored;
+                            break;
+                    }
 
+                    library.WriteImageToSavedPhotosAlbum(imageCaptureEvent.Image.CGImage, alaOrentation,
+                                                         (url, error) =>
+                                                             {
+                                                                 if (error != null)
+                                                                     return;
+                                                                 AddAssetToAlbum(url);
+                                                             });
+                });
+            InvokeInBackground(() => UploadImage(imageCaptureEvent.Image));
+
+        }
+
+        void UploadImage(UIImage image)
+        {
+
+            var data = image.AsPNG();
+            byte[] dataBytes = new byte[data.Length];
+            System.Runtime.InteropServices.Marshal.Copy(data.Bytes,dataBytes,0,Convert.ToInt32(data.Length));
+            OnImageSelected(new ImageEventArgs {
+                Image = dataBytes
+            });
         }
 
         void AddAssetToAlbum(NSUrl result)
@@ -194,5 +248,36 @@ namespace Camera.ViewControllers
         }
 
         
+    }
+
+    public class EventTableViewDelegate:UITableViewDataSource
+    {
+        public EventTableViewDelegate()
+        {
+            Photos = new Photo[]{};
+        }
+        const string CellId = "PhotoTableViewCell";
+        public Photo[] Photos { get; set; }
+        public override int NumberOfSections(UITableView tableView)
+        {
+            return 1;
+        }
+        public override int RowsInSection(UITableView tableView, int section)
+        {
+            return Photos.Length;
+        }
+
+        public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
+        {
+            var cell = tableView.DequeueReusableCell(CellId);
+            var photo = Photos[indexPath.Row];
+            if (cell == null)
+            {
+                cell = new UITableViewCell(UITableViewCellStyle.Default,CellId);
+            }
+            cell.ImageView.SetImage(url: new NSUrl(photo.RootUrl + photo.ThumbnailPath));
+            return cell;
+
+        }
     }
 }
