@@ -17,7 +17,7 @@ namespace Camera.ViewControllers
         EventDashboardView _eventDashboardView;
         EventDashboardViewControllerSupervisor _supervisor;
         readonly Event _event;
-        EventTableViewDelegate _tableViewDataSource;
+        readonly EventTableViewDelegate _tableViewDataSource;
 
         public EventDashboardViewController(Event serverEvent)
         {
@@ -26,7 +26,8 @@ namespace Camera.ViewControllers
             _eventDashboardView.BackButtonPressed += EventDashboardBackButtonPressed;
             _eventDashboardView.CameraButtonPressed += EventDashboardViewOnCameraButtonPressed;
             _tableViewDataSource = new EventTableViewDelegate();
-            _eventDashboardView.TableView.DataSource = _tableViewDataSource;
+            _eventDashboardView.TableView.Source = _tableViewDataSource;
+            
             _supervisor = new EventDashboardViewControllerSupervisor(this);
             _event = serverEvent;
             if (serverEvent != null)
@@ -35,6 +36,10 @@ namespace Camera.ViewControllers
             }
             View = _eventDashboardView;
 
+        }
+
+        public class EventDashboardViewDelegate:UITableViewDelegate
+        {
         }
 
         void EventDashboardViewOnCameraButtonPressed(object sender, EventArgs eventArgs)
@@ -73,8 +78,15 @@ namespace Camera.ViewControllers
             get { return _tableViewDataSource.Photos; }
             set
             {
-                _tableViewDataSource.Photos = value;
-                _eventDashboardView.TableView.ReloadData();
+
+                InvokeOnMainThread(delegate
+                    {
+                        _tableViewDataSource.Photos = value;
+                        Console.WriteLine("Reloading data");
+                        _eventDashboardView.TableView.ReloadData();
+                        _eventDashboardView.SetNeedsDisplay();
+                    });
+
             }
         }
 
@@ -250,7 +262,66 @@ namespace Camera.ViewControllers
         
     }
 
-    public class EventTableViewDelegate:UITableViewDataSource
+    public abstract class MyTableViewController:UITableViewController,IBaseViewController
+    {
+        protected abstract void EnsureSupervised();
+
+        public override void ViewDidLoad()
+        {
+            EnsureSupervised();
+            base.ViewDidLoad();
+            OnLoad();
+        }
+        public override void ViewDidAppear(bool animated)
+        {
+            EnsureSupervised();
+            base.ViewDidAppear(animated);
+            OnAppear();
+        }
+        public override void ViewDidDisappear(bool animated)
+        {
+            // OnUnload();
+            base.ViewDidDisappear(animated);
+        }
+        public event EventHandler<EventArgs> Load;
+
+        protected virtual void OnLoad()
+        {
+            EventHandler<EventArgs> handler = Load;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
+        public event EventHandler<EventArgs> Unload;
+
+        protected virtual void OnUnload()
+        {
+            EventHandler<EventArgs> handler = Unload;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
+        public event EventHandler<EventArgs> Appear;
+
+        protected virtual void OnAppear()
+        {
+            EventHandler<EventArgs> handler = Appear;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
+        public event EventHandler<EventArgs> BeforeAppear;
+
+        protected virtual void OnBeforeAppear()
+        {
+            EventHandler<EventArgs> handler = BeforeAppear;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+        protected override void Dispose(bool disposing)
+        {
+            OnUnload();
+            base.Dispose(disposing);
+        }
+    }
+
+    public class EventTableViewDelegate:UITableViewSource
     {
         public EventTableViewDelegate()
         {
@@ -264,20 +335,27 @@ namespace Camera.ViewControllers
         }
         public override int RowsInSection(UITableView tableView, int section)
         {
+            Console.WriteLine("loading rows in section. {0}",Photos.Length);
             return Photos.Length;
         }
 
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
         {
-            var cell = tableView.DequeueReusableCell(CellId);
+            var cell = tableView.DequeueReusableCell(CellId) as EventPhotoCell;
             var photo = Photos[indexPath.Row];
             if (cell == null)
             {
-                cell = new UITableViewCell(UITableViewCellStyle.Default,CellId);
+                cell = new EventPhotoCell(CellId, photo);
             }
-            cell.ImageView.SetImage(url: new NSUrl(photo.RootUrl + photo.ThumbnailPath));
+            else
+            {
+                cell.UpdatePhoto(photo);
+            }
+
             return cell;
 
+        
         }
+        
     }
 }

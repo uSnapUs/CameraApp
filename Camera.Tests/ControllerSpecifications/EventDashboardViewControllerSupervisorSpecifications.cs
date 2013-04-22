@@ -74,7 +74,7 @@ namespace Camera.Tests.ControllerSpecifications
             It should_populate_initial_events = () => _mockViewController.VerifySet(vc=>vc.Photos=_photos);
             static Event _event = new Event();
             static Photo[] _photos = new[] {
-                new Photo(), 
+                new Photo()
             };
         }
         public class on_saving_photo:EventDashboardViewControllerSupervisorSpecification

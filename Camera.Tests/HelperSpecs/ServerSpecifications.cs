@@ -461,5 +461,82 @@ namespace Camera.Tests.HelperSpecs
             static DateTime _initialUpdateTime;
             static Photo[] _photos;
         }
+        public class integraiton_when_getting_photos_since_last_photo : IntegrationServerSpecification
+        {
+            Establish context = () =>
+            {
+                _initialUpdateTime = DateTime.UtcNow;
+                _deviceRegistration = _sut.RegisterDevice(new DeviceRegistration
+                {
+
+                    Guid = "0F0F187A-9AD5-461A-BB56-810BFEF41553",
+                    Name = "test device",
+                    FacebookId = "facebook_id"
+                });
+
+                _sut.SetDeviceCredentials
+                    (
+                        _deviceRegistration.Guid
+                        ,
+                        _deviceRegistration.Token
+                    );
+                _existing_event1 =
+                    _sut.CreateEvent
+                        (
+                            _event1
+                        );
+                var assemblyPath = new FileInfo(typeof(integration_when_posting_a_photo).Assembly.Location).Directory;
+                var _photoFilePath = assemblyPath + "/TestData/house.jpg";
+                bool done = false;
+                _sut.PostPhoto(_existing_event1.Code, _photoFilePath, Guid.NewGuid());
+                
+                _messenger.WhenToldTo(m => m.PublishAsync(Moq.It.IsAny<UploaderDoneMessage>())).Callback((UploaderDoneMessage m) => done = true);
+                while (!done)
+                {
+                    Thread.Sleep(100);
+                    if (Math.Abs((DateTime.UtcNow - _initialUpdateTime).TotalSeconds) > 15)
+                    {
+                        done = true;
+                    }
+                }
+                _existing_photos = _sut.GetPhotos(_existing_event1, null);
+                _initialUpdateTime = DateTime.UtcNow;
+                done = false;
+                _sut.PostPhoto(_existing_event1.Code, _photoFilePath, Guid.NewGuid());
+                while (!done)
+                {
+                    Thread.Sleep(100);
+                    if (Math.Abs((DateTime.UtcNow - _initialUpdateTime).TotalSeconds) > 15)
+                    {
+                        done = true;
+                    }
+                }
+            };
+            Because of = () => 
+                _photos = _sut.GetPhotos(_existing_event1,_existing_photos.Max(p => p.CreationTime));
+            It should_return_one_photo = () => _photos.Count().ShouldEqual(1);
+            It should_have_thumbnail_path = () => _photos[0].ThumbnailPath.ShouldNotBeNull();
+            It should_have_full_path = () => _photos[0].FullPath.ShouldNotBeNull();
+            It should_have_root_url = () => _photos[0].RootUrl.ShouldNotBeNull();
+            It should_get_creation_time = () => _photos[0].CreationTime.ToUniversalTime().ShouldBeCloseTo(_initialUpdateTime, TimeSpan.FromSeconds(20));
+            It should_have_a_server_id = () => _photos[0].ServerId.ShouldNotBeNull();
+            static Event _event1 = new Event
+            {
+                Name = "Name",
+                Address = "An Address",
+                Location = new Point { Latitude = 0.11, Longitude = 0.1 },
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today,
+                IsPublic = true,
+                Code = null
+
+            };
+
+            static Event _existing_event1;
+            static DeviceRegistration _deviceRegistration;
+            static DateTime _initialUpdateTime;
+            static Photo[] _photos;
+            static Photo[] _existing_photos;
+        }
     }
 }

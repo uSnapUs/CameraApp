@@ -54,6 +54,7 @@ namespace Camera.Views
                 TableHeaderView = _tableHeaderView,
                 BackgroundColor = UIColor.FromRGB(239, 237, 236),
                 SeparatorColor = UIColor.Clear,
+                RowHeight = 230,
             };
             //_stream.AddSubview(_tableHeaderView);
             _topBarView = new UIView

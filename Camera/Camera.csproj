@@ -145,6 +145,7 @@
     <Compile Include="Views\CreateEventView.cs" />
     <Compile Include="Views\DropShadowLabel.cs" />
     <Compile Include="Views\EventDashboardView.cs" />
+    <Compile Include="Views\EventPhotoCell.cs" />
     <Compile Include="Views\FindNearbyMapView.cs" />
     <Compile Include="Views\FindNearbyView.cs" />
     <Compile Include="Views\ImagePickerView.cs" />
@@ -325,6 +326,9 @@
     </Reference>
     <Reference Include="GPUImage">
       <HintPath>..\libs\GPUImage.dll</HintPath>
+    </Reference>
+    <Reference Include="Mindscale.Raygun4Net.XamainiOS">
+      <HintPath>..\libs\ios\Mindscale.Raygun4Net.XamainiOS.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\libs\ios\Newtonsoft.Json.dll</HintPath>

@@ -111,7 +111,7 @@ namespace Camera.Model
         /// only here for backwards compatibility. There is a *significant* speed advantage, with no
         /// down sides, when setting storeDateTimeAsTicks = true.
         /// </param>
-        public SQLiteConnection(string databasePath, bool storeDateTimeAsTicks = false)
+        public SQLiteConnection(string databasePath, bool storeDateTimeAsTicks = true)
         {
             DatabasePath = databasePath;
             IntPtr handle;
@@ -140,7 +140,7 @@ namespace Camera.Model
         /// only here for backwards compatibility. There is a *significant* speed advantage, with no
         /// down sides, when setting storeDateTimeAsTicks = true.
         /// </param>
-        public SQLiteConnection(string databasePath, SQLiteOpenFlags openFlags, bool storeDateTimeAsTicks = false)
+        public SQLiteConnection(string databasePath, SQLiteOpenFlags openFlags, bool storeDateTimeAsTicks = true)
         {
             DatabasePath = databasePath;
             IntPtr handle;

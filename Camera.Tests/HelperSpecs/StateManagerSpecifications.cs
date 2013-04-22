@@ -202,7 +202,7 @@ namespace Camera.Tests.HelperSpecs
             It should_publish_update_event = () => _messageHub.WasToldTo(m => m.PublishAsync(Moq.It.Is<EventPhotoListUpdatedMessage>(message=>message.EventCode.Equals(_existingEvent.Code))));
             static Event _existingEvent;
             static Photo[] _photos = new[] {
-                new Photo(), new Photo(), 
+                new Photo{ServerId = "serverId1"}, new Photo{ServerId = "serverId2"} 
             };
         }
     }

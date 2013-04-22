@@ -41,14 +41,14 @@ namespace Camera.Supervisors
         protected override void ViewControllerAppear(object sender, EventArgs e)
         {
             base.ViewControllerAppear(sender,e);
-            _subscription = StateManager.Current.MessageHub.Subscribe<EventPhotoListUpdatedMessage>(DeliveryAction);
+            _subscription = StateManager.Current.MessageHub.Subscribe<EventPhotoListUpdatedMessage>(OnPhotosUpdated);
             _eventDashboardViewController.ShowUpdatingMessage();
             _eventDashboardViewController.Photos =
                 StateManager.Current.GetEventPhotos(_eventDashboardViewController.Event);
             StateManager.Current.StartUpdatingPhotosForEvent(_eventDashboardViewController.Event);
         }
 
-        void DeliveryAction(EventPhotoListUpdatedMessage eventPhotoListUpdatedMessage)
+        void OnPhotosUpdated(EventPhotoListUpdatedMessage eventPhotoListUpdatedMessage)
         {
             _eventDashboardViewController.Photos =
               StateManager.Current.GetEventPhotos(_eventDashboardViewController.Event);

@@ -205,7 +205,8 @@ namespace Camera.Helpers
 
         public Photo[] GetEventPhotos(Event ev)
         {
-            return (from photo in Db.Table<Photo>() where photo.EventCode ==ev.Code select photo).ToArray();
+            var photos = Db.Query<Photo>("select * from Photo where EventCode = ?", ev.Code).ToArray();
+            return photos;
         }
 
         public void StartUpdatingPhotosForEvent(Event ev)
@@ -226,7 +227,8 @@ namespace Camera.Helpers
 
         public void UpdatePhotosForEvent(Event ev)
         {
-            var lastUpdateDate = Db.Table<Photo>().Where(p => p.EventCode == ev.Code).OrderByDescending(p=>p.CreationTime).FirstOrDefault();
+            var existingEvents = Db.Query<Photo>("select * from Photo where EventCode = ?", ev.Code);
+            var lastUpdateDate =existingEvents.OrderByDescending(p => p.CreationTime).FirstOrDefault();
             DateTime? updateDate = null;
             if (lastUpdateDate != null)
             {
@@ -235,14 +237,24 @@ namespace Camera.Helpers
             var photos = Server.GetPhotos(ev, updateDate);
             if (photos.Length > 0)
             {
-                photos = photos.Select(p =>
-                    {
-                        p.EventCode = ev.Code;
-                        return p;
-                    }).ToArray();
-                Console.WriteLine(photos[0].EventCode);
-                Db.InsertAll(photos);
-                _messageHub.PublishAsync(new EventPhotoListUpdatedMessage {Sender=this,EventCode = ev.Code});
+
+                var existingPhotoIds = existingEvents.Select(p => p.ServerId).ToList();
+                var newPhotos = photos.Where(p => !existingPhotoIds.Contains(p.ServerId));
+                var photoArray = newPhotos as Photo[] ?? newPhotos.ToArray();
+                if (photoArray.Any())
+                {
+                    photoArray = photoArray.Select(p =>
+                        {
+                            p.EventCode = ev.Code;
+                            Console.WriteLine(p.CreationTime.ToString("o"));
+                            return p;
+                        }).ToArray();
+
+
+                    Console.WriteLine(photoArray[0].EventCode);
+                    Db.InsertAll(photoArray);
+                    _messageHub.PublishAsync(new EventPhotoListUpdatedMessage {Sender = this, EventCode = ev.Code});
+                }
             }
             
         }
