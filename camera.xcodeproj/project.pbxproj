@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B8CCA80A32947D5A400D15F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 42B1B0163F1647F8A59831DC /* libPods.a */; };
+		344095E2FF4E36435BCEBE4D /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = 34409DCC9F1C594A414E88E7 /* Application.m */; };
+		34409A94E09E00A822969634 /* applicationSpecifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 344098028D413CA92CED97AB /* applicationSpecifications.m */; };
+		5AAC8172172747B500F94EA7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AEE20CD17273E3E0057BB42 /* CoreGraphics.framework */; };
 		5AEE20CA17273E3E0057BB42 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AEE20C917273E3E0057BB42 /* UIKit.framework */; };
 		5AEE20CC17273E3E0057BB42 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AEE20CB17273E3E0057BB42 /* Foundation.framework */; };
 		5AEE20CE17273E3E0057BB42 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AEE20CD17273E3E0057BB42 /* CoreGraphics.framework */; };
@@ -23,7 +27,7 @@
 		5AEE20EF17273E3E0057BB42 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AEE20CB17273E3E0057BB42 /* Foundation.framework */; };
 		5AEE20F017273E3E0057BB42 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AEE20CF17273E3E0057BB42 /* CoreData.framework */; };
 		5AEE20F817273E3E0057BB42 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5AEE20F617273E3E0057BB42 /* InfoPlist.strings */; };
-		5AEE20FB17273E3E0057BB42 /* cameraTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AEE20FA17273E3E0057BB42 /* cameraTests.m */; };
+		94D9FEA73B624A0797D6DE06 /* libPods-cameraTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A1043DA4C6824A33BD2177B7 /* libPods-cameraTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +41,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		344093789201F1AE0567AB16 /* cameraTests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cameraTests-Prefix.pch"; sourceTree = "<group>"; };
+		344097BA18CBA1BFA21B1214 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
+		344098028D413CA92CED97AB /* applicationSpecifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = applicationSpecifications.m; sourceTree = "<group>"; };
+		34409DCC9F1C594A414E88E7 /* Application.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Application.m; sourceTree = "<group>"; };
+		42B1B0163F1647F8A59831DC /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		48EFC5DC2A0347339FEC7172 /* Pods-cameraTests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cameraTests.xcconfig"; path = "Pods/Pods-cameraTests.xcconfig"; sourceTree = SOURCE_ROOT; };
+		5A79DB804C8540F9A5902547 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		5AEE20C617273E3E0057BB42 /* camera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = camera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5AEE20C917273E3E0057BB42 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5AEE20CB17273E3E0057BB42 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -56,8 +67,7 @@
 		5AEE20EC17273E3E0057BB42 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		5AEE20F517273E3E0057BB42 /* cameraTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "cameraTests-Info.plist"; sourceTree = "<group>"; };
 		5AEE20F717273E3E0057BB42 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		5AEE20F917273E3E0057BB42 /* cameraTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cameraTests.h; sourceTree = "<group>"; };
-		5AEE20FA17273E3E0057BB42 /* cameraTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = cameraTests.m; sourceTree = "<group>"; };
+		A1043DA4C6824A33BD2177B7 /* libPods-cameraTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-cameraTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,10 +75,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5AEE20CE17273E3E0057BB42 /* CoreGraphics.framework in Frameworks */,
 				5AEE20CA17273E3E0057BB42 /* UIKit.framework in Frameworks */,
 				5AEE20CC17273E3E0057BB42 /* Foundation.framework in Frameworks */,
-				5AEE20CE17273E3E0057BB42 /* CoreGraphics.framework in Frameworks */,
 				5AEE20D017273E3E0057BB42 /* CoreData.framework in Frameworks */,
+				2B8CCA80A32947D5A400D15F /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,16 +87,49 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5AAC8172172747B500F94EA7 /* CoreGraphics.framework in Frameworks */,
 				5AEE20ED17273E3E0057BB42 /* SenTestingKit.framework in Frameworks */,
 				5AEE20EE17273E3E0057BB42 /* UIKit.framework in Frameworks */,
 				5AEE20EF17273E3E0057BB42 /* Foundation.framework in Frameworks */,
 				5AEE20F017273E3E0057BB42 /* CoreData.framework in Frameworks */,
+				94D9FEA73B624A0797D6DE06 /* libPods-cameraTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3440912C6B0BEA7EF815C0C1 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		3440986A12C17FCD603E2AEE /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				344098028D413CA92CED97AB /* applicationSpecifications.m */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		34409B32121428B93995642E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		34409E4874D6D067D9EAFCB9 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				34409DCC9F1C594A414E88E7 /* Application.m */,
+				344097BA18CBA1BFA21B1214 /* Application.h */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
 		5AEE20BD17273E3E0057BB42 = {
 			isa = PBXGroup;
 			children = (
@@ -93,6 +137,8 @@
 				5AEE20F317273E3E0057BB42 /* cameraTests */,
 				5AEE20C817273E3E0057BB42 /* Frameworks */,
 				5AEE20C717273E3E0057BB42 /* Products */,
+				5A79DB804C8540F9A5902547 /* Pods.xcconfig */,
+				48EFC5DC2A0347339FEC7172 /* Pods-cameraTests.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -113,6 +159,8 @@
 				5AEE20CD17273E3E0057BB42 /* CoreGraphics.framework */,
 				5AEE20CF17273E3E0057BB42 /* CoreData.framework */,
 				5AEE20EC17273E3E0057BB42 /* SenTestingKit.framework */,
+				42B1B0163F1647F8A59831DC /* libPods.a */,
+				A1043DA4C6824A33BD2177B7 /* libPods-cameraTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -124,6 +172,9 @@
 				5AEE20DB17273E3E0057BB42 /* AppDelegate.m */,
 				5AEE20E317273E3E0057BB42 /* camera.xcdatamodeld */,
 				5AEE20D217273E3E0057BB42 /* Supporting Files */,
+				34409E4874D6D067D9EAFCB9 /* Core */,
+				3440912C6B0BEA7EF815C0C1 /* Controllers */,
+				34409B32121428B93995642E /* Model */,
 			);
 			path = camera;
 			sourceTree = "<group>";
@@ -145,9 +196,8 @@
 		5AEE20F317273E3E0057BB42 /* cameraTests */ = {
 			isa = PBXGroup;
 			children = (
-				5AEE20F917273E3E0057BB42 /* cameraTests.h */,
-				5AEE20FA17273E3E0057BB42 /* cameraTests.m */,
 				5AEE20F417273E3E0057BB42 /* Supporting Files */,
+				3440986A12C17FCD603E2AEE /* Core */,
 			);
 			path = cameraTests;
 			sourceTree = "<group>";
@@ -157,6 +207,7 @@
 			children = (
 				5AEE20F517273E3E0057BB42 /* cameraTests-Info.plist */,
 				5AEE20F617273E3E0057BB42 /* InfoPlist.strings */,
+				344093789201F1AE0567AB16 /* cameraTests-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -168,9 +219,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5AEE20FE17273E3E0057BB42 /* Build configuration list for PBXNativeTarget "camera" */;
 			buildPhases = (
+				1675D6A741434F5E85AC6902 /* Check Pods Manifest.lock */,
 				5AEE20C217273E3E0057BB42 /* Sources */,
 				5AEE20C317273E3E0057BB42 /* Frameworks */,
 				5AEE20C417273E3E0057BB42 /* Resources */,
+				96E98736C1134B43AB28ABB9 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -185,10 +238,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5AEE210117273E3E0057BB42 /* Build configuration list for PBXNativeTarget "cameraTests" */;
 			buildPhases = (
+				75E03C37EC5D46FABD1D717E /* Check Pods Manifest.lock */,
 				5AEE20E617273E3E0057BB42 /* Sources */,
 				5AEE20E717273E3E0057BB42 /* Frameworks */,
 				5AEE20E817273E3E0057BB42 /* Resources */,
 				5AEE20E917273E3E0057BB42 /* ShellScript */,
+				83976CC581EE4E609038088F /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -250,6 +305,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1675D6A741434F5E85AC6902 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sanbox is not in sync with the Podfile.lock. Run 'pod install'.\nEOM\n    exit 1\nfi\n";
+		};
 		5AEE20E917273E3E0057BB42 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -263,6 +332,48 @@
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
+		75E03C37EC5D46FABD1D717E /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sanbox is not in sync with the Podfile.lock. Run 'pod install'.\nEOM\n    exit 1\nfi\n";
+		};
+		83976CC581EE4E609038088F /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-cameraTests-resources.sh\"\n";
+		};
+		96E98736C1134B43AB28ABB9 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -273,6 +384,7 @@
 				5AEE20D817273E3E0057BB42 /* main.m in Sources */,
 				5AEE20DC17273E3E0057BB42 /* AppDelegate.m in Sources */,
 				5AEE20E517273E3E0057BB42 /* camera.xcdatamodeld in Sources */,
+				344095E2FF4E36435BCEBE4D /* Application.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,7 +392,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5AEE20FB17273E3E0057BB42 /* cameraTests.m in Sources */,
+				34409A94E09E00A822969634 /* applicationSpecifications.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,6 +484,7 @@
 		};
 		5AEE20FF17273E3E0057BB42 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5A79DB804C8540F9A5902547 /* Pods.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "camera/camera-Prefix.pch";
@@ -383,9 +496,11 @@
 		};
 		5AEE210017273E3E0057BB42 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5A79DB804C8540F9A5902547 /* Pods.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "camera/camera-Prefix.pch";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "camera/camera-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -394,6 +509,7 @@
 		};
 		5AEE210217273E3E0057BB42 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 48EFC5DC2A0347339FEC7172 /* Pods-cameraTests.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/camera.app/camera";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -401,7 +517,7 @@
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "camera/camera-Prefix.pch";
+				GCC_PREFIX_HEADER = "cameraTests/cameraTests-Prefix.pch";
 				INFOPLIST_FILE = "cameraTests/cameraTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -411,6 +527,7 @@
 		};
 		5AEE210317273E3E0057BB42 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 48EFC5DC2A0347339FEC7172 /* Pods-cameraTests.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/camera.app/camera";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -418,7 +535,7 @@
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "camera/camera-Prefix.pch";
+				GCC_PREFIX_HEADER = "cameraTests/cameraTests-Prefix.pch";
 				INFOPLIST_FILE = "cameraTests/cameraTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -445,6 +562,7 @@
 				5AEE210017273E3E0057BB42 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5AEE210117273E3E0057BB42 /* Build configuration list for PBXNativeTarget "cameraTests" */ = {
 			isa = XCConfigurationList;
@@ -453,6 +571,7 @@
 				5AEE210317273E3E0057BB42 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
