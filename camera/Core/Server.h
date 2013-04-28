@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 @class DeviceRegistration;
+@class Event;
 
 
 @interface Server : NSObject
@@ -19,4 +20,6 @@
 - (void)setCredentialsToGuid:(NSString *)guid Token:(NSString *)token;
 
 - (void)loadEventsCloseTo:(CLLocationCoordinate2D)location;
+
+- (void)postPhoto:(NSData *)data ToEvent:(Event*) event;
 @end

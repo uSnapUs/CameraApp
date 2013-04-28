@@ -10,12 +10,12 @@
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFiles</key>
 	<array>
-		<string>Images/Default.png</string>
-		<string>Images/Default@2x.png</string>
-		<string>Images/Default-568h@2x.png</string>
+		<string>Default.png</string>
+		<string>Default@2x.png</string>
+		<string>Default-568h@2x.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>us.usnap.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>us.usnap.camera</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

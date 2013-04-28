@@ -7,12 +7,18 @@
 
 
 #import <Foundation/Foundation.h>
+#import "DLCImagePickerController.h"
+
 
 @class Event;
 
 
-@interface EventDashboardViewController : UIViewController <UITableViewDelegate,UITableViewDataSource>
+@interface EventDashboardViewController : UIViewController <UITableViewDelegate,UITableViewDataSource, DLCImagePickerDelegate>
+@property (weak, nonatomic) IBOutlet UITableView *streamView;
 
+@property (weak, nonatomic) IBOutlet UILabel *eventTitleLabel;
 @property (strong, readwrite) Event *event;
+- (IBAction)goToMainMenu:(id)sender;
+- (IBAction)showPickerview:(id)sender;
 
 @end

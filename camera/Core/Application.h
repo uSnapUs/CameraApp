@@ -11,6 +11,7 @@
 
 @class Server;
 @class DeviceRegistration;
+@class Event;
 
 
 @interface Application : NSObject
@@ -31,4 +32,6 @@
 - (void)lookupEventByCode:(NSString *)code;
 
 - (void)loadEventsCloseTo:(CLLocationCoordinate2D)location;
+
+- (void)uploadPhoto:(NSData *)data ToEvent:(Event *)event;
 @end

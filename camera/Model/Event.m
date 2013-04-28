@@ -8,6 +8,7 @@
 
 #import "Event.h"
 #import "Location.h"
+#import "Photo.h"
 
 
 @implementation Event {
@@ -32,6 +33,10 @@
 + (NSValueTransformer *)locationJSONTransformer {
     DDLogInfo(@"getting location transformer");
     return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:[Location class]];
+}
++ (NSValueTransformer *)photosJSONTransformer {
+    DDLogInfo(@"getting photo transformer");
+    return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:[Photo class]];
 }
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {

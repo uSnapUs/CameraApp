@@ -10,4 +10,9 @@
 
 
 @interface EventDashboardView : UIView
+@property (weak, nonatomic) IBOutlet UIView *topBarView;
+@property (weak, nonatomic) IBOutlet UITableView *streamView;
+@property (weak, nonatomic) IBOutlet UILabel *eventTitleLabel;
+@property (weak, nonatomic) IBOutlet UIView *eventTableHeader;
+
 @end

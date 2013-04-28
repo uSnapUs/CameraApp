@@ -28,4 +28,6 @@
 @property (nonatomic,copy) NSString *name;
 @property (nonatomic,copy) NSDate *updatedAt;
 @property (nonatomic, copy) NSString *id;
+@property (nonatomic,copy) NSArray *photos;
+
 @end

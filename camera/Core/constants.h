@@ -6,5 +6,5 @@
 #define kDeviceUpdateNotification @"uSnapUs_DeviceUpdateNotification"
 #define kEventFoundNotification @"uSnapUs_EventFoundNotification"
 #define kEventsForLocationLookedUp @"uSnapUs_EventsForLocationLookedUpNotification"
-#define kEventNotFoundNotification @"uSnapUs_EventNotFound"
+#define kEventUpdated @"uSnapUs_EventUpdated"
 static const int ddLogLevel = LOG_LEVEL_VERBOSE;

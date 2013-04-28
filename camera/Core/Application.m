@@ -10,6 +10,7 @@
 #import "Application.h"
 #import "Server.h"
 #import "DeviceRegistration.h"
+#import "Event.h"
 #import <CoreLocation/CoreLocation.h>
 
 
@@ -125,6 +126,11 @@ static Application *sharedInstance;
 
 - (void)loadEventsCloseTo:(CLLocationCoordinate2D)location {
     [[self server]loadEventsCloseTo:location];
+
+}
+
+- (void)uploadPhoto:(NSData *)data ToEvent:(Event*)event {
+    [[self server]postPhoto:data ToEvent:event];
 
 }
 @end

@@ -33,7 +33,7 @@ PODS:
   - TestFlightLogger (0.0.2):
     - CocoaLumberjack
     - TestFlightSDK
-  - TestFlightSDK (1.3.0.beta2)
+  - TestFlightSDK (1.2.4)
   - TouchDB (1.0):
     - CocoaHTTPServer
     - JSONKit
@@ -51,6 +51,7 @@ DEPENDENCIES:
   - OCMockito
   - SVProgressHUD
   - TestFlightLogger
+  - TestFlightSDK (~> 1.2.4)
 
 SPEC CHECKSUMS:
   ActiveTouch: 13cfde49646a3cedc9169d37ecd21ad2270b35d4
@@ -71,7 +72,7 @@ SPEC CHECKSUMS:
   OCMockito: 2223021dd82697fc536c403d6850d2ed8ffae578
   SVProgressHUD: 03d4845ec8e64591726428a08236c6a5489d45f8
   TestFlightLogger: 8d5127df30752ce74a1f5b52947f520e05cc0f42
-  TestFlightSDK: 185b9bfd710bfb85ce5f57bcb89651330081090f
+  TestFlightSDK: 96d7400f844599dd02677bf8d34f8bdfe3f9b33c
   TouchDB: 8c4bd94a8c537d91176505a6dcced281856bdb14
 
 COCOAPODS: 0.18.1

@@ -106,4 +106,34 @@
     }];
 
 }
+
+- (void)postPhoto:(NSData *)data ToEvent:(Event *)event {
+    NSURLRequest *request= [client multipartFormRequestWithMethod:@"POST" path:[NSString stringWithFormat:@"/event/%@/photos",[event code]] parameters:nil constructingBodyWithBlock:^(id <AFMultipartFormData> formData) {
+        [formData appendPartWithFileData:data name:@"photo" fileName:@"photo.jpg" mimeType:@"image/jpeg"];
+    }];
+    AFJSONRequestOperation *operation =  [[AFJSONRequestOperation alloc] initWithRequest:request];
+
+    [operation setUploadProgressBlock:^(NSUInteger bytesWritten, long long int totalBytesWritten, long long int totalBytesExpectedToWrite) {
+        float percentUploaded =(float)totalBytesWritten/(float)totalBytesExpectedToWrite;
+        DDLogVerbose(@"uploading photo percent done: %f, total written: %llu, total expected: %llu", percentUploaded,totalBytesWritten,totalBytesExpectedToWrite);
+        if(percentUploaded<1){
+        [SVProgressHUD showProgress:percentUploaded status:@"uploding photo" maskType:SVProgressHUDMaskTypeGradient];
+        }
+        else{
+            [SVProgressHUD showProgress:percentUploaded status:@"processing photo" maskType:SVProgressHUDMaskTypeGradient];
+        }
+    }];
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kEventUpdated object:self userInfo:@{@"event":event}];
+        DDLogVerbose(@"uploaded photo");
+        [SVProgressHUD showSuccessWithStatus:@"uploaded"];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        DDLogError(@"error uploading %@", error);
+        [SVProgressHUD showErrorWithStatus:@"failed to upload photo"];
+    }];
+
+    [operation start];
+
+
+}
 @end

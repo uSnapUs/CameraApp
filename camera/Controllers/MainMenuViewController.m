@@ -24,9 +24,20 @@
 
 -(void)viewDidLoad {
     [[[self mainMenu] nearbyEventMapView] setDelegate:self];
+
+}
+-(void)viewDidAppear:(BOOL)animated {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventSelected:) name:kEventFoundNotification object:nil];
+}
+-(void)viewDidDisappear:(BOOL)animated {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[[self mainMenu] nearbyEventMapView] setShowsUserLocation:NO];
 }
 
-
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+}
 - (void)viewDidUnload {
     [self setMainMenu:nil];
     [super viewDidUnload];
@@ -41,14 +52,22 @@
 - (void)addEventsToMap:(NSNotification *)notification {
     DDLogVerbose(@"got events for map %@", [notification.userInfo objectForKey:@"events"]);
     localEvents = [notification.userInfo objectForKey:@"events"];
-    
+
+    NSMutableArray *annotationsToRemove = [[NSMutableArray alloc]init];
+    NSArray *allExistingAnnotations = [[[self mainMenu] nearbyEventMapView] annotations];
+    for (id annotation in allExistingAnnotations) {
+        if([annotation isMemberOfClass:[Event class]]){
+            [annotationsToRemove addObject:annotation];
+        }
+    }
+    [[[self mainMenu] nearbyEventMapView] removeAnnotations:annotationsToRemove];
     [[[self mainMenu] nearbyEventMapView] addAnnotations:localEvents];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     if([[textField text] length]>0)
     {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventSelected:) name:kEventFoundNotification object:nil];
+
         [[Application sharedInstance]lookupEventByCode:[textField text]];
 
     }
@@ -71,9 +90,14 @@
 
 }
 -(void)goToEventDashboardForEvent:(Event *)event{
-    EventDashboardViewController *eventDashboardViewController = [[EventDashboardViewController alloc] initWithNibName:@"EventDashboardView" bundle:[NSBundle mainBundle]];
+
+    EventDashboardViewController *eventDashboardViewController = [[EventDashboardViewController alloc] initWithNibName:@"EventDashboardView" bundle:nil];
     eventDashboardViewController.event = event;
-    [self presentViewController:eventDashboardViewController animated:YES completion:nil];
+    [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:eventDashboardViewController animated:YES completion:^{
+        [[self mainMenu]goToMainMenu:nil];
+        [[[self mainMenu] eventCodeField] setText:nil];
+    }];
+
 }
 - (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views {
 
