@@ -22,4 +22,6 @@
 - (void)loadEventsCloseTo:(CLLocationCoordinate2D)location;
 
 - (void)postPhoto:(NSData *)data ToEvent:(Event*) event;
+
+- (void)postEvent:(Event *)event;
 @end

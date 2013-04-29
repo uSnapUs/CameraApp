@@ -133,4 +133,9 @@ static Application *sharedInstance;
     [[self server]postPhoto:data ToEvent:event];
 
 }
+
+- (void)saveEvent:(Event *)event {
+    [[self server]postEvent:event];
+
+}
 @end

@@ -39,11 +39,65 @@
     return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:[Photo class]];
 }
 
++ (NSValueTransformer *)end_dateJSONTransformer{
+    DDLogVerbose(@"getting end_date transformer");
+    return [MTLValueTransformer reversibleTransformerWithForwardBlock:^(NSString *str) {
+        return [self.dateFormatter dateFromString:str];
+    } reverseBlock:^(NSDate *date) {
+        return [self.dateFormatter stringFromDate:date];
+    }];
+}
++ (NSValueTransformer *)start_dateJSONTransformer{
+    DDLogVerbose(@"getting start_date transformer");
+    return [MTLValueTransformer reversibleTransformerWithForwardBlock:^(NSString *str) {
+        return [self.dateFormatter dateFromString:str];
+    } reverseBlock:^(NSDate *date) {
+        return [self.dateFormatter stringFromDate:date];
+    }];
+}
+
++ (NSValueTransformer *)updatedAtJSONTransformer{
+    DDLogVerbose(@"getting updatedAt transformer");
+    return [MTLValueTransformer reversibleTransformerWithForwardBlock:^(NSString *str) {
+        return [self.dateFormatter dateFromString:str];
+    } reverseBlock:^(NSDate *date) {
+        return [self.dateFormatter stringFromDate:date];
+    }];
+}
+
++ (NSValueTransformer *)createdAtJSONTransformer{
+    DDLogVerbose(@"getting createdAt transformer");
+    return [MTLValueTransformer reversibleTransformerWithForwardBlock:^(NSString *str) {
+        return [self.dateFormatter dateFromString:str];
+    } reverseBlock:^(NSDate *date) {
+        return [self.dateFormatter stringFromDate:date];
+    }];
+}
+
++ (NSValueTransformer *)creation_date_utcJSONTransformer{
+    DDLogVerbose(@"getting createdAt transformer");
+    return [MTLValueTransformer reversibleTransformerWithForwardBlock:^(NSString *str) {
+        return [self.dateFormatter dateFromString:str];
+    } reverseBlock:^(NSDate *date) {
+        return [self.dateFormatter stringFromDate:date];
+    }];
+}
+
+
++ (NSDateFormatter *)dateFormatter {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZ";
+    return dateFormatter;
+}
+
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     DDLogInfo(@"getting key paths");
     return [[super JSONKeyPathsByPropertyKey] mtl_dictionaryByAddingEntriesFromDictionary: @{
             @"location": @"location",
-            @"name":@"name"
+            @"name":@"name",
+            @"start_date":@"start_date",
+            @"end_date":@"end_date"
     }];
 }
 

@@ -34,4 +34,6 @@
 - (void)loadEventsCloseTo:(CLLocationCoordinate2D)location;
 
 - (void)uploadPhoto:(NSData *)data ToEvent:(Event *)event;
+
+- (void)saveEvent:(Event *)event;
 @end

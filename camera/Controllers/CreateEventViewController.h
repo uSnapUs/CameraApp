@@ -13,13 +13,14 @@
 @class CreateEventView;
 
 
-@interface CreateEventViewController : UIViewController <MKMapViewDelegate, CKCalendarDelegate>
+@interface CreateEventViewController : UIViewController <MKMapViewDelegate, CKCalendarDelegate,UITextFieldDelegate>
 
 - (IBAction)goToMainMenu:(id)sender;
 - (IBAction)goToChooseLocation:(id)sender;
 - (IBAction)showEventDateChooser:(id)sender;
 - (IBAction)togglePublic:(id)sender;
 - (IBAction)goBackToForm:(id)sender;
+- (IBAction)saveEvent:(id)sender;
 
 @property (strong, nonatomic) IBOutlet CreateEventView *createEventView;
 @property (weak, nonatomic) IBOutlet UIImageView *locationImage;

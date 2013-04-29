@@ -136,4 +136,33 @@
 
 
 }
+
+- (void)postEvent:(Event *)event {
+    [SVProgressHUD showWithStatus:@"creating event" maskType:SVProgressHUDMaskTypeGradient];
+       [client postPath:@"/events" parameters:[MTLJSONAdapter JSONDictionaryFromModel:event] success:^(AFHTTPRequestOperation *operation, id responseObject) {
+
+           DDLogVerbose(@"post returned event event: %@", ((NSDictionary*)responseObject));
+           NSError *error;
+           Event *createdEvent =[MTLJSONAdapter modelOfClass:[Event class] fromJSONDictionary:((NSDictionary*)responseObject) error:&error];
+
+           if(error)
+           {
+               DDLogError(@"error creating event %@", error);
+               [SVProgressHUD showErrorWithStatus:@"unable to save event"];
+
+           }
+           else{
+               [SVProgressHUD showSuccessWithStatus:@"event created"];
+               [[NSNotificationCenter defaultCenter] postNotificationName:kEventFoundNotification object:self userInfo:[NSDictionary dictionaryWithObject:createdEvent forKey:@"event"]];
+           }
+
+
+       } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+           [SVProgressHUD showErrorWithStatus:@"unable to save event"];
+
+       }];
+
+
+
+}
 @end

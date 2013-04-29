@@ -11,6 +11,9 @@
 #import "CreateEventView.h"
 #import "MKMapView+ZoomLevel.h"
 #import "MHPrettyDate.h"
+#import "Event.h"
+#import "Location.h"
+#import "Application.h"
 
 
 @implementation CreateEventViewController {
@@ -18,6 +21,8 @@
     BOOL private;
     CLLocationCoordinate2D location;
     NSDate *selectedDate;
+    NSString *eventName;
+    BOOL locationSet;
 }
 - (void)viewDidUnload {
     [self setCreateEventView:nil];
@@ -120,11 +125,47 @@
     [[self createEventView]hideMapView];
 }
 
+- (IBAction)saveEvent:(id)sender {
+    if(eventName&&selectedDate&&(locationSet))
+    {
+        Event *event = [[Event alloc] init];
+        event.name = eventName;
+        event.location = [[Location alloc]init];
+
+        event.location.coordinates = @[
+                [NSNumber numberWithDouble:location.longitude],[NSNumber numberWithDouble:location.latitude]];
+        event.start_date = selectedDate;
+
+        NSDateComponents *components = [[NSDateComponents alloc] init];
+        [components setDay:1];
+
+        NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+
+        event.end_date = [gregorian dateByAddingComponents:components toDate:selectedDate options:0];
+
+        event.is_public = !private;
+        event.address = @"Some address";
+
+        [[Application sharedInstance]saveEvent:event];
+        [self dismissViewControllerAnimated:YES completion:nil];
+
+    }
+}
+
 - (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
     [mapView setCenterCoordinate:userLocation.coordinate zoomLevel:14 animated:YES];
     location = userLocation.coordinate;
+    locationSet = YES;
     [[[self createEventView] locationLabel] setText:@"My Location"];
     [[[self createEventView] locationLabel] setTextColor:[UIColor blackColor]];
     [[self locationImage] setImage:[UIImage imageNamed:@"location_active.png"]];
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    eventName = textField.text;
+}
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
 }
 @end

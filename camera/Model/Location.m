@@ -13,6 +13,9 @@
 
 }
 
+-(NSString*) type{
+    return @"Point";
+}
 
 - (double)latitude {
     return [[[self coordinates] objectAtIndex:1]doubleValue];

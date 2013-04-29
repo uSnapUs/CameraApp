@@ -36,12 +36,36 @@ SPEC_BEGIN(EventSpecificaitons)
                it(@"should set the location",^{
                   [[deserializedEvent location]shouldNotBeNil];
                });
-               it(@"should set correct coordinates in location",^{
-                   [[theValue([[deserializedEvent location] latitude]) should]equal:theValue(1.3)];
-                   [[theValue([[deserializedEvent location] longitude]) should]equal:theValue(0.4)];
-               });
+
 
            });
+            describe(@"serialzing",^{
+                __block NSDictionary *eventDictionary;
+                __block NSDate *date = [NSDate date];
+                beforeAll(^{
+                    Event *event  = [[Event alloc]init];
+                    event.name = @"name";
+                    event.start_date = date;
+                    event.end_date = date;
+                    event.location = [[Location alloc]init];
+                    event.location.coordinates = @[[NSNumber numberWithDouble:1],[NSNumber numberWithDouble:2]];
+                    event.is_public = YES;
+                    event.address = @"some address";
+
+
+                    eventDictionary = [MTLJSONAdapter JSONDictionaryFromModel:event];
+                });
+
+                it(@"should create an event dictionary",^{
+                    [eventDictionary shouldNotBeNil];
+                });
+                it(@"should set correct start date",^{
+                    [[[eventDictionary objectForKey:@"start_date"]should] equal:date];
+                });
+
+
+
+            });
         });
 
 SPEC_END

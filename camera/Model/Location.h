@@ -13,6 +13,7 @@
 
 @interface Location : ATModel
     @property (nonatomic,copy) NSArray *coordinates;
+    @property (nonatomic,copy) NSString *type;
     -(double) latitude;
     -(double) longitude;
 @end
