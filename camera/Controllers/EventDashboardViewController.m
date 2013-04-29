@@ -67,7 +67,7 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (IBAction)showPickerview:(id)sender {
+- (IBAction)showPickerView:(id)sender {
     DLCImagePickerController *picker = [[DLCImagePickerController alloc]init];
     [picker setDelegate:self];
     [self presentViewController:picker animated:YES completion:nil];
@@ -94,7 +94,7 @@
 
 }
 
-- (void)updateEvent:(id)timer {
+- (void)updateEvent:(id)currentTimer {
     DDLogVerbose(@"updating event");
     [[Application sharedInstance] lookupEventByCode:[[self event]code] ];
 

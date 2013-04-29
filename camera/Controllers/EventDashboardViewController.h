@@ -19,6 +19,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *eventTitleLabel;
 @property (strong, readwrite) Event *event;
 - (IBAction)goToMainMenu:(id)sender;
-- (IBAction)showPickerview:(id)sender;
+- (IBAction)showPickerView:(id)sender;
 
 @end

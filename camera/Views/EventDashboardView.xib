@@ -346,7 +346,7 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">showPickerview:</string>
+						<string key="label">showPickerView:</string>
 						<reference key="source" ref="182978269"/>
 						<reference key="destination" ref="372490531"/>
 						<int key="IBEventType">7</int>
