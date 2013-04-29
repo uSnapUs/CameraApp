@@ -88,7 +88,7 @@
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{43, 302}, {234, 64}}</string>
 						<reference key="NSSuperview" ref="376659999"/>
-						<reference key="NSNextKeyView" ref="753702772"/>
+						<reference key="NSNextKeyView" ref="657483700"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -125,7 +125,7 @@
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{42, 374}, {234, 64}}</string>
 						<reference key="NSSuperview" ref="376659999"/>
-						<reference key="NSNextKeyView" ref="657483700"/>
+						<reference key="NSNextKeyView" ref="305368721"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -163,7 +163,7 @@
 							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 						</object>
 						<reference key="IBUINormalTitleShadowColor" ref="465641601"/>
-						<object class="NSCustomResource" key="IBUINormalImage" id="72867048">
+						<object class="NSCustomResource" key="IBUINormalImage">
 							<string key="NSClassName">NSImage</string>
 							<string key="NSResourceName">Button_Back.png</string>
 						</object>
@@ -175,7 +175,7 @@
 						<int key="NSvFlags">-2147483356</int>
 						<string key="NSFrame">{{43, 302}, {234, 63}}</string>
 						<reference key="NSSuperview" ref="376659999"/>
-						<reference key="NSNextKeyView" ref="305368721"/>
+						<reference key="NSNextKeyView" ref="753702772"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<float key="IBUIAlpha">0.0</float>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -296,7 +296,10 @@
 											<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 										</object>
 										<reference key="IBUINormalTitleShadowColor" ref="465641601"/>
-										<reference key="IBUINormalImage" ref="72867048"/>
+										<object class="NSCustomResource" key="IBUINormalImage">
+											<string key="NSClassName">NSImage</string>
+											<string key="NSResourceName">Button_Topbar_Back.png</string>
+										</object>
 										<reference key="IBUIFontDescription" ref="505712336"/>
 										<reference key="IBUIFont" ref="258170004"/>
 									</object>
@@ -510,6 +513,15 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">goToCreateView:</string>
+						<reference key="source" ref="753702772"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">71</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">goToMainMenu:</string>
 						<reference key="source" ref="381642000"/>
 						<reference key="destination" ref="191373211"/>
@@ -695,7 +707,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">70</int>
+			<int key="maxID">72</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
@@ -707,6 +719,7 @@
 			<string key="Button_Create.png">{234, 63}</string>
 			<string key="Button_Find.png">{234, 63}</string>
 			<string key="Button_FindNearby.png">{229, 58}</string>
+			<string key="Button_Topbar_Back.png">{25, 22}</string>
 			<string key="Field_Background.png">{234, 63}</string>
 			<string key="background1.png">{320, 568}</string>
 			<string key="logo.png">{271, 122}</string>

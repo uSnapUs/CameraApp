@@ -12,6 +12,7 @@
 
 @implementation MainMenuView {
 
+    int offset;
 }
 
 -(void)awakeFromNib{
@@ -49,6 +50,7 @@
 }
 
 - (void)goToFindView:(id)sender {
+    offset = 100;
     [UIView animateWithDuration:0.5 animations:^{
         [[self findButton] setAlpha:0];
         [[self createButton] setAlpha:0];
@@ -65,14 +67,14 @@
         [[self backButton] setHidden:NO];
         [UIView animateWithDuration:0.5 animations:^{
             CGPoint backButtonCenter = [[self backButton] center];
-            backButtonCenter.y = backButtonCenter.y+100;
+            backButtonCenter.y = backButtonCenter.y+offset;
             [[self backButton] setCenter:backButtonCenter];
             [[self backButton] setAlpha:1];
             CGPoint currentBackgroundCentre = [[self mainMenuViewContainer] center];
-            currentBackgroundCentre.y = currentBackgroundCentre.y-100;
+            currentBackgroundCentre.y = currentBackgroundCentre.y-offset;
             [[self mainMenuViewContainer] setCenter:currentBackgroundCentre];
             CGPoint logoCentre = [[self logo] center];
-            logoCentre.y = logoCentre.y+50;
+            logoCentre.y = logoCentre.y+offset/2;
             [[self logo] setCenter:logoCentre];
         } completion:^(BOOL secondSuccess){
             [[self nearbyEventMapView] setShowsUserLocation:YES];
@@ -127,7 +129,8 @@
 
 - (void)animateToFullView {
     CGPoint backButtonCenter = [[self backButton] center];
-    backButtonCenter.y = backButtonCenter.y-100;
+
+    backButtonCenter.y = backButtonCenter.y-offset;
     [[self backButton] setCenter:backButtonCenter];
     [[self findButton] setAlpha:0];
     [[self createButton] setAlpha:0];
@@ -139,10 +142,11 @@
         CGPoint currentBackgroundCentre = [self center];
         [[self mainMenuViewContainer] setCenter:currentBackgroundCentre];
         CGPoint logoCentre = [[self logo] center];
-        logoCentre.y = logoCentre.y-50;
+        logoCentre.y = logoCentre.y-offset/2;
         [[self logo] setCenter:logoCentre];
 
     } completion:^(BOOL success){
+        offset = 0;
         [UIView animateWithDuration:0.2 animations:^{
             [[self findButton] setAlpha:1];
             [[self createButton] setAlpha:1];

@@ -13,6 +13,7 @@
 #import "Event.h"
 #import "EventDashboardViewController.h"
 #import "WBErrorNoticeView.h"
+#import "CreateEventViewController.h"
 
 @interface MainMenuViewController ()
 
@@ -32,6 +33,8 @@
 -(void)viewDidDisappear:(BOOL)animated {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[[self mainMenu] nearbyEventMapView] setShowsUserLocation:NO];
+    [[self mainMenu] goToMainMenu:nil];
+    [[[self mainMenu] eventCodeField] setText:nil];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -93,9 +96,8 @@
 
     EventDashboardViewController *eventDashboardViewController = [[EventDashboardViewController alloc] initWithNibName:@"EventDashboardView" bundle:nil];
     eventDashboardViewController.event = event;
-    [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:eventDashboardViewController animated:YES completion:^{
-        [[self mainMenu]goToMainMenu:nil];
-        [[[self mainMenu] eventCodeField] setText:nil];
+    [self presentViewController:eventDashboardViewController animated:YES completion:^{
+
     }];
 
 }
@@ -135,6 +137,14 @@
 
 -(void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+- (IBAction)goToCreateView:(id)sender {
+    CreateEventViewController *createEventViewController = [[CreateEventViewController alloc] initWithNibName:@"CreateEventView" bundle:nil];
+    [self presentViewController:createEventViewController animated:YES completion:^{
+
+    }];
+
+
 }
 @end
 

@@ -10,6 +10,7 @@ pod 'Facebook-iOS-SDK', '~> 3.5.1'
 pod 'SVProgressHUD'
 pod 'NoticeView'
 pod 'GPUImage'
+pod 'MHPrettyDate', '~> 1.1.0'
 
 target :cameraTests, :exclusive => true do
     pod 'Kiwi'

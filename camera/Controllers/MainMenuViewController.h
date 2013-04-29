@@ -16,6 +16,7 @@
 
 @property (strong, nonatomic) IBOutlet MainMenuView *mainMenu;
 
+- (IBAction)goToCreateView:(id)sender;
 
 
 
