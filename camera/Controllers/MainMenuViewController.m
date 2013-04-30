@@ -21,6 +21,7 @@
 @implementation MainMenuViewController {
     NSArray *localEvents;
     LoginViewController *loginController;
+    BOOL lookedUpEvents;
 }
 
 -(void)viewDidLoad {
@@ -47,9 +48,12 @@
 }
 
 -(void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
-    [mapView setCenterCoordinate:userLocation.coordinate zoomLevel:14 animated:YES];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addEventsToMap:) name:kEventsForLocationLookedUp object:nil];
-    [[Application sharedInstance] loadEventsCloseTo:[userLocation coordinate]];
+    if(!lookedUpEvents){
+        lookedUpEvents = YES;
+        [mapView setCenterCoordinate:userLocation.coordinate zoomLevel:14 animated:YES];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addEventsToMap:) name:kEventsForLocationLookedUp object:nil];
+        [[Application sharedInstance] loadEventsCloseTo:[userLocation coordinate]];
+    }
 }
 
 - (void)addEventsToMap:(NSNotification *)notification {
@@ -99,9 +103,6 @@
     [self presentViewController:eventDashboardViewController animated:YES completion:^{
 
     }];
-
-}
-- (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views {
 
 }
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {

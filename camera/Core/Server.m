@@ -157,6 +157,7 @@
 
 - (void)postEvent:(Event *)event {
     [SVProgressHUD showWithStatus:@"creating event" maskType:SVProgressHUDMaskTypeGradient];
+    DDLogVerbose(@"posting event %@", event);
        [client postPath:@"/events" parameters:[MTLJSONAdapter JSONDictionaryFromModel:event] success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
            DDLogVerbose(@"post returned event event: %@", ((NSDictionary*)responseObject));
@@ -176,6 +177,7 @@
 
 
        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+           DDLogError(@"unable to create event %@",error);
            [SVProgressHUD showErrorWithStatus:@"unable to save event"];
 
        }];
