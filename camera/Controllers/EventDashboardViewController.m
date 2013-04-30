@@ -22,6 +22,7 @@
     Event *_event;
     NSArray *_photos;
     NSTimer *timer;
+    LoginViewController *loginController;
 }
 
 -(void)viewDidLoad {
@@ -67,10 +68,46 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+
+- (void)loginViewController:(LoginViewController *)controller didClose:(BOOL)userInitiated {
+    CGRect bounds = [[self view]bounds];
+    CGRectMake(0, bounds.size.height, bounds.size.width, bounds.size.height);
+    [UIView animateWithDuration:0.5 animations:^{
+        [[loginController view] setCenter:[[self view]center]];
+    } completion:^(BOOL finished) {
+        [[loginController view] removeFromSuperview];
+        loginController = nil;
+    }];
+}
+
 - (IBAction)showPickerView:(id)sender {
-    DLCImagePickerController *picker = [[DLCImagePickerController alloc]init];
-    [picker setDelegate:self];
-    [self presentViewController:picker animated:YES completion:nil];
+    if([[Application sharedInstance]isAuthenticated]){
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:kUserLoggedIn object:nil];
+        if(loginController)
+        {
+            [self loginViewController:loginController didClose:YES];
+        }
+        DLCImagePickerController *picker = [[DLCImagePickerController alloc]init];
+        [picker setDelegate:self];
+        [self presentViewController:picker animated:YES completion:nil];
+    }
+    else{
+        if(!loginController){
+            loginController = [[LoginViewController alloc] initWithNibName:@"LoginView" bundle:nil];
+            loginController.delegate=self;
+        }
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showPickerView:) name:kUserLoggedIn object:nil];
+        DDLogVerbose(@"login controler %@", [loginController class]);
+        CGRect bounds = [[self view]bounds];
+        [[loginController view]setFrame: CGRectMake(0, bounds.size.height, bounds.size.width, bounds.size.height)];
+        [[self view] addSubview:[loginController view] ];
+        [[self view] bringSubviewToFront:[loginController view]];
+        [UIView animateWithDuration:0.5 animations:^{
+            [[loginController view] setCenter:[[self view]center]];
+        } completion:^(BOOL finished) {
+
+        }];
+    }
     
 }
 

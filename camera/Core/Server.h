@@ -24,4 +24,5 @@
 - (void)postPhoto:(NSData *)data ToEvent:(Event*) event;
 
 - (void)postEvent:(Event *)event;
+
 @end

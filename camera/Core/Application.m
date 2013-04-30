@@ -11,7 +11,7 @@
 #import "Server.h"
 #import "DeviceRegistration.h"
 #import "Event.h"
-#import <CoreLocation/CoreLocation.h>
+#import "AppDelegate.h"
 
 
 @implementation Application {
@@ -101,6 +101,7 @@ static Application *sharedInstance;
         {
             DDLogVerbose(@"got device from db so setting as current device");
             [self setCurrentDevice:[devices objectAtIndex:0]];
+            DDLogVerbose(@"set device to %@", [self currentDevice]);
             [[self server]setCredentialsToGuid:[[self currentDevice] guid]Token:[[self currentDevice] token]];
         }
     } withErrorBlock:
@@ -136,6 +137,27 @@ static Application *sharedInstance;
 
 - (void)saveEvent:(Event *)event {
     [[self server]postEvent:event];
+
+}
+
+- (BOOL)isAuthenticated {
+    return [[self currentDevice]facebookId]!=nil;
+}
+
+- (void)login {
+    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    // The user has initiated a login, so call the openSession method
+    // and show the login UX if necessary.
+    [appDelegate openSessionWithAllowLoginUI:YES];
+
+}
+
+- (void)loginWithUserId:(NSString *)facebookId Name:(NSString *)name Email:(NSString *)email {
+    [[self currentDevice] setEmail:email];
+    [[self currentDevice] setName:name];
+    [[self currentDevice] setFacebookId:facebookId];
+    [[self server] registerDevice:[self currentDevice]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedIn object:self];
 
 }
 @end

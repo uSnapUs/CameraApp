@@ -8,12 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import "DLCImagePickerController.h"
+#import "LoginViewController.h"
 
 
 @class Event;
 
 
-@interface EventDashboardViewController : UIViewController <UITableViewDelegate,UITableViewDataSource, DLCImagePickerDelegate>
+@interface EventDashboardViewController : UIViewController <UITableViewDelegate,UITableViewDataSource, DLCImagePickerDelegate, LoginDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *streamView;
 
 @property (weak, nonatomic) IBOutlet UILabel *eventTitleLabel;

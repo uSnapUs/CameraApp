@@ -15,4 +15,15 @@
 
 
 
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    DDLogInfo(@"getting key paths");
+    return [[super JSONKeyPathsByPropertyKey] mtl_dictionaryByAddingEntriesFromDictionary: @{
+            @"name": @"name",
+            @"email":@"email",
+            @"facebookId":@"facebook_id",
+            @"guid":@"guid",
+            @"token":@"token"
+    }];
+}
+
 @end

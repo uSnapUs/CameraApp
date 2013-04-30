@@ -7,4 +7,5 @@
 #define kEventFoundNotification @"uSnapUs_EventFoundNotification"
 #define kEventsForLocationLookedUp @"uSnapUs_EventsForLocationLookedUpNotification"
 #define kEventUpdated @"uSnapUs_EventUpdated"
+#define kUserLoggedIn @"uSnapUs_UserLoggedIn"
 static const int ddLogLevel = LOG_LEVEL_VERBOSE;

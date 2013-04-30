@@ -36,4 +36,10 @@
 - (void)uploadPhoto:(NSData *)data ToEvent:(Event *)event;
 
 - (void)saveEvent:(Event *)event;
+
+- (BOOL)isAuthenticated;
+
+- (void)login;
+
+- (void)loginWithUserId:(NSString *)facebookId Name:(NSString *)name Email:(NSString *)email;
 @end

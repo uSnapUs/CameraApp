@@ -14,8 +14,7 @@
 
 @property(nonatomic, copy) NSString *guid;
 @property(nonatomic, copy) NSString *name;
-@property (nonatomic, copy, readonly) NSDate *createdAt;
-@property (nonatomic, copy, readonly) NSDate *updatedAt;
 @property (nonatomic, copy, readonly) NSString *token;
-@property (nonatomic, copy, readonly) NSString *id;
+@property (nonatomic, copy) NSString *facebookId;
+@property (nonatomic, copy) NSString *email;
 @end

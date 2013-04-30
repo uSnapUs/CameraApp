@@ -9,10 +9,11 @@
 
 
 #import <MapKit/MapKit.h>
+#import "LoginViewController.h"
 
 @class MainMenuView;
 
-@interface MainMenuViewController : UIViewController <MKMapViewDelegate,UITextFieldDelegate>
+@interface MainMenuViewController : UIViewController <MKMapViewDelegate,UITextFieldDelegate, LoginDelegate>
 
 @property (strong, nonatomic) IBOutlet MainMenuView *mainMenu;
 

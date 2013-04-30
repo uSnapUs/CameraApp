@@ -39,15 +39,33 @@
         DDLogVerbose(@"got response from server %@",((NSDictionary*)responseObject));
         NSError *error;
 
-       DeviceRegistration *deviceRegistration= [DeviceRegistration modelWithDictionary:((NSDictionary*)responseObject)error:&error];
-       if(!error){
-           [deviceRegistration createWithSuccessBlock:^{
-               DDLogVerbose(@"saved device, raising notification");
-               [[NSNotificationCenter defaultCenter] postNotificationName:kDeviceUpdateNotification object:nil];
-           } withErrorBlock:^(NSError *error) {
-               DDLogError(@"unable to save device %@",error);
 
-           }];
+
+        DeviceRegistration *deviceRegistration=[MTLJSONAdapter modelOfClass:[DeviceRegistration class] fromJSONDictionary:((NSDictionary *)responseObject) error:&error];
+
+       if(!error){
+
+           if([device _id]){
+               [device updateWithSuccessBlock:^{
+                   DDLogVerbose(@"saved update to device, raising notification");
+                   [[NSNotificationCenter defaultCenter] postNotificationName:kDeviceUpdateNotification object:nil];
+               } withErrorBlock:^(NSError *saveError) {
+                   DDLogError(@"unable to save device %@",saveError);
+
+               }];
+           }
+           else{
+               [deviceRegistration createWithSuccessBlock:^{
+                   DDLogVerbose(@"saved new device, raising notification");
+                   [[NSNotificationCenter defaultCenter] postNotificationName:kDeviceUpdateNotification object:nil];
+               } withErrorBlock:^(NSError *updateError) {
+                   DDLogError(@"unable to update device %@",updateError);
+
+               }];
+           }
+       }
+        else{
+           DDLogError(@"unable to deserialize device: $@", error);
        }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         DDLogError(@"unable to register device with server %@",error);
@@ -123,11 +141,11 @@
             [SVProgressHUD showProgress:percentUploaded status:@"processing photo" maskType:SVProgressHUDMaskTypeGradient];
         }
     }];
-    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *uploadOperation, id responseObject) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kEventUpdated object:self userInfo:@{@"event":event}];
         DDLogVerbose(@"uploaded photo");
         [SVProgressHUD showSuccessWithStatus:@"uploaded"];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    } failure:^(AFHTTPRequestOperation *uploadOperation, NSError *error) {
         DDLogError(@"error uploading %@", error);
         [SVProgressHUD showErrorWithStatus:@"failed to upload photo"];
     }];

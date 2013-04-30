@@ -12,7 +12,6 @@
 #import "Application.h"
 #import "Event.h"
 #import "EventDashboardViewController.h"
-#import "WBErrorNoticeView.h"
 #import "CreateEventViewController.h"
 
 @interface MainMenuViewController ()
@@ -21,6 +20,7 @@
 
 @implementation MainMenuViewController {
     NSArray *localEvents;
+    LoginViewController *loginController;
 }
 
 -(void)viewDidLoad {
@@ -138,11 +138,45 @@
 -(void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-- (IBAction)goToCreateView:(id)sender {
-    CreateEventViewController *createEventViewController = [[CreateEventViewController alloc] initWithNibName:@"CreateEventView" bundle:nil];
-    [self presentViewController:createEventViewController animated:YES completion:^{
-
+- (void)loginViewController:(LoginViewController *)controller didClose:(BOOL)userInitiated {
+    CGRect bounds = [[self view]bounds];
+    CGRectMake(0, bounds.size.height, bounds.size.width, bounds.size.height);
+    [UIView animateWithDuration:0.5 animations:^{
+        [[loginController view] setCenter:[[self view]center]];
+    } completion:^(BOOL finished) {
+         [[loginController view] removeFromSuperview];
+        loginController = nil;
     }];
+}
+- (IBAction)goToCreateView:(id)sender {
+    if([[Application sharedInstance]isAuthenticated]){
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:kUserLoggedIn object:nil];
+        if(loginController)
+        {
+            [self loginViewController:loginController didClose:YES];
+        }
+        CreateEventViewController *createEventViewController = [[CreateEventViewController alloc] initWithNibName:@"CreateEventView" bundle:nil];
+        [self presentViewController:createEventViewController animated:YES completion:nil];
+    }
+    else{
+        if(!loginController){
+            loginController = [[LoginViewController alloc] initWithNibName:@"LoginView" bundle:nil];
+            loginController.delegate=self;
+        }
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(goToCreateView:) name:kUserLoggedIn object:nil];
+        DDLogVerbose(@"login controler %@", [loginController class]);
+        CGRect bounds = [[self view]bounds];
+        [[loginController view]setFrame: CGRectMake(0, bounds.size.height, bounds.size.width, bounds.size.height)];
+        [[[self mainMenu] mainMenuViewContainer] addSubview:[loginController view] ];
+        [[[self mainMenu] mainMenuViewContainer] bringSubviewToFront:[loginController view]];
+        [UIView animateWithDuration:0.5 animations:^{
+            [[loginController view] setCenter:[[self view]center]];
+        } completion:^(BOOL finished) {
+
+        }];
+    }
+
+
 
 
 }
