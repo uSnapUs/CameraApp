@@ -23,10 +23,12 @@
     NSDate *selectedDate;
     NSString *eventName;
     BOOL locationSet;
+    Event *annotation;
 }
 - (void)viewDidUnload {
     [self setCreateEventView:nil];
     [self setLocationImage:nil];
+    [self setMapView:nil];
     [super viewDidUnload];
 }
 - (IBAction)goToMainMenu:(id)sender {
@@ -152,13 +154,69 @@
     }
 }
 
+- (IBAction)dropPin:(id)sender {
+    if(annotation)
+    {
+        [[self mapView] removeAnnotation:annotation];
+    }
+    if(locationSet){
+        annotation = [[Event alloc]init];
+                                         annotation.name=@"Drag To Location";
+        annotation.location = [[Location alloc]init];
+        annotation.location.coordinates=@[
+                [NSNumber numberWithDouble:location.longitude],
+                [NSNumber numberWithDouble:location.latitude]
+        ];
+
+        [[self mapView] addAnnotation:annotation];
+    }
+}
+
 - (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
-    [mapView setCenterCoordinate:userLocation.coordinate zoomLevel:14 animated:YES];
-    location = userLocation.coordinate;
-    locationSet = YES;
-    [[[self createEventView] locationLabel] setText:@"My Location"];
-    [[[self createEventView] locationLabel] setTextColor:[UIColor blackColor]];
-    [[self locationImage] setImage:[UIImage imageNamed:@"location_active.png"]];
+    if(!locationSet){
+        [mapView setCenterCoordinate:userLocation.coordinate zoomLevel:14 animated:YES];
+        location = userLocation.coordinate;
+        locationSet = YES;
+        [[[self createEventView] locationLabel] setText:@"My Location"];
+        [[[self createEventView] locationLabel] setTextColor:[UIColor blackColor]];
+        [[self locationImage] setImage:[UIImage imageNamed:@"location_active.png"]];
+    }
+}
+-(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)newAnnotation {
+    if(![newAnnotation isKindOfClass:[Event class]]){
+        return nil;
+    }
+    else{
+        MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"eventAnnotationView"];
+        if(!annotationView)
+        {
+            annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:newAnnotation reuseIdentifier:@"eventAnnotationView"];
+            [annotationView setDraggable:YES];
+            [annotationView setCanShowCallout:YES];
+
+            UIButton *calloutButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
+
+            [annotationView setRightCalloutAccessoryView:calloutButton];
+
+            
+        }
+        [annotationView prepareForReuse];
+        [annotationView setAnnotation:newAnnotation];
+         return annotationView;
+        
+    }
+}
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
+{
+    if ([view isKindOfClass:[MKPinAnnotationView class]]) {
+        location = view.annotation.coordinate;
+        locationSet = YES;
+        [[[self createEventView] locationLabel] setText:@"Custom Location"];
+        [[[self createEventView] locationLabel] setTextColor:[UIColor blackColor]];
+        [[self locationImage] setImage:[UIImage imageNamed:@"location_unactive.png"]];
+        [self goBackToForm:nil];
+    }
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {

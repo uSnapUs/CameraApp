@@ -26,6 +26,14 @@
     DDLogVerbose(@"getting coordinate: Latitude %f, longitude %f", coordinate2D.latitude,coordinate2D.longitude);
     return coordinate2D;
 }
+-(void)setCoordinate:(CLLocationCoordinate2D)newCoordinate {
+    [[self location] setCoordinates:@[
+            [NSNumber numberWithDouble:newCoordinate.longitude],
+            [NSNumber numberWithDouble:newCoordinate.latitude]
+    ]
+
+    ];
+}
 - (NSString *)title {
     return [self name];
 }

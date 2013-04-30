@@ -21,8 +21,10 @@
 - (IBAction)togglePublic:(id)sender;
 - (IBAction)goBackToForm:(id)sender;
 - (IBAction)saveEvent:(id)sender;
+- (IBAction)dropPin:(id)sender;
 
 @property (strong, nonatomic) IBOutlet CreateEventView *createEventView;
 @property (weak, nonatomic) IBOutlet UIImageView *locationImage;
+@property (weak, nonatomic) IBOutlet MKMapView *mapView;
 
 @end
