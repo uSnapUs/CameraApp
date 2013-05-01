@@ -196,8 +196,10 @@
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"PhotoCellView" owner:self options:nil];
         cell = (PhotoCellView *)[nib objectAtIndex:0];
     }
+    [cell setPhoto:photo];
     DDLogVerbose(@"setting url to %@", [[photo thumbnailURL] absoluteString]);
     [[cell thumbnailImage] setImageWithURL:[photo thumbnailURL]];
+    [[cell photoLabel] setText:@"name"];
     return cell;
     
 }

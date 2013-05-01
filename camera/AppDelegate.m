@@ -94,9 +94,19 @@ NSString *const FBSessionStateChangedNotification =
                           object:session];
 
     if (error) {
+        DDLogError(@"error %@", error);
+
+        NSString *errorTitle =@"Error";
+        NSString *errorMessage = [error localizedDescription];
+        if (error.code == FBErrorLoginFailedOrCancelled) {
+            errorTitle = @"Facebook Login Failed";
+            errorMessage = @"Make sure you've allowed My App to use Facebook in Settings > Facebook.";
+        }
+
+
         UIAlertView *alertView = [[UIAlertView alloc]
-                initWithTitle:@"Error"
-                      message:error.localizedDescription
+                initWithTitle:errorTitle
+                      message:errorMessage
                      delegate:nil
             cancelButtonTitle:@"OK"
             otherButtonTitles:nil];

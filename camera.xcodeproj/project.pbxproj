@@ -766,8 +766,6 @@
 		5AEE20BD17273E3E0057BB42 = {
 			isa = PBXGroup;
 			children = (
-				5A9BC28F172D331C0088775C /* SystemConfiguration.framework */,
-				5A9BC28D172D330E0088775C /* MobileCoreServices.framework */,
 				5AB1698E172B5DC80070B08F /* libPods.a */,
 				5AEE20D117273E3E0057BB42 /* camera */,
 				5AEE20F317273E3E0057BB42 /* cameraTests */,
@@ -790,6 +788,8 @@
 		5AEE20C817273E3E0057BB42 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5A9BC28F172D331C0088775C /* SystemConfiguration.framework */,
+				5A9BC28D172D330E0088775C /* MobileCoreServices.framework */,
 				5A7C2E971729FC1A00C8E498 /* Crashlytics.framework */,
 				5AEE20C917273E3E0057BB42 /* UIKit.framework */,
 				5AEE20CB17273E3E0057BB42 /* Foundation.framework */,

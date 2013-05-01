@@ -65,7 +65,7 @@
            }
        }
         else{
-           DDLogError(@"unable to deserialize device: $@", error);
+           DDLogError(@"unable to deserialize device: %@", error);
        }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         DDLogError(@"unable to register device with server %@",error);

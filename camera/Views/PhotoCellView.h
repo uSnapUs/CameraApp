@@ -8,9 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
+@class Photo;
 
-@interface PhotoCellView : UITableViewCell
+
+@interface PhotoCellView : UITableViewCell<UIGestureRecognizerDelegate>
 
 @property (weak,nonatomic) IBOutlet UIImageView *thumbnailImage;
+@property (strong, readwrite) Photo *photo;
+@property (weak, nonatomic) IBOutlet UILabel *photoLabel;
 
 @end

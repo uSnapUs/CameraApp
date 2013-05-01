@@ -23,6 +23,7 @@
     CGRect mapViewFrame = [[self mapViewContainer] frame];
     mapViewFrame.origin.x = [self bounds].size.width;
     [[self mapViewContainer] setFrame:mapViewFrame];
+
 }
 
 - (void)layoutSubviews {
