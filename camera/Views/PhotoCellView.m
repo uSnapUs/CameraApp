@@ -20,18 +20,20 @@
 - (void)awakeFromNib {
     [[self photoLabel] setFont:[UIFont fontWithName:@"ProximaNova-Bold" size:22]];
     [[self photoLabel] setTextColor:[UIColor colorWithRed:53/(float)255 green:51/(float)255 blue:43/(float)255 alpha:1]];
+    DDLogVerbose(@"adding gesture recogniser");
+    UITapGestureRecognizer *tapGestureRecogniser = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageWasTapped:)];
+    [tapGestureRecogniser setNumberOfTouchesRequired:1];
+
+    [[self thumbnailImage] addGestureRecognizer:tapGestureRecogniser];
 }
 @synthesize photo = _photo;
 
 - (IBAction)imageWasTapped:(id)sender {
     DDLogVerbose(@"image was tapped: %@", [[[self photo] fullURL] absoluteString]);
+    if([self delegate]){
+        [[self delegate] cellImageWasTapped:self];
+    }
 }
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    CGPoint pointInView =  [touch locationInView:self];
-    DDLogVerbose(@"point in view %d %d", pointInView.x, pointInView.y);
-    if(CGRectContainsPoint([[self thumbnailImage]frame], pointInView))
-        return YES;
-    else
-        return NO;
-}
+
+
 @end

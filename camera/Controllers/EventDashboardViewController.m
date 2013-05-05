@@ -7,6 +7,7 @@
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <CoreGraphics/CoreGraphics.h>
 #import "EventDashboardViewController.h"
 #import "Event.h"
 #import "Photo.h"
@@ -195,13 +196,19 @@
     {
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"PhotoCellView" owner:self options:nil];
         cell = (PhotoCellView *)[nib objectAtIndex:0];
+        [cell setDelegate:self];
     }
     [cell setPhoto:photo];
     DDLogVerbose(@"setting url to %@", [[photo thumbnailURL] absoluteString]);
     [[cell thumbnailImage] setImageWithURL:[photo thumbnailURL]];
     [[cell photoLabel] setText:@"name"];
+    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     return cell;
     
 }
+- (void)cellImageWasTapped:(PhotoCellView *)cell {
+
+}
+        
 
 @end

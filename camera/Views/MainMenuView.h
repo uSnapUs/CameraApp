@@ -16,8 +16,7 @@
     @property (weak, nonatomic) IBOutlet UIButton *findNearbyButton;
     @property (weak, nonatomic) IBOutlet UIImageView *background;
     @property (weak, nonatomic) IBOutlet UIView *logo;
-    @property (weak, nonatomic) IBOutlet UIView *tagline;
-    @property (weak, nonatomic) IBOutlet UIView *tagline2;
+    @property (weak, nonatomic) IBOutlet UILabel *tagline;
     @property (weak, nonatomic) IBOutlet UIView *mainMenuViewContainer;
     @property (weak, nonatomic) IBOutlet UIView *findViewContainer;
     @property (weak, nonatomic) IBOutlet UIView *topBar;

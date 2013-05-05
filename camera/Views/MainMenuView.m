@@ -23,7 +23,12 @@
     [[self eventCodeView] addSubview:[self eventCodeField]];
     [[self eventCodeField] setHidden:NO];
     [[self eventCodeField] setAlpha:1];
-
+    [[[self topBar] layer] setShadowOpacity:0.5];
+    [[[self topBar] layer] setShadowRadius:5];
+    [[[self topBar] layer] setShadowOffset:CGSizeMake(0, 2)];
+    [[[self tagline] layer] setShadowOpacity:0.4];
+    [[[self tagline] layer] setShadowOffset:CGSizeMake(0, 4)];
+    [[self tagline] setFont:[UIFont fontWithName:@"ProximaNova-Bold" size:18]];
 }
 -(void)layoutSubviews {
 
@@ -34,9 +39,7 @@
     [[self mainMenuViewContainer] setFrame:[self bounds]];
     [self bringSubviewToFront:[self mainMenuViewContainer]];
     [[self findViewContainer] setFrame:[self bounds]];
-    [[[self topBar] layer] setShadowOpacity:0.5];
-    [[[self topBar] layer] setShadowRadius:5];
-    [[[self topBar] layer] setShadowOffset:CGSizeMake(0, 2)];
+
     CGRect findNearbyButtonFrame = [[self findNearbyButton] frame];
     findNearbyButtonFrame.origin.y = [self bounds].size.height- 83;
     [[self findNearbyButton] setFrame:findNearbyButtonFrame];
@@ -51,19 +54,22 @@
 
 - (void)goToFindView:(id)sender {
     offset = 100;
+    CGPoint finalFindCenter = [[self eventCodeView] center];
+    CGPoint initialFindCenter = [[self eventCodeView] center];
+    initialFindCenter.x =[[self mainMenuViewContainer] center].x+[self bounds].size.width;
+    initialFindCenter.y = initialFindCenter.y;
+    finalFindCenter.x = [[self mainMenuViewContainer] center].x;
+    [[self eventCodeView] setCenter:initialFindCenter];
+    [[self eventCodeView] setHidden:NO];
+    [[self eventCodeView] setAlpha:1];
+    
     [UIView animateWithDuration:0.5 animations:^{
-        [[self findButton] setAlpha:0];
-        [[self createButton] setAlpha:0];
-        [[self tagline] setAlpha:0];
+     [self hideInitialMenu];
 
     } completion:^(BOOL success){
 
         [[self findButton] setHidden:YES];
         [[self createButton] setHidden:YES];
-        [[self tagline] setHidden:YES];
-        [[self findButton] setAlpha:1];
-        [[self createButton] setAlpha:1];
-        [[self tagline] setAlpha:1];
         [[self backButton] setHidden:NO];
         [UIView animateWithDuration:0.5 animations:^{
             CGPoint backButtonCenter = [[self backButton] center];
@@ -73,21 +79,49 @@
             CGPoint currentBackgroundCentre = [[self mainMenuViewContainer] center];
             currentBackgroundCentre.y = currentBackgroundCentre.y-offset;
             [[self mainMenuViewContainer] setCenter:currentBackgroundCentre];
-            CGPoint logoCentre = [[self logo] center];
-            logoCentre.y = logoCentre.y+offset/2;
-            [[self logo] setCenter:logoCentre];
-        } completion:^(BOOL secondSuccess){
-            [[self nearbyEventMapView] setShowsUserLocation:YES];
-            [[self eventCodeView] setHidden:NO];
-            [UIView animateWithDuration:0.2 animations:^{
-                [[self eventCodeView] setAlpha:1];
-
+            CGPoint logoCenter = [[self logo] center];
+            logoCenter.y = logoCenter.y+offset-(offset/2);
+            [[self logo] setCenter:logoCenter];
+            [[self logo] setTransform:CGAffineTransformMakeScale(0.8,0.8)];
+        } completion:^(BOOL completed){
+            CGPoint taglineCenter = [[self tagline]center];
+            taglineCenter.y = taglineCenter.y + (offset/2);
+            [[self tagline] setCenter:taglineCenter];
+            [[self tagline] setText:@"Type in an event code to begin,\n"
+                    "or search for nearby events."];
+            [UIView animateWithDuration:0.5 animations:^{
+                [[self tagline] setAlpha:1];
             }];
         }];
+        [UIView animateWithDuration:0.5 delay:0.2 options:UIViewAnimationOptionCurveEaseIn animations:^{
+            [[self eventCodeView] setCenter:finalFindCenter];
+        } completion:^(BOOL secondSuccess){
+                [[self nearbyEventMapView] setShowsUserLocation:YES];
+    }];
 
     }];
 }
 
+- (void)hideInitialMenu {
+    CGPoint findButtonCenter = [[self findButton] center];
+    findButtonCenter.x = [self center].x - [self frame].size.width;
+    CGPoint createButtonCenter = [[self createButton] center];
+    createButtonCenter.x = [self center].x - [self frame].size.width;
+    NSLog(@"find button center %d", findButtonCenter);
+    [[self findButton] setCenter:findButtonCenter];
+    [[self createButton] setCenter:createButtonCenter];
+    [[self tagline] setAlpha:0];
+}
+- (void)showInitialMenu {
+    CGPoint findButtonCenter = [[self findButton] center];
+    findButtonCenter.x = [self center].x;
+    CGPoint createButtonCenter = [[self createButton] center];
+    createButtonCenter.x = [self  center].x;
+    NSLog(@"find button center %d", findButtonCenter);
+    [[self findButton] setCenter:findButtonCenter];
+    [[self createButton] setCenter:createButtonCenter];
+    [[self tagline] setAlpha:1];
+}
 
 - (void)goToMapView:(id)sender {
     [[self eventCodeField] resignFirstResponder];
@@ -114,8 +148,12 @@
         [self animateToFullView];
     }
     else{
+        CGPoint eventCodeCenter = [[self eventCodeView] center];
+        eventCodeCenter.x = eventCodeCenter.x + [self bounds].size.width;
+                
         [UIView animateWithDuration:0.2 animations:^{
-            [[self eventCodeView] setAlpha:0];
+            [[self tagline]setAlpha:0];
+            [[self eventCodeView] setCenter:eventCodeCenter];
             [[self backButton] setAlpha:0];
 
         } completion:^(BOOL done){
@@ -132,28 +170,31 @@
 
     backButtonCenter.y = backButtonCenter.y-offset;
     [[self backButton] setCenter:backButtonCenter];
-    [[self findButton] setAlpha:0];
-    [[self createButton] setAlpha:0];
     [[self tagline] setAlpha:0];
+    [[self tagline] setText:@"Photo collaboration, made easy."];
+    CGPoint taglineCenter = [[self tagline]center];
+    taglineCenter.y = taglineCenter.y - (offset/2);
+    [[self tagline] setCenter:taglineCenter];
     [[self findButton] setHidden:NO];
     [[self createButton] setHidden:NO];
-    [[self tagline] setHidden:NO];
+
     [UIView animateWithDuration:0.5 animations:^{
         CGPoint currentBackgroundCentre = [self center];
         [[self mainMenuViewContainer] setCenter:currentBackgroundCentre];
-        CGPoint logoCentre = [[self logo] center];
-        logoCentre.y = logoCentre.y-offset/2;
-        [[self logo] setCenter:logoCentre];
+        CGPoint logoCenter = [[self logo] center];
+        logoCenter.y = logoCenter.y-(offset/2);
+        [[self logo] setCenter:logoCenter];
+        [[self logo] setTransform:CGAffineTransformMakeScale(1,1)];
 
     } completion:^(BOOL success){
         offset = 0;
         [UIView animateWithDuration:0.2 animations:^{
-            [[self findButton] setAlpha:1];
-            [[self createButton] setAlpha:1];
-            [[self tagline] setAlpha:1];
+          [self showInitialMenu];
         }completion:^(BOOL done){
                 [[self findNearbyButton]setHidden:NO];
         }];
     }];
 }
+
+
 @end
