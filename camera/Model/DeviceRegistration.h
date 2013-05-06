@@ -9,12 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "ATModel.h"
 
+@class User;
+
 
 @interface DeviceRegistration : ATModel <MTLJSONSerializing>
 
 @property(nonatomic, copy) NSString *guid;
 @property(nonatomic, copy) NSString *name;
 @property (nonatomic, copy, readonly) NSString *token;
-@property (nonatomic, copy) NSString *facebookId;
-@property (nonatomic, copy) NSString *email;
+@property (nonatomic,copy) User *user;
 @end

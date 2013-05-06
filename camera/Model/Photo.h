@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <ActiveTouch/ATModel.h>
 
+@class User;
+
 
 @interface Photo : ATModel
     @property (nonatomic,copy) NSString *rootUrl;
@@ -18,6 +20,7 @@
     @property (nonatomic,copy) NSString *fullPath;
     @property (nonatomic,copy) NSDate *createdAt;
     @property (nonatomic,copy) NSDate *creationTime;
+    @property (nonatomic,copy) User *postedBy;
 
 - (NSURL *)fullURL;
 

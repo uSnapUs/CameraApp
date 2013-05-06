@@ -14,6 +14,7 @@
 #import "PhotoCellView.h"
 #import "ALAssetsLibrary+CustomPhotoAlbum.h"
 #import "Application.h"
+#import "User.h"
 
 
 @implementation EventDashboardViewController {
@@ -201,7 +202,13 @@
     [cell setPhoto:photo];
     DDLogVerbose(@"setting url to %@", [[photo thumbnailURL] absoluteString]);
     [[cell thumbnailImage] setImageWithURL:[photo thumbnailURL]];
-    [[cell photoLabel] setText:@"name"];
+    if([photo postedBy]){
+        [[cell photoLabel] setText:[[photo postedBy]name]];
+    }
+    else{
+        [[cell photoLabel] setText:@"anon"];
+    }
+
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     return cell;
     

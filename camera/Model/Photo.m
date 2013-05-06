@@ -7,6 +7,7 @@
 
 
 #import "Photo.h"
+#import "User.h"
 
 
 @implementation Photo {
@@ -24,13 +25,19 @@
 
 }
 
++ (NSValueTransformer *)postedByJSONTransformer {
+    DDLogInfo(@"getting location transformer");
+    return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:[User class]];
+}
+
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     DDLogInfo(@"getting key paths");
     return [[super JSONKeyPathsByPropertyKey] mtl_dictionaryByAddingEntriesFromDictionary: @{
             @"creationTime": @"creation_time",
             @"fullPath":@"full_url",
             @"thumbnailPath":@"thumbnail_url",
-            @"rootUrl":@"root_url"
+            @"rootUrl":@"root_url",
+            @"postedBy":@"posted_by"
     }];
 }
 

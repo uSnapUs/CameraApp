@@ -164,6 +164,7 @@
 										<string key="NSFrameSize">{320, 90}</string>
 										<reference key="NSSuperview" ref="599498433"/>
 										<reference key="NSWindow"/>
+										<reference key="NSNextKeyView"/>
 										<string key="NSReuseIdentifierKey">_NS:9</string>
 										<bool key="IBUIOpaque">NO</bool>
 										<bool key="IBUIClipsSubviews">YES</bool>
@@ -498,15 +499,15 @@
 					<string key="superclassName">UIViewController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="goToMainMenu:">id</string>
-						<string key="showPickerview:">id</string>
+						<string key="showPickerView:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="goToMainMenu:">
 							<string key="name">goToMainMenu:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="showPickerview:">
-							<string key="name">showPickerview:</string>
+						<object class="IBActionInfo" key="showPickerView:">
+							<string key="name">showPickerView:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>

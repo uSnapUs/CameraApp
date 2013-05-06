@@ -12,6 +12,7 @@
 #import "DeviceRegistration.h"
 #import "Event.h"
 #import "AppDelegate.h"
+#import "User.h"
 
 
 @implementation Application {
@@ -141,7 +142,7 @@ static Application *sharedInstance;
 }
 
 - (BOOL)isAuthenticated {
-    return [[self currentDevice]facebookId]!=nil;
+    return [[self currentDevice]user]&& [[[self currentDevice]user]facebookId]!=nil;
 }
 
 - (void)login {
@@ -153,9 +154,15 @@ static Application *sharedInstance;
 }
 
 - (void)loginWithUserId:(NSString *)facebookId Name:(NSString *)name Email:(NSString *)email {
-    [[self currentDevice] setEmail:email];
-    [[self currentDevice] setName:name];
-    [[self currentDevice] setFacebookId:facebookId];
+    if([[self currentDevice]user]){
+        [[[self currentDevice] user] delete:self];
+    }
+    User *user = [[User alloc] init];
+
+    [user setEmail:email];
+    [user setName:name];
+    [user setFacebookId:facebookId];
+    [[self currentDevice] setUser:user];
     [[self server] registerDevice:[self currentDevice]];
     [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedIn object:self];
 
