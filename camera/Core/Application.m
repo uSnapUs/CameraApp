@@ -13,6 +13,7 @@
 #import "Event.h"
 #import "AppDelegate.h"
 #import "User.h"
+#import "Photo.h"
 
 
 @implementation Application {
@@ -23,7 +24,6 @@
     DeviceRegistration *_currentDevice;
 
 
-
 }
 
 static Application *sharedInstance;
@@ -31,22 +31,20 @@ static Application *sharedInstance;
 
 @synthesize currentDevice = _currentDevice;
 
--(id) init{
+- (id)init {
     self = [super init];
-    if(!self){
+    if (!self) {
         return nil;
     }
-    [self setupNotifications] ;
+    [self setupNotifications];
     return self;
 }
 
 
-
-- (NSString *)generateUuidString
-{
+- (NSString *)generateUuidString {
     CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
 
-    NSString *uuidString = (__bridge NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuid);
+    NSString *uuidString = (__bridge NSString *) CFUUIDCreateString(kCFAllocatorDefault, uuid);
 
     CFRelease(uuid);
 
@@ -54,9 +52,8 @@ static Application *sharedInstance;
 }
 
 - (Server *)server {
-    if(!_server)
-    {
-        _server = [[Server alloc]init];
+    if (!_server) {
+        _server = [[Server alloc] init];
     }
     return _server;
 }
@@ -70,7 +67,8 @@ static Application *sharedInstance;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setCurrentDevice) name:kDeviceUpdateNotification object:nil];
 
 }
--(void) onApplicationLoaded{
+
+- (void)onApplicationLoaded {
     DDLogVerbose(@"setting up server");
     NSString *dbName = kDBName;
     [[ATDatabaseContainer sharedInstance] openDatabaseWithName:dbName];
@@ -78,75 +76,77 @@ static Application *sharedInstance;
     DDLogVerbose(@"finished setting up server");
     [self setCurrentDevice];
 }
--(void)dealloc {
+
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-+(Application*)sharedInstance {
++ (Application *)sharedInstance {
     return sharedInstance;
 }
 
 - (void)setCurrentDevice {
     DDLogVerbose(@"loading current device");
     //load all devices (there should only be one)
-    [DeviceRegistration allWithSuccessBlock:^(NSArray *devices){
+    [DeviceRegistration allWithSuccessBlock:^(NSArray *devices) {
         DDLogVerbose(@"successfully interogated database for devices");
-        if(!devices||[devices count]==0){
+        if (!devices || [devices count] == 0) {
             DDLogVerbose(@"no saved devices so creating one");
-            DeviceRegistration *device = [[DeviceRegistration alloc]init];
+            DeviceRegistration *device = [[DeviceRegistration alloc] init];
             device.guid = [self generateUuidString];
             device.name = [[UIDevice currentDevice] name];
             [[self server] registerDevice:device];
         }
-        else
-        {
+        else {
             DDLogVerbose(@"got device from db so setting as current device");
             [self setCurrentDevice:[devices objectAtIndex:0]];
             DDLogVerbose(@"set device to %@", [self currentDevice]);
-            [[self server]setCredentialsToGuid:[[self currentDevice] guid]Token:[[self currentDevice] token]];
+            [[self server] setCredentialsToGuid:[[self currentDevice] guid] Token:[[self currentDevice] token]];
+            if ([[self currentDevice] user] && (![[[self currentDevice] user] serverId])) {
+                [[self server] registerDevice:[self currentDevice]];
+            }
         }
-    } withErrorBlock:
+    }                        withErrorBlock:
             ^(NSError *error) {
-                DDLogError(@"error interogating database %@",error);
+                DDLogError(@"error interogating database %@", error);
 
             }];
 }
 
-+(void)initialize {
++ (void)initialize {
     static BOOL initialized = NO;
-    if(!initialized)
-    {
+    if (!initialized) {
         initialized = YES;
         sharedInstance = [[Application alloc] init];
     }
 }
 
 - (void)lookupEventByCode:(NSString *)code {
-    [[self server]lookupEvent:code];
+    [[self server] lookupEvent:code];
 
 }
 
 - (void)loadEventsCloseTo:(CLLocationCoordinate2D)location {
-    [[self server]loadEventsCloseTo:location];
+    [[self server] loadEventsCloseTo:location];
 
 }
 
-- (void)uploadPhoto:(NSData *)data ToEvent:(Event*)event {
-    [[self server]postPhoto:data ToEvent:event];
+- (void)uploadPhoto:(NSData *)data ToEvent:(Event *)event {
+    [[self server] postPhoto:data ToEvent:event];
 
 }
 
 - (void)saveEvent:(Event *)event {
-    [[self server]postEvent:event];
+    [[self server] postEvent:event];
 
 }
 
 - (BOOL)isAuthenticated {
-    return [[self currentDevice]user]&& [[[self currentDevice]user]facebookId]!=nil;
+    return [[self currentDevice] user] && [[[self currentDevice] user] facebookId] != nil;
 }
 
 - (void)login {
-    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
     // The user has initiated a login, so call the openSession method
     // and show the login UX if necessary.
     [appDelegate openSessionWithAllowLoginUI:YES];
@@ -154,7 +154,7 @@ static Application *sharedInstance;
 }
 
 - (void)loginWithUserId:(NSString *)facebookId Name:(NSString *)name Email:(NSString *)email {
-    if([[self currentDevice]user]){
+    if ([[self currentDevice] user]) {
         [[[self currentDevice] user] delete:self];
     }
     User *user = [[User alloc] init];
@@ -166,5 +166,14 @@ static Application *sharedInstance;
     [[self server] registerDevice:[self currentDevice]];
     [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedIn object:self];
 
+}
+
+- (void)registerLikeForPhoto:(Photo *)photo inEvent:(Event *)event {
+    [[self server]registerLikeForPhoto:photo inEvent:event];
+
+}
+
+- (void)removeLikeForPhoto:(Photo *)photo inEvent:(Event *)event {
+    [[self server]removeLikeForPhoto:photo inEvent:event];
 }
 @end

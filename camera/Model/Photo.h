@@ -21,6 +21,7 @@
     @property (nonatomic,copy) NSDate *createdAt;
     @property (nonatomic,copy) NSDate *creationTime;
     @property (nonatomic,copy) User *postedBy;
+    @property (nonatomic,copy) NSArray *likedBy;
 
 - (NSURL *)fullURL;
 

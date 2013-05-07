@@ -10,6 +10,7 @@
 #import <CoreLocation/CoreLocation.h>
 @class DeviceRegistration;
 @class Event;
+@class Photo;
 
 
 @interface Server : NSObject
@@ -25,4 +26,7 @@
 
 - (void)postEvent:(Event *)event;
 
+- (void)registerLikeForPhoto:(Photo *)photo inEvent:(Event *)event;
+
+- (void)removeLikeForPhoto:(Photo *)photo inEvent:(Event *)event;
 @end

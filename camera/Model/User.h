@@ -14,4 +14,5 @@
     @property NSString *email;
     @property NSString *facebookId;
     @property NSString *name;
+    @property (readonly) NSString *serverId;
 @end

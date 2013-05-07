@@ -7,8 +7,12 @@
 
 
 #import <CoreGraphics/CoreGraphics.h>
+#import <Underscore.m/Underscore.h>
 #import "PhotoCellView.h"
 #import "Photo.h"
+#import "Application.h"
+#import "DeviceRegistration.h"
+#import "User.h"
 
 
 @implementation PhotoCellView {
@@ -26,7 +30,29 @@
 
     [[self thumbnailImage] addGestureRecognizer:tapGestureRecogniser];
 }
-@synthesize photo = _photo;
+
+-(void)setPhoto:(Photo *)photo {
+    _photo = photo;
+    [[self likeCountLabel] setText:[NSString stringWithFormat:@"%i",_photo.likedBy.count]];
+
+}
+- (void)layoutSubviews {
+    DeviceRegistration *device = [[Application sharedInstance] currentDevice];
+    [[self likeButton] setImage:[UIImage imageNamed:@"like.png"] forState:UIControlStateNormal];
+    if(device.user){
+        if(Underscore.find(_photo.likedBy,^BOOL(NSString *userId){
+            return [[[device user] serverId] isEqualToString:userId];
+        })){
+            [[self likeButton] setImage:[UIImage imageNamed:@"like-on.png"] forState:UIControlStateNormal];
+        }
+    }
+
+
+}
+-(Photo*)photo{
+    return _photo;
+}
+
 
 - (IBAction)imageWasTapped:(id)sender {
     DDLogVerbose(@"image was tapped: %@", [[[self photo] fullURL] absoluteString]);
@@ -36,4 +62,10 @@
 }
 
 
+- (IBAction)likePhoto:(id)sender {
+    if([self delegate])
+    {
+        [[self delegate] cellLikeWasTapped:self];
+    }
+}
 @end

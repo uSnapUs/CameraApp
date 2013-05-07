@@ -37,7 +37,8 @@
             @"fullPath":@"full_url",
             @"thumbnailPath":@"thumbnail_url",
             @"rootUrl":@"root_url",
-            @"postedBy":@"posted_by"
+            @"postedBy":@"posted_by",
+            @"likedBy":@"liked_by"
     }];
 }
 

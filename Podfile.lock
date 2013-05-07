@@ -39,6 +39,7 @@ PODS:
     - CocoaHTTPServer
     - JSONKit
     - MYUtilities
+  - Underscore.m (0.2.0)
 
 DEPENDENCIES:
   - ActiveTouch
@@ -54,6 +55,7 @@ DEPENDENCIES:
   - SVProgressHUD
   - TestFlightLogger
   - TestFlightSDK (~> 1.2.4)
+  - Underscore.m (~> 0.2.0)
 
 SPEC CHECKSUMS:
   ActiveTouch: 13cfde49646a3cedc9169d37ecd21ad2270b35d4
@@ -77,5 +79,6 @@ SPEC CHECKSUMS:
   TestFlightLogger: 8d5127df30752ce74a1f5b52947f520e05cc0f42
   TestFlightSDK: 96d7400f844599dd02677bf8d34f8bdfe3f9b33c
   TouchDB: 8c4bd94a8c537d91176505a6dcced281856bdb14
+  Underscore.m: a1363c047e21e601dcabc16abd6faf9413cf4290
 
 COCOAPODS: 0.18.1

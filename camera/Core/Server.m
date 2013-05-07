@@ -11,6 +11,7 @@
 #import "AFNetworking.h"
 #import "SVProgressHUD.h"
 #import "Event.h"
+#import "Photo.h"
 
 
 @implementation Server {
@@ -44,7 +45,7 @@
         DeviceRegistration *deviceRegistration=[MTLJSONAdapter modelOfClass:[DeviceRegistration class] fromJSONDictionary:((NSDictionary *)responseObject) error:&error];
 
        if(!error){
-
+           device.user = deviceRegistration.user;
            if([device _id]){
                [device updateWithSuccessBlock:^{
                    DDLogVerbose(@"saved update to device, raising notification");
@@ -184,5 +185,41 @@
 
 
 
+}
+
+- (void)registerLikeForPhoto:(Photo *)photo inEvent:(Event *)event {
+    [SVProgressHUD showWithStatus:@"saving like" maskType:SVProgressHUDMaskTypeGradient];
+    NSString *path = [NSString stringWithFormat:@"/event/%@/photo/%@/like",event.code,photo.id];
+    DDLogVerbose(@"posting like %@", event);
+
+    [client postPath:path parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+
+        DDLogVerbose(@"post returned photo %@", ((NSDictionary*)responseObject));
+        [SVProgressHUD showSuccessWithStatus:@"photo like saved"];
+        [self lookupEvent:[event code]];
+
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        DDLogError(@"unable to save like %@",error);
+        [SVProgressHUD showErrorWithStatus:@"unable to save like"];
+
+    }];
+}
+
+- (void)removeLikeForPhoto:(Photo *)photo inEvent:(Event *)event {
+    [SVProgressHUD showWithStatus:@"removing like" maskType:SVProgressHUDMaskTypeGradient];
+    NSString *path = [NSString stringWithFormat:@"/event/%@/photo/%@/like",event.code,photo.id];
+    DDLogVerbose(@"deleting like %@", event);
+
+    [client deletePath:path parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+
+        DDLogVerbose(@"delete returned photo %@", ((NSDictionary*)responseObject));
+        [SVProgressHUD showSuccessWithStatus:@"photo like removed"];
+        [self lookupEvent:[event code]];
+
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        DDLogError(@"unable to remove like %@",error);
+        [SVProgressHUD showErrorWithStatus:@"unable to remove like"];
+
+    }];
 }
 @end

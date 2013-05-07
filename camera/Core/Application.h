@@ -12,6 +12,7 @@
 @class Server;
 @class DeviceRegistration;
 @class Event;
+@class Photo;
 
 
 @interface Application : NSObject
@@ -42,4 +43,8 @@
 - (void)login;
 
 - (void)loginWithUserId:(NSString *)facebookId Name:(NSString *)name Email:(NSString *)email;
+
+- (void)registerLikeForPhoto:(Photo *)photo inEvent:(Event *)event;
+
+- (void)removeLikeForPhoto:(Photo *)photo inEvent:(Event *)event;
 @end

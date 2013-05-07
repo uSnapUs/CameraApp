@@ -12,15 +12,17 @@
 @implementation User {
 
 }
--(void)setValue:(id)value forUndefinedKey:(NSString *)key {
-    DDLogError(@"unable to set key %@ from value %@", key,value);
+- (void)setValue:(id)value forUndefinedKey:(NSString *)key {
+    DDLogError(@"unable to set key %@ from value %@", key, value);
 }
+
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     DDLogInfo(@"getting key paths");
-    return [[super JSONKeyPathsByPropertyKey] mtl_dictionaryByAddingEntriesFromDictionary: @{
-@"name": @"name",
-            @"facebookId":@"facebook_id",
-                    @"email":@"email",
+    return [[super JSONKeyPathsByPropertyKey] mtl_dictionaryByAddingEntriesFromDictionary:@{
+            @"name" : @"name",
+            @"facebookId" : @"facebook_id",
+            @"email" : @"email",
+            @"serverId":@"id"
     }];
 }
 @end
