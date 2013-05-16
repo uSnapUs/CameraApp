@@ -690,13 +690,13 @@
 						<array class="NSMutableArray" key="children">
 							<reference ref="753702772"/>
 							<reference ref="878824491"/>
-							<reference ref="312349820"/>
 							<reference ref="457804469"/>
 							<reference ref="770901835"/>
 							<reference ref="657483700"/>
 							<reference ref="305368721"/>
 							<reference ref="906066497"/>
 							<reference ref="608054826"/>
+							<reference ref="312349820"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>

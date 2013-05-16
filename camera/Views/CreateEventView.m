@@ -77,4 +77,60 @@
     }];
 
 }
+
+- (void)animateIn {
+    [UIView animateWithDuration:0.5 animations:^{
+        [[self mainBackButton] setAlpha:1];
+        [self moveViewToOnscreen:[self eventNameBackground]];
+        [self moveViewToOnscreen:[self eventNameField]];
+
+        [self moveViewToOnscreen:[self locationFieldBackground]];
+        [self moveViewToOnscreen:[self locationLabel]];
+        [self moveViewToOnscreen:[self locationPositionImage]];
+
+        [self moveViewToOnscreen:[self eventDateFieldBackground]];
+        [self moveViewToOnscreen:[self dateLabel]];
+
+        [self moveViewToOnscreen:[self publicToggleBackground]];
+        [self moveViewToOnscreen:[self toggleButton]];
+
+        [self moveViewToOnscreen:[self createButton]];
+
+    }];
+
+}
+-(void)animateOut:(void (^)())onCompleteBlock{
+    [UIView animateWithDuration:0.5 animations:^{
+        [[self mainBackButton] setAlpha:0];
+        [self moveViewToOffscreen:[self eventNameBackground]];
+        [self moveViewToOffscreen:[self eventNameField]];
+
+        [self moveViewToOffscreen:[self locationFieldBackground]];
+        [self moveViewToOffscreen:[self locationLabel]];
+        [self moveViewToOffscreen:[self locationPositionImage]];
+
+        [self moveViewToOffscreen:[self eventDateFieldBackground]];
+        [self moveViewToOffscreen:[self dateLabel]];
+
+        [self moveViewToOffscreen:[self publicToggleBackground]];
+        [self moveViewToOffscreen:[self toggleButton]];
+
+        [self moveViewToOffscreen:[self createButton]];
+
+    } completion:^(BOOL completed){
+
+        onCompleteBlock();
+
+    }];
+}
+-(void)moveViewToOnscreen:(UIView *)viewElement{
+    CGPoint viewElementCenter = [viewElement center];
+    viewElementCenter.x = viewElementCenter.x-320;
+    [viewElement setCenter:viewElementCenter];
+}
+-(void)moveViewToOffscreen:(UIView *)viewElement{
+    CGPoint viewElementCenter = [viewElement center];
+    viewElementCenter.x = viewElementCenter.x+320;
+    [viewElement setCenter:viewElementCenter];
+}
 @end

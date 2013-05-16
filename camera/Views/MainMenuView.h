@@ -30,4 +30,9 @@
 - (IBAction)goToMapView:(id)sender;
 
 - (IBAction)goToMainMenu:(id)sender;
+
+
+- (void)transitionToCreateView:(void (^)())presentBlock;
+
+- (void)animateIn;
 @end

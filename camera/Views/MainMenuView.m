@@ -7,6 +7,7 @@
 
 
 #import "MainMenuView.h"
+#import "CreateEventViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreGraphics/CoreGraphics.h>
 
@@ -197,4 +198,35 @@
 }
 
 
+
+- (void)transitionToCreateView:(void (^)())presentBlock {
+
+    offset = 0;
+
+    [UIView animateWithDuration:0.5 animations:^{
+        [self hideInitialMenu];
+
+    } completion:^(BOOL success){
+        [UIView animateWithDuration:0.5 animations:^{
+            [[self logo] setFrame:CGRectMake(52, 31, 221, 98)];
+        } completion:^(BOOL completed){
+            CGRect frame = [[self logo]frame];
+            DDLogVerbose(@"Logo position: %f,%f,%f,%f",frame.origin.x,frame.origin.y,frame.size.width,frame.size.height);
+            presentBlock();
+
+
+        }];
+
+    }];
+
+}
+
+- (void)animateIn {
+
+    [UIView animateWithDuration:0.5 animations:^{
+      [[self logo] setFrame:CGRectMake(24, 79, 276, 123)];
+      [self showInitialMenu];
+    }];
+
+}
 @end

@@ -22,6 +22,7 @@
     NSArray *localEvents;
     LoginViewController *loginController;
     BOOL lookedUpEvents;
+    BOOL shouldResetOnAppear;
 }
 
 -(void)viewDidLoad {
@@ -29,12 +30,19 @@
 
 }
 -(void)viewDidAppear:(BOOL)animated {
+    if(shouldResetOnAppear)
+    {
+        [[self mainMenu] animateIn];
+        shouldResetOnAppear = NO;
+    }
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventSelected:) name:kEventFoundNotification object:nil];
 }
 -(void)viewDidDisappear:(BOOL)animated {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[[self mainMenu] nearbyEventMapView] setShowsUserLocation:NO];
-    [[self mainMenu] goToMainMenu:nil];
+    if(!shouldResetOnAppear){
+        [[self mainMenu] goToMainMenu:nil];
+    }
     [[[self mainMenu] eventCodeField] setText:nil];
 }
 
@@ -156,8 +164,11 @@
         {
             [self loginViewController:loginController didClose:YES];
         }
-        CreateEventViewController *createEventViewController = [[CreateEventViewController alloc] initWithNibName:@"CreateEventView" bundle:nil];
-        [self presentViewController:createEventViewController animated:YES completion:nil];
+        shouldResetOnAppear = YES;
+        [[self mainMenu]transitionToCreateView:^{
+            CreateEventViewController *createEventViewController = [[CreateEventViewController alloc] initWithNibName:@"CreateEventView" bundle:nil];
+            [self presentViewController:createEventViewController animated:NO completion:nil];
+        }];
     }
     else{
         if(!loginController){

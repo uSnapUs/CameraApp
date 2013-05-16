@@ -33,7 +33,9 @@
 }
 - (IBAction)goToMainMenu:(id)sender {
     [[[self createEventView] eventNameField] resignFirstResponder];
-    [self dismissViewControllerAnimated:YES completion:^{}];
+    [[self createEventView]animateOut:^{
+        [self dismissViewControllerAnimated:NO completion:^{}];
+    }];
 
 }
 
@@ -225,5 +227,8 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     return YES;
+}
+-(void)viewDidAppear:(BOOL)animated {
+    [[self createEventView]animateIn];
 }
 @end
